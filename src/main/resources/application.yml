@@ -1,0 +1,86 @@
+#端口号配置
+server:
+  port: 8080
+  servlet:
+    # 应用的访问路径
+    context-path: /
+  tomcat:
+    # 存放Tomcat的日志目录
+    basedir: C:/tomcat
+    accesslog:
+      # 开启日志记录
+      enabled: true
+      # 访问日志存放目录
+      directory: logs
+    # tomcat的URI编码
+    uri-encoding: UTF-8
+
+spring:
+  #模板引擎配置
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+    # 禁用缓存 ---改动html即时刷新
+    cache: false
+    servlet:
+      content-type: text/html
+
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+
+  # 文件上传
+  servlet:
+    multipart:
+      # 单个文件大小
+      max-file-size:  5MB
+      # 设置总上传的文件大小
+      max-request-size:  10MB
+
+  #。。。。
+  devtools:
+    restart:
+      # 热部署开关
+      enabled: true
+
+  #缓存设置
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password: 123456
+    # 连接超时时长（毫秒）
+    timeout: 0
+    jedis:
+      pool:
+        # 连接池中的最大空闲连接
+        max-idle: 8
+        # 连接池中的最小空闲连接
+        min-idle: 0
+        # 连接池最大连接数（使用负值表示没有限制）
+        max-active: 8
+        # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-wait: -1
+
+
+  #静态文件配置
+  resources:
+    static-locations: classpath:/static,classpath:/META-INF/resources,classpath:/templates/,classpath:/XXXX/,file:/XXXX/
+  #jdbc配置  （47.98.151.13）
+  datasource:
+    url: jdbc:mysql://39.101.199.3:3306/wedoveDatabase?useUnicode=true&characterEncoding=UTF-8&useSSL=true&serverTimezone=Etc/GMT-8
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+#mybatis配置
+mybatis:
+  #映射文件路径
+  mapper-locations: classpath:mapper/*.xml
+  #模型所在的包名
+  type-aliases-package: com.mine.west.models
+  #dao类和实体类的位置
+  #project: src/main/java
+  #mapper.xml 文件的位置
+  #resources: src/main/resources

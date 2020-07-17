@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mine.west.dao.AccountoperationMapper">
+  <resultMap id="BaseResultMap" type="com.mine.west.models.Accountoperation">
+    <constructor>
+      <idArg column="aID" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="accountID" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="blogID" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="interest" javaType="java.lang.Float" jdbcType="REAL" />
+    </constructor>
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from accountoperation
+    where aID = #{aID,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.mine.west.models.Accountoperation">
+    insert into accountoperation (aID, accountID, blogID, 
+      interest)
+    values (#{aID,jdbcType=INTEGER}, #{accountID,jdbcType=INTEGER}, #{blogID,jdbcType=INTEGER}, 
+      #{interest,jdbcType=REAL})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.mine.west.models.Accountoperation">
+    update accountoperation
+    set accountID = #{accountID,jdbcType=INTEGER},
+      blogID = #{blogID,jdbcType=INTEGER},
+      interest = #{interest,jdbcType=REAL}
+    where aID = #{aID,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select aID, accountID, blogID, interest
+    from accountoperation
+    where aID = #{aID,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select aID, accountID, blogID, interest
+    from accountoperation
+  </select>
+</mapper>

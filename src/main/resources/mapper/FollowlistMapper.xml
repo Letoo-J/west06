@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mine.west.dao.FollowlistMapper">
+  <resultMap id="BaseResultMap" type="com.mine.west.models.Followlist">
+    <constructor>
+      <idArg column="fID" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="followID" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="fanID" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    </constructor>
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from followlist
+    where fID = #{fID,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.mine.west.models.Followlist">
+    insert into followlist (fID, followID, fanID
+      )
+    values (#{fID,jdbcType=INTEGER}, #{followID,jdbcType=INTEGER}, #{fanID,jdbcType=INTEGER}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.mine.west.models.Followlist">
+    update followlist
+    set followID = #{followID,jdbcType=INTEGER},
+      fanID = #{fanID,jdbcType=INTEGER}
+    where fID = #{fID,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select fID, followID, fanID
+    from followlist
+    where fID = #{fID,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select fID, followID, fanID
+    from followlist
+  </select>
+</mapper>

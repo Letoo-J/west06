@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mine.west.dao.RelayMapper">
+  <resultMap id="BaseResultMap" type="com.mine.west.models.Relay">
+    <constructor>
+      <idArg column="rID" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="accountID" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="blogID" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    </constructor>
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from relay
+    where rID = #{rID,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.mine.west.models.Relay">
+    insert into relay (rID, accountID, blogID
+      )
+    values (#{rID,jdbcType=INTEGER}, #{accountID,jdbcType=INTEGER}, #{blogID,jdbcType=INTEGER}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.mine.west.models.Relay">
+    update relay
+    set accountID = #{accountID,jdbcType=INTEGER},
+      blogID = #{blogID,jdbcType=INTEGER}
+    where rID = #{rID,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select rID, accountID, blogID
+    from relay
+    where rID = #{rID,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select rID, accountID, blogID
+    from relay
+  </select>
+</mapper>

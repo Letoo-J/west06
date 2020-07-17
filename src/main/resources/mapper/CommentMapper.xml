@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mine.west.dao.CommentMapper">
+  <resultMap id="BaseResultMap" type="com.mine.west.models.Comment">
+    <constructor>
+      <idArg column="commentID" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="blogID" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="accountID" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="likeNumber" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="receivedID" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="commentTime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="content" javaType="java.lang.String" jdbcType="LONGVARCHAR" />
+    </constructor>
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from comment
+    where commentID = #{commentID,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.mine.west.models.Comment">
+    insert into comment (commentID, blogID, accountID, 
+      likeNumber, receivedID, commentTime, 
+      content)
+    values (#{commentID,jdbcType=INTEGER}, #{blogID,jdbcType=INTEGER}, #{accountID,jdbcType=INTEGER}, 
+      #{likeNumber,jdbcType=INTEGER}, #{receivedID,jdbcType=INTEGER}, #{commentTime,jdbcType=TIMESTAMP}, 
+      #{content,jdbcType=LONGVARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.mine.west.models.Comment">
+    update comment
+    set blogID = #{blogID,jdbcType=INTEGER},
+      accountID = #{accountID,jdbcType=INTEGER},
+      likeNumber = #{likeNumber,jdbcType=INTEGER},
+      receivedID = #{receivedID,jdbcType=INTEGER},
+      commentTime = #{commentTime,jdbcType=TIMESTAMP},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where commentID = #{commentID,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select commentID, blogID, accountID, likeNumber, receivedID, commentTime, content
+    from comment
+    where commentID = #{commentID,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select commentID, blogID, accountID, likeNumber, receivedID, commentTime, content
+    from comment
+  </select>
+</mapper>

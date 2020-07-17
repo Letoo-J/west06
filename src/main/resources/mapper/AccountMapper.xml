@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mine.west.dao.AccountMapper">
+  <resultMap id="BaseResultMap" type="com.mine.west.models.Account">
+    <constructor>
+      <idArg column="accountID" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="name" javaType="java.lang.String" jdbcType="CHAR" />
+      <arg column="mailbox" javaType="java.lang.String" jdbcType="CHAR" />
+      <arg column="password" javaType="java.lang.String" jdbcType="CHAR" />
+      <arg column="nickname" javaType="java.lang.String" jdbcType="CHAR" />
+      <arg column="mobilePhone" javaType="java.lang.String" jdbcType="CHAR" />
+      <arg column="sex" javaType="java.lang.String" jdbcType="CHAR" />
+      <arg column="avatar" javaType="java.lang.String" jdbcType="CHAR" />
+      <arg column="individualitySignature" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="identity" javaType="java.lang.Byte" jdbcType="TINYINT" />
+    </constructor>
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from account
+    where accountID = #{accountID,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.mine.west.models.Account">
+    insert into account (accountID, "name", mailbox, 
+      "password", nickname, mobilePhone, 
+      sex, avatar, individualitySignature, 
+      "identity")
+    values (#{accountID,jdbcType=INTEGER}, #{name,jdbcType=CHAR}, #{mailbox,jdbcType=CHAR}, 
+      #{password,jdbcType=CHAR}, #{nickname,jdbcType=CHAR}, #{mobilePhone,jdbcType=CHAR}, 
+      #{sex,jdbcType=CHAR}, #{avatar,jdbcType=CHAR}, #{individualitySignature,jdbcType=VARCHAR}, 
+      #{identity,jdbcType=TINYINT})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.mine.west.models.Account">
+    update account
+    set "name" = #{name,jdbcType=CHAR},
+      mailbox = #{mailbox,jdbcType=CHAR},
+      "password" = #{password,jdbcType=CHAR},
+      nickname = #{nickname,jdbcType=CHAR},
+      mobilePhone = #{mobilePhone,jdbcType=CHAR},
+      sex = #{sex,jdbcType=CHAR},
+      avatar = #{avatar,jdbcType=CHAR},
+      individualitySignature = #{individualitySignature,jdbcType=VARCHAR},
+      "identity" = #{identity,jdbcType=TINYINT}
+    where accountID = #{accountID,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select accountID, "name", mailbox, "password", nickname, mobilePhone, sex, avatar, 
+    individualitySignature, "identity"
+    from account
+    where accountID = #{accountID,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select accountID, "name", mailbox, "password", nickname, mobilePhone, sex, avatar, 
+    individualitySignature, "identity"
+    from account
+  </select>
+</mapper>

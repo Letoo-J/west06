@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mine.west.dao.BlogMapper">
+  <resultMap id="BaseResultMap" type="com.mine.west.models.Blog">
+    <constructor>
+      <idArg column="blogID" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="accountID" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="releaseTime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="likeNumber" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="repostNumber" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="commentNumber" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="content" javaType="java.lang.String" jdbcType="LONGVARCHAR" />
+    </constructor>
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from blog
+    where blogID = #{blogID,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.mine.west.models.Blog">
+    insert into blog (blogID, accountID, releaseTime, 
+      likeNumber, repostNumber, commentNumber, 
+      content)
+    values (#{blogID,jdbcType=INTEGER}, #{accountID,jdbcType=INTEGER}, #{releaseTime,jdbcType=TIMESTAMP}, 
+      #{likeNumber,jdbcType=INTEGER}, #{repostNumber,jdbcType=INTEGER}, #{commentNumber,jdbcType=INTEGER}, 
+      #{content,jdbcType=LONGVARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.mine.west.models.Blog">
+    update blog
+    set accountID = #{accountID,jdbcType=INTEGER},
+      releaseTime = #{releaseTime,jdbcType=TIMESTAMP},
+      likeNumber = #{likeNumber,jdbcType=INTEGER},
+      repostNumber = #{repostNumber,jdbcType=INTEGER},
+      commentNumber = #{commentNumber,jdbcType=INTEGER},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where blogID = #{blogID,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select blogID, accountID, releaseTime, likeNumber, repostNumber, commentNumber, content
+    from blog
+    where blogID = #{blogID,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select blogID, accountID, releaseTime, likeNumber, repostNumber, commentNumber, content
+    from blog
+  </select>
+</mapper>
