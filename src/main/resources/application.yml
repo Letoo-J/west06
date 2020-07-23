@@ -1,28 +1,48 @@
-#¶Ë¿ÚºÅÅäÖÃ
+#å¼€å¯springbootçš„debugæ¨¡å¼
+#debug: true
+
+spring:
+  profiles:
+    #æ¿€æ´» 1.application-dev.yml é…ç½®æ–‡ä»¶çš„ä½¿ç”¨ï¼ˆæ­¤å¤„æ— ï¼‰OR 2.æ¿€æ´»ï¼šä¸‹æ–¹ç¬¬äºŒæ–‡æ¡£å¿«-devï¼‰
+    active: dev
+
+---
+#ç¬¬äºŒæ–‡æ¡£å¿«ï¼šå¼€å‘ç¯å¢ƒ----------------
+
+#ç«¯å£å·é…ç½®
 server:
   port: 8080
   servlet:
-    # Ó¦ÓÃµÄ·ÃÎÊÂ·¾¶
+    # åº”ç”¨çš„è®¿é—®è·¯å¾„
     context-path: /
   tomcat:
-    # ´æ·ÅTomcatµÄÈÕÖ¾Ä¿Â¼
+    # å­˜æ”¾Tomcatçš„æ—¥å¿—ç›®å½•
     basedir: C:/tomcat
     accesslog:
-      # ¿ªÆôÈÕÖ¾¼ÇÂ¼
+      # å¼€å¯æ—¥å¿—è®°å½•
       enabled: true
-      # ·ÃÎÊÈÕÖ¾´æ·ÅÄ¿Â¼
+      # è®¿é—®æ—¥å¿—å­˜æ”¾ç›®å½•
       directory: logs
-    # tomcatµÄURI±àÂë
+    # tomcatçš„URIç¼–ç 
     uri-encoding: UTF-8
 
+#æ—¥å¿—
+#logging:
+  #level:
+    # ä¿®æ”¹åŒ…-com.mine.west çš„æ—¥å¿—ç•Œåˆ«ä¸º trace
+    #com.mine.west: debug
+
 spring:
-  #Ä£°åÒıÇæÅäÖÃ
+  # å®šä¹‰ç¯å¢ƒï¼š devç¯å¢ƒ
+  profiles: dev
+
+  #æ¨¡æ¿å¼•æ“é…ç½®
   thymeleaf:
     prefix: classpath:/templates/
     suffix: .html
     mode: HTML
     encoding: UTF-8
-    # ½ûÓÃ»º´æ ---¸Ä¶¯html¼´Ê±Ë¢ĞÂ
+    # ç¦ç”¨ç¼“å­˜ ---æ”¹åŠ¨htmlå³æ—¶åˆ·æ–°
     cache: false
     servlet:
       content-type: text/html
@@ -31,56 +51,68 @@ spring:
     time-zone: GMT+8
     date-format: yyyy-MM-dd HH:mm:ss
 
-  # ÎÄ¼şÉÏ´«
+  # æ–‡ä»¶ä¸Šä¼ 
   servlet:
     multipart:
-      # µ¥¸öÎÄ¼ş´óĞ¡
+      # å•ä¸ªæ–‡ä»¶å¤§å°
       max-file-size:  5MB
-      # ÉèÖÃ×ÜÉÏ´«µÄÎÄ¼ş´óĞ¡
+      # è®¾ç½®æ€»ä¸Šä¼ çš„æ–‡ä»¶å¤§å°
       max-request-size:  10MB
 
-  #¡£¡£¡£¡£
+  #ã€‚ã€‚ã€‚ã€‚
   devtools:
     restart:
-      # ÈÈ²¿Êğ¿ª¹Ø
+      # çƒ­éƒ¨ç½²å¼€å…³
       enabled: true
 
-  #»º´æÉèÖÃ
+  #ç¼“å­˜è®¾ç½®
   redis:
     host: 127.0.0.1
     port: 6379
     password: 123456
-    # Á¬½Ó³¬Ê±Ê±³¤£¨ºÁÃë£©
+    # è¿æ¥è¶…æ—¶æ—¶é•¿ï¼ˆæ¯«ç§’ï¼‰
     timeout: 0
     jedis:
       pool:
-        # Á¬½Ó³ØÖĞµÄ×î´ó¿ÕÏĞÁ¬½Ó
+        # è¿æ¥æ± ä¸­çš„æœ€å¤§ç©ºé—²è¿æ¥
         max-idle: 8
-        # Á¬½Ó³ØÖĞµÄ×îĞ¡¿ÕÏĞÁ¬½Ó
+        # è¿æ¥æ± ä¸­çš„æœ€å°ç©ºé—²è¿æ¥
         min-idle: 0
-        # Á¬½Ó³Ø×î´óÁ¬½ÓÊı£¨Ê¹ÓÃ¸ºÖµ±íÊ¾Ã»ÓĞÏŞÖÆ£©
+        # è¿æ¥æ± æœ€å¤§è¿æ¥æ•°ï¼ˆä½¿ç”¨è´Ÿå€¼è¡¨ç¤ºæ²¡æœ‰é™åˆ¶ï¼‰
         max-active: 8
-        # Á¬½Ó³Ø×î´ó×èÈûµÈ´ıÊ±¼ä£¨Ê¹ÓÃ¸ºÖµ±íÊ¾Ã»ÓĞÏŞÖÆ£©
+        # è¿æ¥æ± æœ€å¤§é˜»å¡ç­‰å¾…æ—¶é—´ï¼ˆä½¿ç”¨è´Ÿå€¼è¡¨ç¤ºæ²¡æœ‰é™åˆ¶ï¼‰
         max-wait: -1
 
 
-  #¾²Ì¬ÎÄ¼şÅäÖÃ
+  #é™æ€æ–‡ä»¶é…ç½®
   resources:
     static-locations: classpath:/static,classpath:/META-INF/resources,classpath:/templates/,classpath:/XXXX/,file:/XXXX/
-  #jdbcÅäÖÃ  £¨47.98.151.13£©
+  #jdbcé…ç½®  ï¼ˆ39.101.199.3ï¼‰
   datasource:
     url: jdbc:mysql://39.101.199.3:3306/wedoveDatabase?useUnicode=true&characterEncoding=UTF-8&useSSL=true&serverTimezone=Etc/GMT-8
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
 
-#mybatisÅäÖÃ
+#mybatisé…ç½®
 mybatis:
-  #Ó³ÉäÎÄ¼şÂ·¾¶
+  #æ˜ å°„æ–‡ä»¶è·¯å¾„
   mapper-locations: classpath:mapper/*.xml
-  #Ä£ĞÍËùÔÚµÄ°üÃû
+  #æ¨¡å‹æ‰€åœ¨çš„åŒ…å
   type-aliases-package: com.mine.west.models
-  #daoÀàºÍÊµÌåÀàµÄÎ»ÖÃ
+  #daoç±»å’Œå®ä½“ç±»çš„ä½ç½®
   #project: src/main/java
-  #mapper.xml ÎÄ¼şµÄÎ»ÖÃ
+  #mapper.xml æ–‡ä»¶çš„ä½ç½®
   #resources: src/main/resources
+
+
+
+#---
+#ç¬¬ä¸‰æ–‡æ¡£å¿«
+
+#server:
+#  port: 8082
+#
+#spring:
+#  # å®šä¹‰ç¯å¢ƒï¼š devç¯å¢ƒ
+#  profiles: dev
