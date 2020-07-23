@@ -34,6 +34,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <optional>true</optional>
         </dependency>
         <!-- 日志相关依赖 ： -->
         <dependency>
@@ -112,6 +113,13 @@
             <artifactId>spring-boot-devtools</artifactId>
             <optional>true</optional>
             <!-- 表示依赖不会传递 -->
+        </dependency>
+
+        <!-- 处理Excel -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <!--<version>3.9</version>-->
         </dependency>
 
     </dependencies>

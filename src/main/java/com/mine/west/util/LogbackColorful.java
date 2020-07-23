@@ -5,7 +5,9 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.pattern.color.ANSIConstants;
 import ch.qos.logback.core.pattern.color.ForegroundCompositeConverterBase;
 
-
+/**
+ * logback日志自定义显示颜色
+ */
 public class LogbackColorful extends ForegroundCompositeConverterBase<ILoggingEvent> {
 
     @Override

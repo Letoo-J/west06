@@ -49,6 +49,7 @@ spring:
 
   jackson:
     time-zone: GMT+8
+    #把从前端得到的此格式数据 转换为date类型
     date-format: yyyy-MM-dd HH:mm:ss
 
   # 文件上传

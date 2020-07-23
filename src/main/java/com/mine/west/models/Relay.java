@@ -1,7 +1,10 @@
 package com.mine.west.models;
 
+import lombok.Builder;
+
 import java.io.Serializable;
 
+@Builder
 public class Relay implements Serializable {
     private Integer rID;
 

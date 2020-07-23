@@ -1,24 +1,32 @@
 package com.mine.west.models;
 
+import lombok.Builder;
+
 import java.io.Serializable;
 import java.util.Date;
 
+@Builder
 public class Blog implements Serializable {
-    private Integer blogID;
+    private Integer blogID;         //博客ID
 
-    private Integer accountID;
+    private Integer accountID;      //发布者ID
 
-    private Date releaseTime;
+    private Date releaseTime;       //发布时间
 
-    private Integer likeNumber;
+    private Integer likeNumber;     //点赞数
 
-    private Integer repostNumber;
+    private Integer repostNumber;   //转发数
 
-    private Integer commentNumber;
+    private Integer commentNumber;  //评论数
 
-    private String content;
+    private String content;         //博客内容
 
     private static final long serialVersionUID = 1L;
+
+    //测试
+    public Blog(Integer blogID) {
+        this.blogID = blogID;
+    }
 
     public Blog(Integer blogID, Integer accountID, Date releaseTime, Integer likeNumber, Integer repostNumber, Integer commentNumber, String content) {
         this.blogID = blogID;
@@ -95,7 +103,7 @@ public class Blog implements Serializable {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());
         sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
+        //sb.append("Hash = ").append(hashCode());
         sb.append(", blogID=").append(blogID);
         sb.append(", accountID=").append(accountID);
         sb.append(", releaseTime=").append(releaseTime);

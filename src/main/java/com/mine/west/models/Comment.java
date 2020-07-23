@@ -1,8 +1,11 @@
 package com.mine.west.models;
 
+import lombok.Builder;
+
 import java.io.Serializable;
 import java.util.Date;
 
+@Builder
 public class Comment implements Serializable {
     private Integer commentID;
 

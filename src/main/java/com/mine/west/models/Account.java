@@ -1,7 +1,23 @@
 package com.mine.west.models;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+
 import java.io.Serializable;
 
+/**lombok插件
+ *  @ AllArgsConstructor  产生全参构造函数（此处已有）
+ *  @ NoArgsConstructor   产生无参构造函数（此处已有）  */
+
+/** @ Builder :支持以下构造：
+ *  Account aaa = Account.builder()
+ *         .accountID("1")
+ *         .name("kobe")
+ *         .mailbox(39)
+ *         .......
+ *         .build();
+ */
+@Builder
 public class Account implements Serializable {
     private Integer accountID;
 
