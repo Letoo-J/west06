@@ -1,16 +1,22 @@
 package com.mine.west.controller;
 
 import com.mine.west.models.Blog;
+import com.mine.west.service.BlogService;
 import com.mine.west.util.AjaxResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.Date;
 
 @Slf4j
 @RestController
 @RequestMapping(value = "/user")
 public class BlogController {
+
+//    @Resource  //注入BlogService
+//    BlogService _blogServive;
 
     /**
      * 根据ID，查询一篇博客
@@ -51,6 +57,7 @@ public class BlogController {
     @RequestMapping(value = "/blogs",method = RequestMethod.POST)
     public AjaxResponse addBlog(@RequestBody Blog blog){
         //数据库操作：
+        //int num = _blogServive.addBlog(blog);
 
         //打印日志
         log.debug("post(新增)-blog："+blog);

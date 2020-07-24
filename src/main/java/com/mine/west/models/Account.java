@@ -5,7 +5,7 @@ import lombok.Builder;
 
 import java.io.Serializable;
 
-/**lombok插件
+/**lombok插件 :
  *  @ AllArgsConstructor  产生全参构造函数（此处已有）
  *  @ NoArgsConstructor   产生无参构造函数（此处已有）  */
 

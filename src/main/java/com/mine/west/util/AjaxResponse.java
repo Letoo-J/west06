@@ -1,5 +1,7 @@
 package com.mine.west.util;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,16 +18,20 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor  //全参构造函数
 @NoArgsConstructor   //无参构造函数 public AjaxResponse(){}
+@ApiModel(value = "Ajax通用响应数据结构类")
 public class AjaxResponse {
 
-    //请求是否成功
-    private boolean isok;
-    //状态码
-    private int code;   //200-成功 400-用户错误 500-后台错误
-    //提示信息
-    private String msg;
-    //返回数据
-    private Object data;
+    @ApiModelProperty(value="请求是否处理成功")
+    private boolean isok;   //请求是否成功
+
+    @ApiModelProperty(value="请求响应状态码",example="200、400、500")
+    private int code;       //状态码：200-成功 400-用户错误 500-后台错误
+
+    @ApiModelProperty(value="请求结果描述信息")
+    private String msg;     //提示信息
+
+    @ApiModelProperty(value="请求结果数据")
+    private Object data;    //返回数据
 
     public static AjaxResponse success(){
         AjaxResponse ajaxResponse = new AjaxResponse();
