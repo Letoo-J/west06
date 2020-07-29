@@ -1,6 +1,7 @@
 package com.mine.west.dao;
 
 import com.mine.west.models.Blog;
+
 import java.util.List;
 
 public interface BlogMapper {
@@ -13,4 +14,6 @@ public interface BlogMapper {
     List<Blog> selectAll();
 
     int updateByPrimaryKey(Blog record);
+
+    List<Blog> selectByAccountID(Integer accountID);
 }

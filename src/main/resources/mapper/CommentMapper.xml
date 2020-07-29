@@ -16,11 +16,11 @@
     delete from comment
     where commentID = #{commentID,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.mine.west.models.Comment">
-    insert into comment (commentID, blogID, accountID, 
+    <insert id="insert" parameterType="com.mine.west.models.Comment" useGeneratedKeys="true" keyProperty="commentID">
+    insert into comment (blogID, accountID,
       likeNumber, receivedID, commentTime, 
       content)
-    values (#{commentID,jdbcType=INTEGER}, #{blogID,jdbcType=INTEGER}, #{accountID,jdbcType=INTEGER}, 
+    values (#{blogID,jdbcType=INTEGER}, #{accountID,jdbcType=INTEGER},
       #{likeNumber,jdbcType=INTEGER}, #{receivedID,jdbcType=INTEGER}, #{commentTime,jdbcType=TIMESTAMP}, 
       #{content,jdbcType=LONGVARCHAR})
   </insert>
@@ -42,5 +42,10 @@
   <select id="selectAll" resultMap="BaseResultMap">
     select commentID, blogID, accountID, likeNumber, receivedID, commentTime, content
     from comment
+  </select>
+    <select id="selectByBlogID" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select commentID, blogID, accountID, likeNumber, receivedID, commentTime, content
+    from comment
+    where blogID = #{blogID,jdbcType=INTEGER}
   </select>
 </mapper>

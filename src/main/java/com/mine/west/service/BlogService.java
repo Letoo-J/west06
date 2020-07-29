@@ -1,7 +1,6 @@
 package com.mine.west.service;
 
 import com.mine.west.models.Blog;
-import org.springframework.stereotype.Service;
 
 public interface BlogService {
     /**
@@ -9,5 +8,5 @@ public interface BlogService {
      * @param blog
      * @return
      */
-    public int addBlog(Blog blog);
+    int addBlog(Blog blog);
 }
