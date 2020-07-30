@@ -14,13 +14,13 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import javax.annotation.Resource;
 
-//有问题！！！！！！！！！！
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+
+//有问题！！！！！！！！！！
 
 @Slf4j
 /** 当所测试代码有使用依赖注入时（@Resource / @Autowired）加上：
@@ -49,7 +49,7 @@ public class BlogControllerTest03 {
 
     @Test //测试方法
     public void addBlog() throws Exception{
-        String jsonBlog = "{\"blogID\":8,\"accountID\":2,\"releaseTime\":\"2020-07-24 21:05:54\",\n" +
+        String jsonBlog = "{\"blogID\":8,\"accountID\":1,\"releaseTime\":\"2020-07-24 21:05:54\",\n" +
             "\"likeNumber\":23,\"repostNumber\":110,\"commentNumber\":15,\"content\":\"test-Jackson...\"}";
 
         ObjectMapper mapper = new ObjectMapper();

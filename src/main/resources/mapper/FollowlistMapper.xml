@@ -12,10 +12,10 @@
     delete from followlist
     where fID = #{fID,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.mine.west.models.Followlist">
-    insert into followlist (fID, followID, fanID
+    <insert id="insert" parameterType="com.mine.west.models.Followlist" useGeneratedKeys="true" keyProperty="fID">
+    insert into followlist (followID, fanID
       )
-    values (#{fID,jdbcType=INTEGER}, #{followID,jdbcType=INTEGER}, #{fanID,jdbcType=INTEGER}
+    values (#{followID,jdbcType=INTEGER}, #{fanID,jdbcType=INTEGER}
       )
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.mine.west.models.Followlist">
@@ -32,5 +32,20 @@
   <select id="selectAll" resultMap="BaseResultMap">
     select fID, followID, fanID
     from followlist
+  </select>
+    <select id="readFollowAccount" resultMap="BaseResultMap">
+    select fID, followID, fanID
+    from followlist
+    where fanID = #{fanID,jdbcType=INTEGER}
+  </select>
+    <select id="readFanAccount" resultMap="BaseResultMap">
+    select fID, followID, fanID
+    from followlist
+    where followID = #{followID,jdbcType=INTEGER}
+  </select>
+    <select id="readOne" resultMap="BaseResultMap">
+    select fID, followID, fanID
+    from followlist
+    where followID = #{followID,jdbcType=INTEGER} and fanID = #{fanID,jdbcType=INTEGER}
   </select>
 </mapper>

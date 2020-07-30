@@ -90,7 +90,7 @@ spring:
     static-locations: classpath:/static,classpath:/META-INF/resources,classpath:/templates/,classpath:/XXXX/,file:/XXXX/
   #jdbc配置  （39.101.199.3）
   datasource:
-    url: jdbc:mysql://39.101.199.3:3306/wedoveDatabase?useUnicode=true&characterEncoding=UTF-8&useSSL=true&serverTimezone=Etc/GMT-8
+    url: jdbc:mysql://39.101.199.3:3306/wedoveDatabase?useUnicode=true&characterEncoding=UTF-8&useSSL=true&serverTimezone=Etc/GMT-8&tinyInt1isBit=false
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver

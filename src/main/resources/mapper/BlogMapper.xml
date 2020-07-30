@@ -16,11 +16,11 @@
     delete from blog
     where blogID = #{blogID,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.mine.west.models.Blog">
-    insert into blog (blogID, accountID, releaseTime, 
+    <insert id="insert" parameterType="com.mine.west.models.Blog" useGeneratedKeys="true" keyProperty="blogID">
+    insert into blog (accountID, releaseTime,
       likeNumber, repostNumber, commentNumber, 
       content)
-    values (#{blogID,jdbcType=INTEGER}, #{accountID,jdbcType=INTEGER}, #{releaseTime,jdbcType=TIMESTAMP}, 
+    values (#{accountID,jdbcType=INTEGER}, #{releaseTime,jdbcType=TIMESTAMP},
       #{likeNumber,jdbcType=INTEGER}, #{repostNumber,jdbcType=INTEGER}, #{commentNumber,jdbcType=INTEGER}, 
       #{content,jdbcType=LONGVARCHAR})
   </insert>
@@ -42,5 +42,10 @@
   <select id="selectAll" resultMap="BaseResultMap">
     select blogID, accountID, releaseTime, likeNumber, repostNumber, commentNumber, content
     from blog
+  </select>
+    <select id="selectByAccountID" resultMap="BaseResultMap">
+    select blogID, accountID, releaseTime, likeNumber, repostNumber, commentNumber, content
+    from blog
+    where accountID = #{accountID,jdbcType=INTEGER}
   </select>
 </mapper>
