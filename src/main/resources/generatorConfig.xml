@@ -42,7 +42,7 @@
         <!-- 【数据库连接信息】 -->
         <!-- 数据库连接配置的connectionURL不能直接使用&,需将“&”改为“&amp;”。。吐血 -->
         <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
-                        connectionURL="jdbc:mysql://39.101.199.3:3306/wedoveDatabase?useUnicode=true&amp;characterEncoding=UTF-8&amp;useSSL=true&amp;serverTimezone=GMT-8"
+                        connectionURL="jdbc:mysql://39.101.199.3:3306/wedoveDatabase?useUnicode=true&amp;characterEncoding=UTF-8&amp;useSSL=true&amp;serverTimezone=GMT-8&amp;tinyInt1isBit=false"
                         userId="root"
                         password="123456">
             <property name="nullCatalogMeansCurrent" value="true" />

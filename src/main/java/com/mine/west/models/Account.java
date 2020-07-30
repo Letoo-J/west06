@@ -1,6 +1,5 @@
 package com.mine.west.models;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 
 import java.io.Serializable;
@@ -37,11 +36,11 @@ public class Account implements Serializable {
 
     private String individualitySignature;
 
-    private Byte identity;
+    private String identity;
 
     private static final long serialVersionUID = 1L;
 
-    public Account(Integer accountID, String name, String mailbox, String password, String nickname, String mobilePhone, String sex, String avatar, String individualitySignature, Byte identity) {
+    public Account(Integer accountID, String name, String mailbox, String password, String nickname, String mobilePhone, String sex, String avatar, String individualitySignature, String identity) {
         this.accountID = accountID;
         this.name = name;
         this.mailbox = mailbox;
@@ -130,11 +129,11 @@ public class Account implements Serializable {
         this.individualitySignature = individualitySignature == null ? null : individualitySignature.trim();
     }
 
-    public Byte getIdentity() {
+    public String getIdentity() {
         return identity;
     }
 
-    public void setIdentity(Byte identity) {
+    public void setIdentity(String identity) {
         this.identity = identity;
     }
 

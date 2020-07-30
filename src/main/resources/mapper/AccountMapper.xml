@@ -12,7 +12,7 @@
       <arg column="sex" javaType="java.lang.String" jdbcType="CHAR" />
       <arg column="avatar" javaType="java.lang.String" jdbcType="CHAR" />
       <arg column="individualitySignature" javaType="java.lang.String" jdbcType="VARCHAR" />
-      <arg column="identity" javaType="java.lang.Byte" jdbcType="TINYINT" />
+        <arg column="identity" javaType="java.lang.String" jdbcType="INTEGER"/>
     </constructor>
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
@@ -27,7 +27,7 @@
     values (#{accountID,jdbcType=INTEGER}, #{name,jdbcType=CHAR}, #{mailbox,jdbcType=CHAR}, 
       #{password,jdbcType=CHAR}, #{nickname,jdbcType=CHAR}, #{mobilePhone,jdbcType=CHAR}, 
       #{sex,jdbcType=CHAR}, #{avatar,jdbcType=CHAR}, #{individualitySignature,jdbcType=VARCHAR}, 
-      #{identity,jdbcType=TINYINT})
+      #{identity,jdbcType=INTEGER})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.mine.west.models.Account">
     update account
@@ -39,7 +39,7 @@
       sex = #{sex,jdbcType=CHAR},
       avatar = #{avatar,jdbcType=CHAR},
       individualitySignature = #{individualitySignature,jdbcType=VARCHAR},
-      "identity" = #{identity,jdbcType=TINYINT}
+      "identity" = #{identity,jdbcType=INTEGER}
     where accountID = #{accountID,jdbcType=INTEGER}
   </update>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
