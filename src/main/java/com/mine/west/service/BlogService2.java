@@ -55,11 +55,12 @@ public interface BlogService2 {
     /**
      * 点赞
      *
+     * @param accountID
      * @param blogID
      * @return 当前点赞数
      * @throws ModelException
      */
-    int like(Integer blogID) throws ModelException;
+    int like(Integer accountID, Integer blogID) throws ModelException;
 
     /**
      * 转发

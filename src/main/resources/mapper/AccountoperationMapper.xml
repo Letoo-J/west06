@@ -14,9 +14,8 @@
     where aID = #{aID,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.mine.west.models.Accountoperation">
-    insert into accountoperation (aID, accountID, blogID, 
-      interest)
-    values (#{aID,jdbcType=INTEGER}, #{accountID,jdbcType=INTEGER}, #{blogID,jdbcType=INTEGER}, 
+    insert into accountoperation (accountID, blogID, interest)
+    values (#{accountID,jdbcType=INTEGER}, #{blogID,jdbcType=INTEGER},
       #{interest,jdbcType=REAL})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.mine.west.models.Accountoperation">
@@ -34,5 +33,10 @@
   <select id="selectAll" resultMap="BaseResultMap">
     select aID, accountID, blogID, interest
     from accountoperation
+  </select>
+    <select id="select" resultMap="BaseResultMap">
+    select aID, accountID, blogID, interest
+    from accountoperation
+    where accountID = #{accountID,jdbcType=INTEGER} and blogID = #{blogID,jdbcType=INTEGER}
   </select>
 </mapper>
