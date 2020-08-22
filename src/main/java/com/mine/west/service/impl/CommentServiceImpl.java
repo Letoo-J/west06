@@ -1,5 +1,6 @@
 package com.mine.west.service.impl;
 
+import com.mine.west.dao.AccountoperationMapper;
 import com.mine.west.dao.BlogMapper;
 import com.mine.west.dao.CommentMapper;
 import com.mine.west.exception.BlogException;
@@ -7,6 +8,7 @@ import com.mine.west.exception.CommentException;
 import com.mine.west.exception.ExceptionInfo;
 import com.mine.west.exception.ModelException;
 import com.mine.west.modelLegal.CommentLegal;
+import com.mine.west.models.Accountoperation;
 import com.mine.west.models.Blog;
 import com.mine.west.models.Comment;
 import com.mine.west.service.CommentService;
@@ -22,6 +24,10 @@ public class CommentServiceImpl implements CommentService {
     private CommentMapper commentMapper;
     @Autowired
     private BlogMapper blogMapper;
+    @Autowired
+    private AccountoperationMapper accountoperationMapper;
+
+    public static final float commentWeight = 4L;
 
     @Override
     public int create(Comment comment) throws ModelException {
@@ -33,6 +39,15 @@ public class CommentServiceImpl implements CommentService {
         blog.setCommentNumber(blog.getCommentNumber() + 1);
         blogMapper.updateByPrimaryKey(blog);
         commentMapper.insert(comment);
+
+        Accountoperation accountoperation = accountoperationMapper.select(comment.getAccountID(), comment.getBlogID());
+        if (accountoperation == null) {
+            accountoperationMapper.insert(new Accountoperation(0, comment.getAccountID(), comment.getBlogID(), commentWeight));
+        } else {
+            accountoperation.setInterest(accountoperation.getInterest() + commentWeight);
+            accountoperationMapper.updateByPrimaryKey(accountoperation);
+        }
+
         return comment.getCommentID();
     }
 
