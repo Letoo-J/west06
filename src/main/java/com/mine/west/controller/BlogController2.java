@@ -105,10 +105,11 @@ public class BlogController2 {
      * @param blogID
      * @return
      */
-    @PutMapping("/like/{blogID}")
-    public AjaxResponse like(@PathVariable("blogID") Integer blogID) {
+    @PutMapping("/like/{accountID}/{blogID}")
+    public AjaxResponse like(@PathVariable("accountID") Integer accountID,
+                             @PathVariable("blogID") Integer blogID) {
         try {
-            return AjaxResponse.success(blogService.like(blogID));
+            return AjaxResponse.success(blogService.like(accountID, blogID));
         } catch (ModelException e) {
             return new AjaxResponse(true, 400, e.getMessage(), null);
         }
