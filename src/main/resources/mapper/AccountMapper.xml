@@ -22,6 +22,7 @@
     delete from account
     where accountID = #{accountID,jdbcType=INTEGER}
   </delete>
+<<<<<<< HEAD
 
   <insert id="insertAccount" parameterType="com.mine.west.models.Account">
     insert into account
@@ -53,11 +54,23 @@
       <if test="salt != null and salt != '' ">#{salt},</if>
       <if test="role != null and role != '' ">#{role},</if>
     </trim>
+=======
+  <insert id="insert" parameterType="com.mine.west.models.Account">
+    insert into account (accountID, account.name, mailbox,
+      account.password, nickname, mobilePhone,
+      sex, avatar, individualitySignature, 
+      account.identity)
+    values (#{accountID,jdbcType=INTEGER}, #{name,jdbcType=CHAR}, #{mailbox,jdbcType=CHAR}, 
+      #{password,jdbcType=CHAR}, #{nickname,jdbcType=CHAR}, #{mobilePhone,jdbcType=CHAR}, 
+      #{sex,jdbcType=CHAR}, #{avatar,jdbcType=CHAR}, #{individualitySignature,jdbcType=VARCHAR}, 
+      #{identity,jdbcType=INTEGER})
+>>>>>>> 16335e4c16308fbe28b2fcb6a50239ef43436357
   </insert>
 
 
   <update id="updateByPrimaryKey" parameterType="com.mine.west.models.Account">
     update account
+<<<<<<< HEAD
     <set>
       <if test="accountID != null and accountID != 0">accountID = #{accountID},</if>
       <if test="name != null and name != ''">name = #{name},</if>
@@ -72,17 +85,34 @@
       <if test="salt != null and salt != '' ">salt = #{salt},</if>
       <if test="role != null and role != '' ">role = #{role},</if>
     </set>
+=======
+    set account.name = #{name,jdbcType=CHAR},
+      mailbox = #{mailbox,jdbcType=CHAR},
+      account.password = #{password,jdbcType=CHAR},
+      nickname = #{nickname,jdbcType=CHAR},
+      mobilePhone = #{mobilePhone,jdbcType=CHAR},
+      sex = #{sex,jdbcType=CHAR},
+      avatar = #{avatar,jdbcType=CHAR},
+      individualitySignature = #{individualitySignature,jdbcType=VARCHAR},
+      account.identity = #{identity,jdbcType=INTEGER}
+>>>>>>> 16335e4c16308fbe28b2fcb6a50239ef43436357
     where accountID = #{accountID,jdbcType=INTEGER}
   </update>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+<<<<<<< HEAD
     select accountID, "name", mailbox, "password", nickname, mobilePhone, sex, avatar,
     individualitySignature, "identity", salt, "role"
+=======
+    select accountID, account.name, mailbox, account.password, nickname, mobilePhone, sex, avatar,
+    individualitySignature, account.identity
+>>>>>>> 16335e4c16308fbe28b2fcb6a50239ef43436357
     from account
     where accountID = #{accountID,jdbcType=INTEGER}
   </select>
 
   <select id="selectAll" resultMap="BaseResultMap">
+<<<<<<< HEAD
     select accountID, "name", mailbox, "password", nickname, mobilePhone, sex, avatar,
     individualitySignature, "identity", salt, "role"
     from account
@@ -131,4 +161,22 @@
     left join sys_role r on r.role_id = ur.role_id
     -->
   </sql>
+=======
+    select accountID, account.name, mailbox, account.password, nickname, mobilePhone, sex, avatar,
+    individualitySignature, account.identity
+    from account
+  </select>
+    <select id="selectByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select accountID, account.name, mailbox, account.password, nickname, mobilePhone, sex, avatar,
+    individualitySignature, account.identity
+    from account
+    where account.name = #{name,jdbcType=CHAR}
+  </select>
+    <select id="selectByMailbox" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select accountID, account.name, mailbox, account.password, nickname, mobilePhone, sex, avatar,
+    individualitySignature, account.identity
+    from account
+    where mailbox = #{mailbox,jdbcType=CHAR}
+  </select>
+>>>>>>> 16335e4c16308fbe28b2fcb6a50239ef43436357
 </mapper>

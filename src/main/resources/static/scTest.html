@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>滑动验证码测试</title>
+    <link href="css/slider.css" rel="stylesheet">
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.1/jquery.min.js"></script>
+</head>
+<body>
+<div class="slide_img_content">
+    <img id="before_img" class="slide_img_mark" src="/defaultPicture/mark.png">
+    <img id="back_img" src="/defaultPicture/ori.png">
+</div>
+<div class="slider">
+    <div class="slider_arrow" onselectstart="return false;">
+        <img style="margin-top: 5px;" id="arrow_icon" src="/icon/right_arrow.png" draggable="false" width="30px"
+             height="30px">
+    </div>
+    <div class="slider_mask">
+    </div>
+    <span class="slider_tip" onselectstart="return false;">滑动来移动拼图</span>
+</div>
+<script src="js/slider.js"></script>
+</body>
+</html>
