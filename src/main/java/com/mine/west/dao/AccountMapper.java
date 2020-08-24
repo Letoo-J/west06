@@ -1,6 +1,7 @@
 package com.mine.west.dao;
 
 import com.mine.west.models.Account;
+
 import java.util.List;
 
 public interface AccountMapper {
@@ -13,4 +14,8 @@ public interface AccountMapper {
     List<Account> selectAll();
 
     int updateByPrimaryKey(Account record);
+
+    Account selectByName(String name);
+
+    Account selectByMailbox(String mailbox);
 }
