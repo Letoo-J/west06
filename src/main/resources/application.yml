@@ -9,9 +9,14 @@ spring:
 ---
 #第二文档快：开发环境----------------
 
-#端口号配置
+#HTTPS配置，和HTTP不可同时配置
 server:
-  port: 8080
+  port: 8443
+  ssl:
+    key-store: src/main/resources/tomcat.keystore
+    key-store-password: 123456
+    key-alias: tomcat
+    key-store-type: JKS
   servlet:
     # 应用的访问路径
     context-path: /
@@ -26,11 +31,12 @@ server:
     # tomcat的URI编码
     uri-encoding: UTF-8
 
-#日志
+    #日志
 #logging:
   #level:
     # 修改包-com.mine.west 的日志界别为 trace
     #com.mine.west: debug
+
 
 spring:
   # 定义环境： dev环境
@@ -117,3 +123,11 @@ mybatis:
 #spring:
 #  # 定义环境： dev环境
 #  profiles: dev
+
+#邮件配置
+email:
+  host: smtp.sina.com
+  from: xydflxy@sina.com
+  user: www.wedove.com
+  pwd: 2b0bbf79b6c62665
+
