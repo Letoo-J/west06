@@ -1,10 +1,11 @@
 package com.mine.west.dao;
 
 import com.mine.west.models.Followlist;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-
+@Mapper
 public interface FollowlistMapper {
     int deleteByPrimaryKey(Integer fID);
 

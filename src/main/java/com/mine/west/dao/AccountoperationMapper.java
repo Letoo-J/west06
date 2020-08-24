@@ -1,10 +1,11 @@
 package com.mine.west.dao;
 
 import com.mine.west.models.Accountoperation;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-
+@Mapper
 public interface AccountoperationMapper {
     int deleteByPrimaryKey(Integer aID);
 

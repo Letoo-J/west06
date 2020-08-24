@@ -16,8 +16,8 @@ import lombok.NoArgsConstructor;
  *  5.toString方法
  */
 @Data
-@AllArgsConstructor  //全参构造函数
-@NoArgsConstructor   //无参构造函数 public AjaxResponse(){}
+//@AllArgsConstructor  //全参构造函数
+//@NoArgsConstructor   //无参构造函数 public AjaxResponse(){}
 @ApiModel(value = "Ajax通用响应数据结构类")
 public class AjaxResponse {
 
@@ -33,11 +33,32 @@ public class AjaxResponse {
     @ApiModelProperty(value="请求结果数据")
     private Object data;    //返回数据
 
+    public AjaxResponse(){}
+    public AjaxResponse(Boolean isok, int code, String msg){
+        this.isok = isok;
+        this.code = code;
+        this.msg = msg;
+    }
+    public AjaxResponse(Boolean isok, int code, String msg, Object data){
+        this.isok = isok;
+        this.code = code;
+        this.msg = msg;
+        this.data = data;
+    }
+
     public static AjaxResponse success(){
         AjaxResponse ajaxResponse = new AjaxResponse();
         ajaxResponse.setIsok(true);
         ajaxResponse.setCode(200);
         ajaxResponse.setMsg("请求响应成功！");
+        return ajaxResponse;
+    }
+
+    public static AjaxResponse success(String msg){
+        AjaxResponse ajaxResponse = new AjaxResponse();
+        ajaxResponse.setIsok(true);
+        ajaxResponse.setCode(200);
+        ajaxResponse.setMsg(msg);
         return ajaxResponse;
     }
 
@@ -56,6 +77,23 @@ public class AjaxResponse {
         ajaxResponse.setCode(200);
         ajaxResponse.setMsg(msg);
         ajaxResponse.setData(obj);
+        return ajaxResponse;
+    }
+
+    public static AjaxResponse fail(int code, String msg){
+        AjaxResponse ajaxResponse = new AjaxResponse();
+        ajaxResponse.setIsok(false);
+        ajaxResponse.setCode(code);
+        ajaxResponse.setMsg(msg);
+        return ajaxResponse;
+    }
+
+    public static AjaxResponse fail(int code, String msg,Object data){
+        AjaxResponse ajaxResponse = new AjaxResponse();
+        ajaxResponse.setIsok(false);
+        ajaxResponse.setCode(code);
+        ajaxResponse.setMsg(msg);
+        ajaxResponse.setData(data);
         return ajaxResponse;
     }
 

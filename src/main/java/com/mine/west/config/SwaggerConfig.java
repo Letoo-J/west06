@@ -3,8 +3,10 @@ package com.mine.west.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
@@ -21,6 +23,7 @@ public class SwaggerConfig {
                 .title("springboot利用swagger构建api文档")
                 .description("简单优雅的restful风格")
                 .termsOfServiceUrl("http://www.west.com")
+                .contact(new Contact("ChaselX", "", ""))
                 .version("1.0")
                 .build();
     }
@@ -33,6 +36,7 @@ public class SwaggerConfig {
                 //扫描basePackage包下面的“/user/”路径下的所有controller的接口 内容作为接口文档构建的目标
                 .apis(RequestHandlerSelectors.basePackage("com.mine.west"))
 //                .paths(PathSelectors.regex("/user/.*"))
+                .paths(PathSelectors.any())
                 .build();
     }
 
