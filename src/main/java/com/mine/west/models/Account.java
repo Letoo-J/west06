@@ -36,11 +36,15 @@ public class Account implements Serializable {
 
     private String individualitySignature;
 
-    private String identity;
+    private Integer identity;
+
+    private String salt;
+
+    private String role;
 
     private static final long serialVersionUID = 1L;
 
-    public Account(Integer accountID, String name, String mailbox, String password, String nickname, String mobilePhone, String sex, String avatar, String individualitySignature, String identity) {
+    public Account(Integer accountID, String name, String mailbox, String password, String nickname, String mobilePhone, String sex, String avatar, String individualitySignature, Integer identity, String salt, String role) {
         this.accountID = accountID;
         this.name = name;
         this.mailbox = mailbox;
@@ -51,6 +55,8 @@ public class Account implements Serializable {
         this.avatar = avatar;
         this.individualitySignature = individualitySignature;
         this.identity = identity;
+        this.salt = salt;
+        this.role = role;
     }
 
     public Account() {
@@ -129,12 +135,28 @@ public class Account implements Serializable {
         this.individualitySignature = individualitySignature == null ? null : individualitySignature.trim();
     }
 
-    public String getIdentity() {
+    public Integer getIdentity() {
         return identity;
     }
 
-    public void setIdentity(String identity) {
+    public void setIdentity(Integer identity) {
         this.identity = identity;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt == null ? null : salt.trim();
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role == null ? null : role.trim();
     }
 
     @Override
@@ -153,6 +175,8 @@ public class Account implements Serializable {
         sb.append(", avatar=").append(avatar);
         sb.append(", individualitySignature=").append(individualitySignature);
         sb.append(", identity=").append(identity);
+        sb.append(", salt=").append(salt);
+        sb.append(", role=").append(role);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

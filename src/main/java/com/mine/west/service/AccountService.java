@@ -1,13 +1,10 @@
-package com.mine.west.dao;
+package com.mine.west.service;
 
 import com.mine.west.models.Account;
-import org.apache.ibatis.annotations.Mapper;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Mapper
-public interface AccountMapper {
+public interface AccountService {
     /**
      * 根据主键删除账户
      * @param accountID
@@ -73,14 +70,14 @@ public interface AccountMapper {
      * @param name 登录名称
      * @return 结果
      */
-    public int checkNameUnique(String name);
+    public String checkNameUnique(String name);
 
 
     /**
      * 校验 mailbox 是否唯一
      *
-     * @param mailbox 账户
+     * @param record 账户
      * @return 结果
      */
-    public Account checkMailboxUnique(String mailbox);
+    public String checkMailboxUnique(Account record);
 }
