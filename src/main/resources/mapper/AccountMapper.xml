@@ -20,10 +20,10 @@
     where accountID = #{accountID,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.mine.west.models.Account">
-    insert into account (accountID, "name", mailbox, 
-      "password", nickname, mobilePhone, 
+    insert into account (accountID, account.name, mailbox,
+      account.password, nickname, mobilePhone,
       sex, avatar, individualitySignature, 
-      "identity")
+      account.identity)
     values (#{accountID,jdbcType=INTEGER}, #{name,jdbcType=CHAR}, #{mailbox,jdbcType=CHAR}, 
       #{password,jdbcType=CHAR}, #{nickname,jdbcType=CHAR}, #{mobilePhone,jdbcType=CHAR}, 
       #{sex,jdbcType=CHAR}, #{avatar,jdbcType=CHAR}, #{individualitySignature,jdbcType=VARCHAR}, 
@@ -31,26 +31,38 @@
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.mine.west.models.Account">
     update account
-    set "name" = #{name,jdbcType=CHAR},
+    set account.name = #{name,jdbcType=CHAR},
       mailbox = #{mailbox,jdbcType=CHAR},
-      "password" = #{password,jdbcType=CHAR},
+      account.password = #{password,jdbcType=CHAR},
       nickname = #{nickname,jdbcType=CHAR},
       mobilePhone = #{mobilePhone,jdbcType=CHAR},
       sex = #{sex,jdbcType=CHAR},
       avatar = #{avatar,jdbcType=CHAR},
       individualitySignature = #{individualitySignature,jdbcType=VARCHAR},
-      "identity" = #{identity,jdbcType=INTEGER}
+      account.identity = #{identity,jdbcType=INTEGER}
     where accountID = #{accountID,jdbcType=INTEGER}
   </update>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select accountID, "name", mailbox, "password", nickname, mobilePhone, sex, avatar, 
-    individualitySignature, "identity"
+    select accountID, account.name, mailbox, account.password, nickname, mobilePhone, sex, avatar,
+    individualitySignature, account.identity
     from account
     where accountID = #{accountID,jdbcType=INTEGER}
   </select>
   <select id="selectAll" resultMap="BaseResultMap">
-    select accountID, "name", mailbox, "password", nickname, mobilePhone, sex, avatar, 
-    individualitySignature, "identity"
+    select accountID, account.name, mailbox, account.password, nickname, mobilePhone, sex, avatar,
+    individualitySignature, account.identity
     from account
+  </select>
+    <select id="selectByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select accountID, account.name, mailbox, account.password, nickname, mobilePhone, sex, avatar,
+    individualitySignature, account.identity
+    from account
+    where account.name = #{name,jdbcType=CHAR}
+  </select>
+    <select id="selectByMailbox" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select accountID, account.name, mailbox, account.password, nickname, mobilePhone, sex, avatar,
+    individualitySignature, account.identity
+    from account
+    where mailbox = #{mailbox,jdbcType=CHAR}
   </select>
 </mapper>
