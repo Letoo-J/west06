@@ -62,7 +62,7 @@ public class LoginServiceImpl {
         }
 
         //校验用户是否被禁用
-        if (!account.getIdentity().equals(0))
+        if (!account.getIdentity().equals("0"))
         {
             //return Result.of(8, "用户已被封禁！");
             throw new UserBlockedException();

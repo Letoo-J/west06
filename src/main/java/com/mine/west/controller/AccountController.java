@@ -39,9 +39,9 @@ public class AccountController {
      * @param rememberMe
      * @return
      */
-    @PostMapping("/login")
-    public AjaxResponse login(HttpSession session, String username, String password,
-                              @Param("rememberMe")String rememberMe){
+    @RequestMapping("/login")
+    public AjaxResponse login(HttpSession session, @Param("username")String username,
+                     @Param("password")String password, @Param("rememberMe")String rememberMe){
         boolean isRememberMe = false;
         if(rememberMe != null ) {
             isRememberMe = true;
@@ -54,7 +54,7 @@ public class AccountController {
         try {
             log.info("获取到信息，开始验证！！");
             //进行登录验证
-            subject.login(new UsernamePasswordToken(username,password));
+            subject.login(token);
             //获取登录的用户信息
             Account account = (Account) subject.getPrincipal();
             //登陆成功的话，用户信息放到session中
@@ -87,7 +87,7 @@ public class AccountController {
      * @param verifyInput
      * @return
      */
-    @PostMapping("/register")//注册
+    @RequestMapping("/register")
     public AjaxResponse register(String username,String password,String mail,String verifyInput){
 
         String verifyInput02 = verifyInput.toUpperCase(); //转换为大写
