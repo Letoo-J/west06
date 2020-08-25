@@ -1,11 +1,7 @@
 package com.mine.west.dao;
 
 import com.mine.west.models.Account;
-<<<<<<< HEAD
 import org.apache.ibatis.annotations.Mapper;
-import org.springframework.stereotype.Component;
-=======
->>>>>>> 16335e4c16308fbe28b2fcb6a50239ef43436357
 
 import java.util.List;
 
@@ -45,7 +41,6 @@ public interface AccountMapper {
      */
     List<Account> selectAll();
 
-<<<<<<< HEAD
     /**
      * 管理员：通过用户名/邮箱（模糊）查询账户
      *
@@ -87,11 +82,8 @@ public interface AccountMapper {
      * @return 结果
      */
     public Account checkMailboxUnique(String mailbox);
-=======
-    int updateByPrimaryKey(Account record);
 
     Account selectByName(String name);
 
     Account selectByMailbox(String mailbox);
->>>>>>> 16335e4c16308fbe28b2fcb6a50239ef43436357
 }
