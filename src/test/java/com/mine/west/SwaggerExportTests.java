@@ -1,3 +1,4 @@
+/*
 package com.mine.west;
 
 import io.github.swagger2markup.GroupBy;
@@ -37,3 +38,4 @@ public class SwaggerExportTests {
                 .toFile(Paths.get("src/main/resources/docs/asciidoc"));
     }
 }
+*/

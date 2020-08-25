@@ -1,3 +1,4 @@
+/*
 package com.mine.west.config;
 
 import org.springframework.context.annotation.Bean;
@@ -11,9 +12,11 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+*/
 /**
  * swagger配置文档
- */
+ *//*
+
 @Configuration
 @EnableSwagger2   //启用swagger-API文档
 public class SwaggerConfig {
@@ -42,3 +45,4 @@ public class SwaggerConfig {
 
 
 }
+*/
