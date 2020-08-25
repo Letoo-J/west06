@@ -54,6 +54,7 @@ public class UserRealm extends AuthorizingRealm {
         {
             //尝试登入！（里面进行 验证码、密码加盐校验）
             account = _loginService.login(username, password);
+            log.info("登录成功！");
             //uString = JSON.toJSONString(user);
         }
         catch (CaptchaException e) {

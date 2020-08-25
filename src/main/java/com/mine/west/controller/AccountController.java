@@ -1,6 +1,8 @@
 package com.mine.west.controller;
 
 import com.mine.west.config.shiro.AccountToken;
+import com.mine.west.email.MailboxVerificationUtil;
+import com.mine.west.exception.AccountException;
 import com.mine.west.models.Account;
 import com.mine.west.service.AccountService;
 import com.mine.west.service.impl.RegisterServiceImpl;
@@ -12,6 +14,7 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,9 +39,9 @@ public class AccountController {
      * @param rememberMe
      * @return
      */
-    @PostMapping("/login")
-    public AjaxResponse login(HttpSession session, String username, String password,
-                              @Param("rememberMe")String rememberMe){
+    @RequestMapping("/login")
+    public AjaxResponse login(HttpSession session, @Param("username")String username,
+                     @Param("password")String password, @Param("rememberMe")String rememberMe){
         boolean isRememberMe = false;
         if(rememberMe != null ) {
             isRememberMe = true;
@@ -51,7 +54,7 @@ public class AccountController {
         try {
             log.info("获取到信息，开始验证！！");
             //进行登录验证
-            subject.login(new UsernamePasswordToken(username,password));
+            subject.login(token);
             //获取登录的用户信息
             Account account = (Account) subject.getPrincipal();
             //登陆成功的话，用户信息放到session中
@@ -84,7 +87,7 @@ public class AccountController {
      * @param verifyInput
      * @return
      */
-    @PostMapping("/register")//注册
+    @RequestMapping("/register")
     public AjaxResponse register(String username,String password,String mail,String verifyInput){
 
         String verifyInput02 = verifyInput.toUpperCase(); //转换为大写
@@ -117,12 +120,12 @@ public class AccountController {
 
     /**
      * 验证邮箱是否存在
-     * @param mail
+     * @param mailBox
      * @return
      */
     @RequestMapping("/register/validateEMail")
-    public boolean validateEMail(@Param("mail") String mail){
-        Account u = _accountService.selectAccountByMailbox(mail);
+    public boolean validateEMail(@Param("mailBox") String mailBox){
+        Account u = _accountService.selectAccountByMailbox(mailBox);
         if(u == null){  //不存在此用户邮箱
             return true;
         }
@@ -141,5 +144,20 @@ public class AccountController {
             subject.logout(); //不为空，执行一次logout的操作，将session全部清空
         }
         return AjaxResponse.success("退出成功");   //重定向到“/login”
+    }
+
+    /**
+     * 向邮箱发送验证码
+     * @param mailBox
+     * @return
+     */
+    @GetMapping("/register/emaliVerification")
+    public AjaxResponse emaliVerification(@Param("mailBox") String mailBox){
+        try {
+            boolean b = MailboxVerificationUtil.sendEmail(mailBox);
+        } catch (AccountException e) {
+            e.printStackTrace();
+        }
+        return AjaxResponse.success("邮箱验证码发送成功！");
     }
 }

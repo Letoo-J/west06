@@ -9,6 +9,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import java.util.Properties;
+import org.apache.commons.codec.binary.Base64;
 
 public class BaseEmail {
     private static final String HOST = "smtp.sina.com";//smtp服务器
@@ -59,8 +60,9 @@ public class BaseEmail {
                 BodyPart messageBodyPart = new MimeBodyPart();
                 DataSource source = new FileDataSource(AFFIX);
                 messageBodyPart.setDataHandler(new DataHandler(source));//添加附件的内容
-                sun.misc.BASE64Encoder enc = new sun.misc.BASE64Encoder();//添加附件的标题
-                messageBodyPart.setFileName("=?GBK?B?" + enc.encode(AFFIXNAME.getBytes()) + "?=");
+                //sun.misc.BASE64Encoder enc = new sun.misc.BASE64Encoder();//添加附件的标题
+                //enc.encode(AFFIXNAME.getBytes()) + "?="
+                messageBodyPart.setFileName("=?GBK?B?" + Base64.decodeBase64(AFFIXNAME.getBytes())+ "?=");
                 multipart.addBodyPart(messageBodyPart);
             }
             message.setContent(multipart);//将multipart对象放到message中

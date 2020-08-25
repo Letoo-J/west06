@@ -6,6 +6,8 @@ import java.util.UUID;
 
 import com.mine.west.constant.AccountConstants;
 import com.mine.west.dao.AccountMapper;
+import com.mine.west.email.MailboxVerificationUtil;
+import com.mine.west.exception.AccountException;
 import com.mine.west.models.Account;
 import com.mine.west.service.AccountService;
 import com.mine.west.util.SaltUtils;
@@ -29,13 +31,15 @@ public class RegisterServiceImpl {
 
         Map<String, Object> map = new HashMap();
 
+        boolean b = false;
         // 验证码校验
-        String verifyCode = (String) ServletUtils.getRequest().getSession().getAttribute("verifyCode");
-        System.out.println("后端验证码verifyCode:  "+verifyCode);
-        if (!StringUtils.isEmpty(verifyCode)){
-            if(!verifyInput.equals(verifyCode)) {
-                return "验证码不正确";
-            }
+        try {
+            b = MailboxVerificationUtil.verificationCodeIsLegal(verifyInput,mail);
+        } catch (AccountException e) {
+            e.printStackTrace();
+        }
+        if(!b){  //校验不成功
+            return "验证码不正确";
         }
 
         // 用户名或密码为空 错误

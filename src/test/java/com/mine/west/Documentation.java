@@ -1,3 +1,4 @@
+/*
 package com.mine.west;
 
 import io.github.robwin.markup.builder.MarkupLanguage;
@@ -21,10 +22,12 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.context.WebApplicationContext;
 import springfox.documentation.staticdocs.SwaggerResultHandler;
 
+*/
 /**
- * @author ChaselX
- * @date 2019/1/29 13:02
- */
+ * @author
+ * @date
+ *//*
+
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs(outputDir = "target/generated-snippets")
 @RunWith(SpringRunner.class)
@@ -72,4 +75,4 @@ public class Documentation {
             Assert.fail();
         }
     }
-}
+}*/
