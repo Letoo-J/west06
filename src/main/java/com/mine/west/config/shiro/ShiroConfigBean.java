@@ -71,6 +71,7 @@ public class ShiroConfigBean {
         //filterChainDefinitionMap.put("/**", "authc");
         //其他资源都需要认证  authc 表示需要认证才能进行访问; user表示配置'记住我'或'认证通过'可以访问的地址
         filterChainDefinitionMap.put("/**","authc" );//"kickout,user"
+//        filterChainDefinitionMap.put("/**", "anon");//"kickout,user"
 
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
 

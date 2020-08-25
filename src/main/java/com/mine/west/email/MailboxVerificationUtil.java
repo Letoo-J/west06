@@ -12,26 +12,25 @@ import java.util.Random;
 
 public class MailboxVerificationUtil {
     private static final long MAX_TIME = 8 * 60 * 1000L;
-    private static final String ORI_CODE = "ABCDEFGHJKMNPQRSTUVWXY023456789abcdefghjkmnprstuvwxy";
+    private static final String ORI_CODE = "ABCDEFGHJKMNPQRSTUVWXY023456789";
 
     private static Map<String, VerificationCode> stringVerificationCodeMap = new HashMap<>();
 
     /**
      * 发送验证码
      *
-     * @param address   对方邮箱地址
-     * @param accountID
+     * @param address
      * @return
      * @throws AccountException
      */
-    public static boolean sendEmail(String address, Integer accountID) throws AccountException {
+    public static boolean sendEmail(String address) throws AccountException {
         if (BaseLegal.stringIsEmpty(address))
             throw new AccountException(ExceptionInfo.ACCOUNT_EMAIL_EMPTY);
-        if (AccountLegal.emailLegal(address))
+        if (!AccountLegal.emailLegal(address))
             throw new AccountException(ExceptionInfo.ACCOUNT_EMAIL_ILLEGAL);
 
-        String code = getCode();
-        stringVerificationCodeMap.put(code, new VerificationCode(accountID, new Date((new Date()).getTime() + MAX_TIME)));
+        String code = getCode().toUpperCase();
+        stringVerificationCodeMap.put(code, new VerificationCode(address, new Date((new Date()).getTime() + MAX_TIME)));
 
         String context = "您的邮箱验证码为：\n" + code + "\n" + "有效时间为：" + (MAX_TIME / (60 * 1000L)) + "分钟";
         BaseEmail.send(context, new String[]{address}, null, null, "邮箱验证");
@@ -43,15 +42,16 @@ public class MailboxVerificationUtil {
      * 验证验证码
      *
      * @param code
-     * @param accountID
+     * @param mailbox
      * @return
      * @throws AccountException
      */
-    public static boolean verificationCodeIsLegal(String code, Integer accountID) throws AccountException {
+    public static boolean verificationCodeIsLegal(String code, String mailbox) throws AccountException {
+        code = code.toUpperCase();
         if (BaseLegal.stringIsEmpty(code))
             throw new AccountException(ExceptionInfo.EMAIL_CODE_EMPTY);
         VerificationCode vc = stringVerificationCodeMap.get(code);
-        if ((vc == null) || (!vc.getAccountID().equals(accountID)) || (vc.getEffectiveTime().before(new Date())))
+        if ((vc == null) || (!vc.getMailbox().equals(mailbox)) || (vc.getEffectiveTime().before(new Date())))
             throw new AccountException(ExceptionInfo.EMAIL_CODE_ILLEGAL);
         return true;
     }

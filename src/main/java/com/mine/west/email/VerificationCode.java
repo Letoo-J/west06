@@ -10,6 +10,6 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class VerificationCode {
-    private Integer accountID;
+    private String mailbox;
     private Date effectiveTime;
 }
