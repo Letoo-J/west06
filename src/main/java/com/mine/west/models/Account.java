@@ -36,7 +36,7 @@ public class Account implements Serializable {
 
     private String individualitySignature;
 
-    private Integer identity;
+    private String identity;
 
     private String salt;
 
@@ -44,7 +44,7 @@ public class Account implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public Account(Integer accountID, String name, String mailbox, String password, String nickname, String mobilePhone, String sex, String avatar, String individualitySignature, Integer identity, String salt, String role) {
+    public Account(Integer accountID, String name, String mailbox, String password, String nickname, String mobilePhone, String sex, String avatar, String individualitySignature, String identity, String salt, String role) {
         this.accountID = accountID;
         this.name = name;
         this.mailbox = mailbox;
@@ -135,11 +135,11 @@ public class Account implements Serializable {
         this.individualitySignature = individualitySignature == null ? null : individualitySignature.trim();
     }
 
-    public Integer getIdentity() {
+    public String getIdentity() {
         return identity;
     }
 
-    public void setIdentity(Integer identity) {
+    public void setIdentity(String identity) {
         this.identity = identity;
     }
 
