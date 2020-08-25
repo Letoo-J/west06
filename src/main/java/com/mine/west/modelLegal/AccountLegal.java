@@ -8,12 +8,13 @@ public class AccountLegal extends BaseLegal {
     }
 
     public static boolean emailLegal(String email) {
-        if (stringIsEmpty(email))
-            return true;
-        if (emailRegex.matches(email) || email.matches(emailRegex))
-            return true;
-        else
-            return false;
+        return true;
+//        if (stringIsEmpty(email))
+//            return true;
+//        if (emailRegex.matches(email) || email.matches(emailRegex))
+//            return true;
+//        else
+//            return false;
     }
 
     public static boolean phoneLegal(String phone) {

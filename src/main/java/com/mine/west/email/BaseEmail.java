@@ -1,7 +1,5 @@
 package com.mine.west.email;
 
-import org.springframework.beans.factory.annotation.Value;
-
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
@@ -13,17 +11,10 @@ import javax.mail.internet.MimeMultipart;
 import java.util.Properties;
 
 public class BaseEmail {
-    @Value("${email.host}")
-    private static String HOST;//smtp服务器
-
-    @Value("${email.from}")
-    private static String FROM;//发件人地址
-
-    @Value("${email.user}")
-    private static String USER;//用户名
-
-    @Value("${email.pwd}")
-    private static String PWD;//授权码
+    private static final String HOST = "smtp.sina.com";//smtp服务器
+    private static final String FROM = "xydflxy@sina.com";//发件人地址
+    private static final String USER = "xydflxy@sina.com";//用户名
+    private static final String PWD = "2b0bbf79b6c62665";//授权码
 
     private static String AFFIX;//附件地址
     private static String AFFIXNAME;//附件名称
@@ -33,11 +24,11 @@ public class BaseEmail {
     /**
      * 用于发送邮件
      *
-     * @param context   邮件内容
-     * @param tos       收件人数组
-     * @param affix     附件地址
+     * @param context 邮件内容
+     * @param tos 收件人数组
+     * @param affix 附件地址
      * @param affixName 附件名称
-     * @param title     邮件标题
+     * @param title 邮件标题
      */
     public static void send(String context, String[] tos, String affix, String affixName, String title) {
         if (tos != null)
