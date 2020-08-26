@@ -1,5 +1,6 @@
 package com.mine.west.util;
 
+import com.mine.west.constant.ResultStatusCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -94,6 +95,14 @@ public class AjaxResponse {
         ajaxResponse.setCode(code);
         ajaxResponse.setMsg(msg);
         ajaxResponse.setData(data);
+        return ajaxResponse;
+    }
+
+    public static AjaxResponse fail(ResultStatusCode resultStatusCode,String msg) {
+        AjaxResponse ajaxResponse = new AjaxResponse();
+        ajaxResponse.setIsok(false);
+        ajaxResponse.setCode(resultStatusCode.getCode());
+        ajaxResponse.setMsg(msg);
         return ajaxResponse;
     }
 

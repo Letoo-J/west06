@@ -39,6 +39,45 @@ public class UserRealm extends AuthorizingRealm {
     }
 
     /**
+     *  授权
+     * @param principals
+     * @return
+     */
+    @Override
+    protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
+        log.info("---------------- 执行 Shiro 权限获取 ---------------------");
+
+        //获取身份信息
+        String primaryPrincipal = (String) principals.getPrimaryPrincipal();
+        log.info("doGetAuthorizationInfo()调用授权验证: "+primaryPrincipal);
+        //根据主身份信息(用户名)获取角色 和 权限信息
+        Account account = _accountService.findRolesByName(primaryPrincipal);
+
+        //授权角色信息
+        if(!CollectionUtils.isEmpty(account.getRoles())){
+            SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
+            account.getRoles().forEach(role->{
+                simpleAuthorizationInfo.addRole(role.getRoleName());
+                //权限信息(当前role)
+                List<Pers> perms1 = _accountService.findPermsByRoleId(role.getRoleID());
+                HashSet<Pers> perms2 = new HashSet<Pers>(perms1);
+                if(!CollectionUtils.isEmpty(perms2)){
+                    perms2.forEach(perm->{
+                        simpleAuthorizationInfo.addStringPermission(perm.getPersName());
+                    });
+                }
+            });
+            log.info("---------------- 获取到以下角色 ----------------");
+            log.info(simpleAuthorizationInfo.getRoles().toString());
+            log.info("---------------- 获取到以下权限 ----------------");
+            log.info(simpleAuthorizationInfo.getStringPermissions().toString());
+            log.info("---------------- Shiro 权限获取成功 ----------------------");
+            return simpleAuthorizationInfo;
+        }
+        return null;
+    }
+
+    /**
      *  认证
      *  参数：AuthenticationToken是从表单穿过来封装好的对象
      * @param token
@@ -47,6 +86,7 @@ public class UserRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
+        log.info("---------------- 执行 Shiro 凭证认证 ----------------------");
         log.info("认证-doGetAuthenticationInfo():" + token);
 
         // 将AuthenticationToken强转为AuthenticationToken对象
@@ -92,47 +132,16 @@ public class UserRealm extends AuthorizingRealm {
             throw new AuthenticationException(e.getMessage(), e);
         }
 
+        log.info("---------------- Shiro 凭证认证成功 ----------------------");
         // 创建SimpleAuthenticationInfo对象，并且把account和password等信息封装到里面
         // 用户密码的比对是Shiro帮我们完成的
         // getName()：当前realm对象的名称，调用分类的getName()
         //传入Account信息,返回数据库查询到的信息
         SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(account, account.getPassword(),
-                                                ByteSource.Util.bytes(account.getSalt()), getName());
+                ByteSource.Util.bytes(account.getSalt()), getName());
         return info;
     }
 
-
-    /**
-     *  授权
-     * @param principals
-     * @return
-     */
-    @Override
-    protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-        //获取身份信息
-        String primaryPrincipal = (String) principals.getPrimaryPrincipal();
-        log.info("doGetAuthorizationInfo()调用授权验证: "+primaryPrincipal);
-        //根据主身份信息(用户名)获取角色 和 权限信息
-        Account account = _accountService.findRolesByName(primaryPrincipal);
-
-        //授权角色信息
-        if(!CollectionUtils.isEmpty(account.getRoles())){
-            SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
-            account.getRoles().forEach(role->{
-                simpleAuthorizationInfo.addRole(role.getRoleName());
-                //权限信息(当前role)
-                List<Pers> perms1 = _accountService.findPermsByRoleId(role.getRoleID());
-                HashSet<Pers> perms2 = new HashSet<Pers>(perms1);
-                if(!CollectionUtils.isEmpty(perms2)){
-                    perms2.forEach(perm->{
-                        simpleAuthorizationInfo.addStringPermission(perm.getPersName());
-                    });
-                }
-            });
-            return simpleAuthorizationInfo;
-        }
-        return null;
-    }
 
 
     /**

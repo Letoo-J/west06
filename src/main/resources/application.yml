@@ -112,7 +112,51 @@ mybatis:
   #mapper.xml 文件的位置
   #resources: src/main/resources
 
+# Shiro
+shiro:
+  user:
+    # 登录地址
+    loginUrl: /account/login
+    # 权限认证失败地址
+    unauthorizedUrl: account/unauth
+    #被踢出后重定向到的地址
+    kickoutUrl: /account/login
+    # 首页地址
+    indexUrl: /index
+    # 验证码开关
+    captchaEnabled: false
+    # 验证码类型 char
+    captchaType: char
+  cookie:
+    # 设置Cookie的域名 默认空，即当前访问的域名
+    domain:
+    # 设置cookie的有效访问路径
+    path: /
+    # 设置HttpOnly属性
+    httpOnly: true
+    # 设置Cookie的过期时间，天为单位
+    maxAge: 15
+  session:
+    # Session超时时间，-1代表永不过期（默认30分钟）
+    expireTime: 30
+    # 同步session到数据库的周期（默认1分钟）
+    dbSyncPeriod: 1
+    # 相隔多久检查一次session的有效性，默认就是10分钟
+    validationInterval: 10
+    # 同一个用户最大会话数，比如2的意思是同一个账号允许最多同时两个人登录（默认-1不限制）
+    maxSession: 1
+    # 踢出之前登录的/之后登录的用户，默认踢出之前登录的用户
+    kickoutAfter: false
+    # 过期时间(秒)
+    timeout: 7200
 
+
+#邮件配置
+email:
+  host: smtp.sina.com
+  from: xydflxy@sina.com
+  user: www.wedove.com
+  pwd: 2b0bbf79b6c62665
 
 #---
 #第三文档快
@@ -124,10 +168,5 @@ mybatis:
 #  # 定义环境： dev环境
 #  profiles: dev
 
-#邮件配置
-email:
-  host: smtp.sina.com
-  from: xydflxy@sina.com
-  user: www.wedove.com
-  pwd: 2b0bbf79b6c62665
+
 
