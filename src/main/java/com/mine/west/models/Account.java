@@ -3,6 +3,7 @@ package com.mine.west.models;
 import lombok.Builder;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**lombok插件 :
  *  @ AllArgsConstructor  产生全参构造函数（此处已有）
@@ -44,6 +45,9 @@ public class Account implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    //定义角色集合
+    private List<Roles> roles;
+
     public Account(Integer accountID, String name, String mailbox, String password, String nickname, String mobilePhone, String sex, String avatar, String individualitySignature, String identity, String salt, String role) {
         this.accountID = accountID;
         this.name = name;
@@ -57,6 +61,23 @@ public class Account implements Serializable {
         this.identity = identity;
         this.salt = salt;
         this.role = role;
+    }
+
+    public Account(Integer accountID, String name, String mailbox, String password, String nickname, String mobilePhone,
+                   String sex, String avatar, String individualitySignature, String identity, String salt, String role,List<Roles> roles) {
+        this.accountID = accountID;
+        this.name = name;
+        this.mailbox = mailbox;
+        this.password = password;
+        this.nickname = nickname;
+        this.mobilePhone = mobilePhone;
+        this.sex = sex;
+        this.avatar = avatar;
+        this.individualitySignature = individualitySignature;
+        this.identity = identity;
+        this.salt = salt;
+        this.role = role;
+        this.roles = roles;
     }
 
     public Account() {
@@ -159,6 +180,14 @@ public class Account implements Serializable {
         this.role = role == null ? null : role.trim();
     }
 
+    public List<Roles> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Roles> roles) {
+        this.roles = roles;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -177,7 +206,7 @@ public class Account implements Serializable {
         sb.append(", identity=").append(identity);
         sb.append(", salt=").append(salt);
         sb.append(", role=").append(role);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
+        sb.append(", List<Roles>=").append(roles);
         sb.append("]");
         return sb.toString();
     }

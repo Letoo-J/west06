@@ -39,7 +39,7 @@ public class AccountController {
      * @param rememberMe
      * @return
      */
-    @RequestMapping("/login")
+    @PostMapping("/login")
     public AjaxResponse login(HttpSession session, @Param("username")String username,
                      @Param("password")String password, @Param("rememberMe")String rememberMe){
         boolean isRememberMe = false;
@@ -87,7 +87,7 @@ public class AccountController {
      * @param verifyInput
      * @return
      */
-    @RequestMapping("/register")
+    @PostMapping("/register")
     public AjaxResponse register(String username,String password,String mail,String verifyInput){
 
         String verifyInput02 = verifyInput.toUpperCase(); //转换为大写
@@ -109,7 +109,7 @@ public class AccountController {
      *     对应前端的remote中的URL地址
      *     远程地址只能输出 "true" 或 "false"，不能有其他输出!
      */
-    @RequestMapping("/register/validateUsername")
+    @GetMapping("/register/validateUsername")
     public boolean validateUsername(@Param("username") String username){
         Account u = _accountService.selectAccountByName(username);
         if(u == null){  //不存在此用户名
@@ -123,7 +123,7 @@ public class AccountController {
      * @param mailBox
      * @return
      */
-    @RequestMapping("/register/validateEMail")
+    @GetMapping("/register/validateEMail")
     public boolean validateEMail(@Param("mailBox") String mailBox){
         Account u = _accountService.selectAccountByMailbox(mailBox);
         if(u == null){  //不存在此用户邮箱
@@ -137,7 +137,7 @@ public class AccountController {
      * 退出系统
      * @return
      */
-    @RequestMapping("/logout")
+    @PostMapping("/logout")
     public AjaxResponse logout(){
         Subject subject = SecurityUtils.getSubject();//取出当前验证主体
         if (subject != null) {

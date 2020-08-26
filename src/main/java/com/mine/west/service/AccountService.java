@@ -1,6 +1,7 @@
 package com.mine.west.service;
 
 import com.mine.west.models.Account;
+import com.mine.west.models.Pers;
 
 import java.util.List;
 
@@ -80,4 +81,18 @@ public interface AccountService {
      * @return 结果
      */
     public String checkMailboxUnique(Account record);
+
+    /**
+     * 根据用户名查询所有角色
+     * @param username
+     * @return
+     */
+    Account findRolesByName(String username);
+
+    /**
+     * 根据角色id查询权限集合
+     * @param id
+     * @return
+     */
+    List<Pers> findPermsByRoleId(Integer id);
 }

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mine.west.dao.RolePersMapper">
+  <resultMap id="BaseResultMap" type="com.mine.west.models.RolePers">
+    <constructor>
+      <idArg column="rpID" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="roleID" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="persID" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    </constructor>
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from role_pers
+    where rpID = #{rpID,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.mine.west.models.RolePers">
+    insert into role_pers (rpID, roleID, persID
+      )
+    values (#{rpID,jdbcType=INTEGER}, #{roleID,jdbcType=INTEGER}, #{persID,jdbcType=INTEGER}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.mine.west.models.RolePers">
+    update role_pers
+    set roleID = #{roleID,jdbcType=INTEGER},
+      persID = #{persID,jdbcType=INTEGER}
+    where rpID = #{rpID,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select rpID, roleID, persID
+    from role_pers
+    where rpID = #{rpID,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select rpID, roleID, persID
+    from role_pers
+  </select>
+</mapper>

@@ -1,6 +1,7 @@
 package com.mine.west.dao;
 
 import com.mine.west.models.Account;
+import com.mine.west.models.Pers;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -86,4 +87,11 @@ public interface AccountMapper {
     Account selectByName(String name);
 
     Account selectByMailbox(String mailbox);
+
+    /**
+     * 根据用户名查询所有角色
+     * @param username
+     * @return
+     */
+    Account findRolesByName(String username);
 }

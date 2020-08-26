@@ -109,7 +109,7 @@
         </table> -->
 
 
-        <table tableName="account">
+        <!--<table tableName="account">
             <property name="useActualColumnNames" value="true"/>
         </table>
         <table tableName="accountoperation">
@@ -129,7 +129,19 @@
         </table>
         <table tableName="relay">
             <property name="useActualColumnNames" value="true"/>
+        </table>-->
+        <!--<table tableName="roles" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">
+            <property name="useActualColumnNames" value="true" />
         </table>
+        <table tableName="pers" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">
+            <property name="useActualColumnNames" value="true" />
+        </table>
+        <table tableName="role_pers" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">
+            <property name="useActualColumnNames" value="true" />
+        </table>
+        <table tableName="account_role" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">
+            <property name="useActualColumnNames" value="true" />
+        </table>-->
 
     </context>
 </generatorConfiguration>

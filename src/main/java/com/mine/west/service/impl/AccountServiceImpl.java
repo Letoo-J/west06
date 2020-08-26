@@ -2,7 +2,9 @@ package com.mine.west.service.impl;
 
 import com.mine.west.constant.AccountConstants;
 import com.mine.west.dao.AccountMapper;
+import com.mine.west.dao.PersMapper;
 import com.mine.west.models.Account;
+import com.mine.west.models.Pers;
 import com.mine.west.service.AccountService;
 import com.mine.west.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     private AccountMapper accountMapper;
+
+    @Autowired
+    private PersMapper persMapper;
 
     @Override
     public int deleteByPrimaryKey(Integer accountID) {
@@ -75,6 +80,16 @@ public class AccountServiceImpl implements AccountService {
             return AccountConstants.USER_EMAIL_NOT_UNIQUE;  //1
         }
         return AccountConstants.USER_EMAIL_UNIQUE;  //0
+    }
+
+    @Override
+    public Account findRolesByName(String username) {
+        return accountMapper.findRolesByName(username);
+    }
+
+    @Override
+    public List<Pers> findPermsByRoleId(Integer id) {
+        return persMapper.findPermsByRoleId(id);
     }
 
 }
