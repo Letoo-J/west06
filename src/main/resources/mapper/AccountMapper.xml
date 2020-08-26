@@ -18,6 +18,28 @@
     </constructor>
   </resultMap>
 
+  <resultMap id="AccountMap" type="com.mine.west.models.Account">
+    <constructor>
+      <idArg column="accountID" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="name" javaType="java.lang.String" jdbcType="CHAR" />
+      <arg column="mailbox" javaType="java.lang.String" jdbcType="CHAR" />
+      <arg column="password" javaType="java.lang.String" jdbcType="CHAR" />
+      <arg column="nickname" javaType="java.lang.String" jdbcType="CHAR" />
+      <arg column="mobilePhone" javaType="java.lang.String" jdbcType="CHAR" />
+      <arg column="sex" javaType="java.lang.String" jdbcType="CHAR" />
+      <arg column="avatar" javaType="java.lang.String" jdbcType="CHAR" />
+      <arg column="individualitySignature" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="identity" javaType="java.lang.String" jdbcType="INTEGER"/>
+      <arg column="salt" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="role" javaType="java.lang.String" jdbcType="VARCHAR" />
+    </constructor>
+    <!--角色信息【集合】-->
+    <collection property="roles" javaType="list" ofType="com.mine.west.models.Roles">
+      <id column="roleID" property="roleID"/>
+      <result column="roleName" property="roleName"/>
+    </collection>
+  </resultMap>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from account
     where accountID = #{accountID,jdbcType=INTEGER}
@@ -34,22 +56,6 @@
       #{identity,jdbcType=INTEGER}, #{salt,jdbcType=VARCHAR}, #{role,jdbcType=VARCHAR}
       )
   </insert>
-
-  <!--  <update id="updateByPrimaryKey" parameterType="com.mine.west.models.Account">-->
-  <!--    update account-->
-  <!--    set account.name = #{name,jdbcType=CHAR},-->
-  <!--      mailbox = #{mailbox,jdbcType=CHAR},-->
-  <!--      account.password = #{password,jdbcType=CHAR},-->
-  <!--      nickname = #{nickname,jdbcType=CHAR},-->
-  <!--      mobilePhone = #{mobilePhone,jdbcType=CHAR},-->
-  <!--      sex = #{sex,jdbcType=CHAR},-->
-  <!--      avatar = #{avatar,jdbcType=CHAR},-->
-  <!--      individualitySignature = #{individualitySignature,jdbcType=VARCHAR},-->
-  <!--      account.identity = #{identity,jdbcType=INTEGER},-->
-  <!--      salt = #{salt,jdbcType=VARCHAR},-->
-  <!--      account.role = #{role,jdbcType=VARCHAR}-->
-  <!--    where accountID = #{accountID,jdbcType=INTEGER}-->
-  <!--  </update>-->
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select accountID, account.name, mailbox, account.password, nickname, mobilePhone, sex, avatar,
@@ -169,4 +175,15 @@
     from account
     where mailbox = #{mailbox,jdbcType=CHAR}
   </select>
+
+  <select id="findRolesByName" parameterType="String" resultMap="AccountMap">
+    SELECT a.*,r.*
+    FROM account a
+    LEFT JOIN account_role ar
+    ON a.accountID=ar.accountID
+    LEFT JOIN roles r
+    ON ar.roleID=r.roleID
+    WHERE a.name = #{username};
+  </select>
+
 </mapper>

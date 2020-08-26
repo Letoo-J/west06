@@ -2,14 +2,21 @@ package com.mine.west.config.shiro;
 
 import com.mine.west.exception.account.*;
 import com.mine.west.models.Account;
+import com.mine.west.models.Pers;
+import com.mine.west.service.AccountService;
 import com.mine.west.service.impl.LoginServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
+
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * 自定义realm实现类,用于实现具体的验证和授权方法
@@ -22,16 +29,21 @@ public class UserRealm extends AuthorizingRealm {
     @Autowired
     private LoginServiceImpl _loginService;
 
+    @Autowired
+    private AccountService _accountService;
+
     //自定义token：
     @Override
     public boolean supports(AuthenticationToken token){
         return token != null && token instanceof AccountToken;
     }
 
-
     /**
      *  认证
-     * 	参数：AuthenticationToken是从表单穿过来封装好的对象
+     *  参数：AuthenticationToken是从表单穿过来封装好的对象
+     * @param token
+     * @return
+     * @throws AuthenticationException
      */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
@@ -90,9 +102,35 @@ public class UserRealm extends AuthorizingRealm {
     }
 
 
+    /**
+     *  授权
+     * @param principals
+     * @return
+     */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-        // TODO Auto-generated method stub
+        //获取身份信息
+        String primaryPrincipal = (String) principals.getPrimaryPrincipal();
+        log.info("doGetAuthorizationInfo()调用授权验证: "+primaryPrincipal);
+        //根据主身份信息(用户名)获取角色 和 权限信息
+        Account account = _accountService.findRolesByName(primaryPrincipal);
+
+        //授权角色信息
+        if(!CollectionUtils.isEmpty(account.getRoles())){
+            SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
+            account.getRoles().forEach(role->{
+                simpleAuthorizationInfo.addRole(role.getRoleName());
+                //权限信息(当前role)
+                List<Pers> perms1 = _accountService.findPermsByRoleId(role.getRoleID());
+                HashSet<Pers> perms2 = new HashSet<Pers>(perms1);
+                if(!CollectionUtils.isEmpty(perms2)){
+                    perms2.forEach(perm->{
+                        simpleAuthorizationInfo.addStringPermission(perm.getPersName());
+                    });
+                }
+            });
+            return simpleAuthorizationInfo;
+        }
         return null;
     }
 

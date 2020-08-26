@@ -41,6 +41,7 @@ public class RegisterServiceImpl {
         if(!b){  //校验不成功
             return "验证码不正确";
         }
+        //删除此条注册验证码的map记录
 
         // 用户名或密码为空 错误
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)){
