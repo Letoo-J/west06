@@ -69,7 +69,7 @@ public class ShiroConfigBean {
         // 登录成功后要跳转的链接
         shiroFilterFactoryBean.setSuccessUrl("/home");
         // 未授权的页面
-        shiroFilterFactoryBean.setUnauthorizedUrl("/unauth");
+        shiroFilterFactoryBean.setUnauthorizedUrl("/account/unauth");
 
         // 配置访问权限 必须是LinkedHashMap，因为它必须保证有序
         //<!-- authc:所有url都必须认证通过才可以访问;  anon:所有url都都可以匿名访问-->
@@ -112,7 +112,7 @@ public class ShiroConfigBean {
         //限制同一帐号同时在线的个数。
         filtersMap.put("kickout", kickoutSessionControlFilter());
         //解决session丢失
-        filtersMap .put("addPrincipal", addPrincipalToSessionFilter());
+        //filtersMap .put("addPrincipal", addPrincipalToSessionFilter());
         //配置自定义登出 覆盖 logout 之前默认的LogoutFilter
         //filtersMap.put("logout", shiroLogoutFilter());
         shiroFilterFactoryBean.setFilters(filtersMap );
@@ -235,6 +235,7 @@ public class ShiroConfigBean {
     /**
      * cacheManager 缓存 redis实现
      * 使用的是shiro-redis开源插件
+     * 需要添加到securityManager中
      *
      * @return
      */
@@ -283,6 +284,18 @@ public class ShiroConfigBean {
         sessionManager.setSessionIdCookie(simpleCookie);
         //取消url 后面的 JSESSIONID
         sessionManager.setSessionIdUrlRewritingEnabled(false);
+        /*
+        //全局会话超时时间（单位毫秒），默认30分钟  暂时设置为10秒钟 用来测试
+        sessionManager.setGlobalSessionTimeout(1800000);
+        //是否开启删除无效的session对象  默认为true
+        sessionManager.setDeleteInvalidSessions(true);
+        //是否开启定时调度器进行检测过期session 默认为true
+        sessionManager.setSessionValidationSchedulerEnabled(true);
+
+        //设置session失效的扫描时间, 清理用户直接关闭浏览器造成的孤立会话 默认为 1个小时
+        //设置该属性 就不需要设置 ExecutorServiceSessionValidationScheduler 底层也是默认自动调用ExecutorServiceSessionValidationScheduler
+        sessionManager.setSessionValidationInterval(3600000);
+        */
 
         return sessionManager;
     }
@@ -297,7 +310,7 @@ public class ShiroConfigBean {
         RedisManager redisManager = new RedisManager();
         redisManager.setHost(redis_host);  //"127.0.0.1"
         redisManager.setPort(redis_port);  //6379"
-        redisManager.setTimeout(1800); //设置过期时间
+        redisManager.setTimeout(0); //设置过期时间（1800）
         redisManager.setPassword(redis_password); //"123456"
         log.info("连接Redis~~~~~~~~:"+redis_host);
         return redisManager;
@@ -331,6 +344,8 @@ public class ShiroConfigBean {
      * DefaultAdvisorAutoProxyCreator实现了BeanProcessor接口,
      * 当ApplicationContext读如所有的Bean配置信息后，这个类将扫描上下文,
      * 找出所有的Advistor(一个切入点和一个通知的组成),将这些Advisor应用到所有符合切入点的Bean中
+     *      DelegatingFilterProxy作用是自动到spring容器查找名字为shiroFilter（filter-name）
+     *      的bean并把所有Filter的操作委托给它。
      * @return
      */
     @Bean
@@ -366,7 +381,7 @@ public class ShiroConfigBean {
     public ShiroLogoutFilter shiroLogoutFilter(){
         ShiroLogoutFilter shiroLogoutFilter = new ShiroLogoutFilter();
         //配置登出后重定向的地址，等出后配置跳转到登录接口
-        shiroLogoutFilter.setRedirectUrl("/login");
+        shiroLogoutFilter.setRedirectUrl("/account/login");
         return shiroLogoutFilter;
     }
 }
