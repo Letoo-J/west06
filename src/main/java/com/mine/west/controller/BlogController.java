@@ -1,18 +1,21 @@
 package com.mine.west.controller;
 
 import com.mine.west.models.Blog;
-import com.mine.west.service.BlogService;
 import com.mine.west.util.AjaxResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import java.util.Date;
 
+/**
+ * 仅测试
+ */
 @Slf4j
 @RestController
 @RequestMapping(value = "/user")
+@RequiresRoles(value = {"admin", "user"}, logical = Logical.OR)
 public class BlogController {
 
 //    @Resource  //注入BlogService

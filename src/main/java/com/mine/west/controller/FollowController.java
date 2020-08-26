@@ -1,18 +1,24 @@
 package com.mine.west.controller;
 
 import com.mine.west.exception.ModelException;
+import com.mine.west.models.Account;
 import com.mine.west.models.Followlist;
 import com.mine.west.service.FollowService;
 import com.mine.west.util.AjaxResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
+
 @Slf4j
 @Controller
 @ResponseBody
-@RequestMapping(value = "/followlist")
+@RequestMapping(value = "/followList")
+@RequiresRoles(value = {"admin", "user"}, logical = Logical.OR)
 public class FollowController {
     @Autowired
     FollowService followService;
@@ -20,13 +26,14 @@ public class FollowController {
     /**
      * 读取关注人数
      *
-     * @param accountID
+     * @param session
      * @return
      */
-    @GetMapping("/follow/number/{accountID}")
-    public AjaxResponse readFollowNumber(@PathVariable("accountID") Integer accountID) {
+    @GetMapping("/follow/number")
+    public AjaxResponse readFollowNumber(HttpSession session) {
         try {
-            return AjaxResponse.success(followService.readFollowNumber(accountID));
+            Account account = (Account) session.getAttribute("account");
+            return AjaxResponse.success(followService.readFollowNumber(account.getAccountID()));
         } catch (ModelException e) {
             return new AjaxResponse(true, 400, e.getMessage(), null);
         }
@@ -35,13 +42,14 @@ public class FollowController {
     /**
      * 读取粉丝人数
      *
-     * @param accountID
+     * @param session
      * @return
      */
-    @GetMapping("/fan/number/{accountID}")
-    public AjaxResponse readFanNumber(@PathVariable("accountID") Integer accountID) {
+    @GetMapping("/fan/number")
+    public AjaxResponse readFanNumber(HttpSession session) {
         try {
-            return AjaxResponse.success(followService.readFanNumber(accountID));
+            Account account = (Account) session.getAttribute("account");
+            return AjaxResponse.success(followService.readFanNumber(account.getAccountID()));
         } catch (ModelException e) {
             return new AjaxResponse(true, 400, e.getMessage(), null);
         }
@@ -50,13 +58,14 @@ public class FollowController {
     /**
      * 读取关注用户
      *
-     * @param accountID
+     * @param session
      * @return
      */
-    @GetMapping("/follow/{accountID}")
-    public AjaxResponse readFollowAccount(@PathVariable("accountID") Integer accountID) {
+    @GetMapping("/follow")
+    public AjaxResponse readFollowAccount(HttpSession session) {
         try {
-            return AjaxResponse.success(followService.readFollowAccount(accountID));
+            Account account = (Account) session.getAttribute("account");
+            return AjaxResponse.success(followService.readFollowAccount(account.getAccountID()));
         } catch (ModelException e) {
             return new AjaxResponse(true, 400, e.getMessage(), null);
         }
@@ -65,13 +74,14 @@ public class FollowController {
     /**
      * 读取粉丝用户
      *
-     * @param accountID
+     * @param session
      * @return
      */
     @GetMapping("/fan/{accountID}")
-    public AjaxResponse readFanAccount(@PathVariable("accountID") Integer accountID) {
+    public AjaxResponse readFanAccount(HttpSession session) {
         try {
-            return AjaxResponse.success(followService.readFanAccount(accountID));
+            Account account = (Account) session.getAttribute("account");
+            return AjaxResponse.success(followService.readFanAccount(account.getAccountID()));
         } catch (ModelException e) {
             return new AjaxResponse(true, 400, e.getMessage(), null);
         }

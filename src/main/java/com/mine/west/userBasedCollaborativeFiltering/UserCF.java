@@ -87,7 +87,8 @@ public class UserCF {
     }
 
     public static Queue<SimilarAccount> getSimilarUsers(Integer accountID) {
-        if (accountBlogSize.get(accountID) < 1)
+        Integer anum = accountBlogSize.get(accountID);
+        if ((anum == null) || (anum < 1))
             return null;
 
         Iterator<Map.Entry<Integer, HashSet<Integer>>> iterator = blogAccountCollection.entrySet().iterator();

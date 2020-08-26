@@ -1,20 +1,25 @@
 package com.mine.west.controller;
 
 import com.mine.west.exception.ModelException;
+import com.mine.west.models.Account;
 import com.mine.west.models.Blog;
 import com.mine.west.service.BlogService2;
 import com.mine.west.util.AjaxResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.Date;
 
 @Slf4j
 @Controller
 @ResponseBody
 @RequestMapping(value = "/blog")
+@RequiresRoles(value = {"admin", "user"}, logical = Logical.OR)
 public class BlogController2 {
 
     @Autowired
@@ -40,30 +45,32 @@ public class BlogController2 {
     }
 
     /**
-     * 读取某人发布博客
+     * 读取博客
      *
-     * @param accountID
+     * @param session
      * @return
      */
-    @GetMapping("/{accountID}")
-    public AjaxResponse read(@PathVariable("accountID") Integer accountID) {
+    @GetMapping
+    public AjaxResponse read(HttpSession session) {
         try {
-            return AjaxResponse.success(blogService.readByAccountID(accountID));
+            Account account = (Account) session.getAttribute("account");
+            return AjaxResponse.success(blogService.readByAccountID(account.getAccountID()));
         } catch (ModelException e) {
             return new AjaxResponse(true, 400, e.getMessage(), null);
         }
     }
 
     /**
-     * 读取某人发布博客数量
+     * 读取博客数量
      *
-     * @param accountID
+     * @param session
      * @return
      */
-    @GetMapping("/blogNumber/{accountID}")
-    public AjaxResponse readNumber(@PathVariable("accountID") Integer accountID) {
+    @GetMapping("/blogNumber")
+    public AjaxResponse readNumber(HttpSession session) {
         try {
-            return AjaxResponse.success(blogService.readBlogNumber(accountID));
+            Account account = (Account) session.getAttribute("account");
+            return AjaxResponse.success(blogService.readBlogNumber(account.getAccountID()));
         } catch (ModelException e) {
             return new AjaxResponse(true, 400, e.getMessage(), null);
         }
@@ -87,13 +94,14 @@ public class BlogController2 {
     /**
      * 读取所有博客
      *
-     * @param accountID
+     * @param session
      * @return
      */
-    @GetMapping("/all/{accountID}")
-    public AjaxResponse readAll(@PathVariable("accountID") Integer accountID) {
+    @GetMapping("/all")
+    public AjaxResponse readAll(HttpSession session) {
         try {
-            return AjaxResponse.success(blogService.readAll(accountID));
+            Account account = (Account) session.getAttribute("account");
+            return AjaxResponse.success(blogService.readAll(account.getAccountID()));
         } catch (ModelException e) {
             return new AjaxResponse(true, 400, e.getMessage(), null);
         }
@@ -105,11 +113,12 @@ public class BlogController2 {
      * @param blogID
      * @return
      */
-    @PutMapping("/like/{accountID}/{blogID}")
-    public AjaxResponse like(@PathVariable("accountID") Integer accountID,
+    @PutMapping("/like/{blogID}")
+    public AjaxResponse like(HttpSession session,
                              @PathVariable("blogID") Integer blogID) {
         try {
-            return AjaxResponse.success(blogService.like(accountID, blogID));
+            Account account = (Account) session.getAttribute("account");
+            return AjaxResponse.success(blogService.like(account.getAccountID(), blogID));
         } catch (ModelException e) {
             return new AjaxResponse(true, 400, e.getMessage(), null);
         }
