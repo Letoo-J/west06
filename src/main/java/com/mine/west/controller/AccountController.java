@@ -1,6 +1,7 @@
 package com.mine.west.controller;
 
 import com.mine.west.config.shiro.AccountToken;
+import com.mine.west.constant.ResultStatusCode;
 import com.mine.west.email.MailboxVerificationUtil;
 import com.mine.west.exception.AccountException;
 import com.mine.west.models.Account;
@@ -14,10 +15,7 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
@@ -39,7 +37,7 @@ public class AccountController {
      * @param rememberMe
      * @return
      */
-    @PostMapping("/login")
+    @PostMapping(value = "/login")
     public AjaxResponse login(HttpSession session, @Param("username")String username,
                      @Param("password")String password, @Param("rememberMe")String rememberMe){
         boolean isRememberMe = false;
@@ -87,7 +85,7 @@ public class AccountController {
      * @param verifyInput
      * @return
      */
-    @PostMapping("/register")
+    @PostMapping(value = "/register")
     public AjaxResponse register(String username,String password,String mail,String verifyInput){
 
         String verifyInput02 = verifyInput.toUpperCase(); //转换为大写
@@ -159,5 +157,25 @@ public class AccountController {
             e.printStackTrace();
         }
         return AjaxResponse.success("邮箱验证码发送成功！");
+    }
+
+
+    /**
+     * 未授权跳转方法
+     * @return
+     */
+    @RequestMapping("/unauth")
+    public AjaxResponse unauth(){
+        SecurityUtils.getSubject().logout();
+        return AjaxResponse.fail(ResultStatusCode.UNAUTHO_ERROR,"您没有该权限");
+    }
+
+    /**
+     * 被踢出后跳转方法
+     * @return
+     */
+    @RequestMapping("/kickout")
+    public AjaxResponse kickout(){
+        return AjaxResponse.fail(ResultStatusCode.INVALID_TOKEN,"您已经被踢出");
     }
 }
