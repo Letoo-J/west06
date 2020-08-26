@@ -48,10 +48,10 @@ public class UserRealm extends AuthorizingRealm {
         log.info("---------------- 执行 Shiro 权限获取 ---------------------");
 
         //获取身份信息
-        String primaryPrincipal = (String) principals.getPrimaryPrincipal();
+        Account primaryPrincipal = (Account) principals.getPrimaryPrincipal();
         log.info("doGetAuthorizationInfo()调用授权验证: "+primaryPrincipal);
         //根据主身份信息(用户名)获取角色 和 权限信息
-        Account account = _accountService.findRolesByName(primaryPrincipal);
+        Account account = _accountService.findRolesByName(primaryPrincipal.getName());
 
         //授权角色信息
         if(!CollectionUtils.isEmpty(account.getRoles())){

@@ -5,13 +5,17 @@ import com.mine.west.models.Account;
 import com.mine.west.service.AccountServiceT;
 import com.mine.west.util.AjaxResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.swing.filechooser.FileSystemView;
+import javax.servlet.http.HttpSession;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Date;
 
@@ -19,31 +23,38 @@ import java.util.Date;
 @Controller
 @ResponseBody
 @RequestMapping(value = "/accountT")
+@RequiresRoles(value = {"admin", "user"}, logical = Logical.OR)
 public class AccountController2 {
     private static String HEAD_PATH;
 
     static {
-        //TODO : 修改文件地址，目前文件夹位置在桌面
-//        HEAD_PATH = ResourceUtils.getURL("classpath:").getPath()+"avatar/";
-        HEAD_PATH = FileSystemView.getFileSystemView().getHomeDirectory().getAbsolutePath() + "\\avatar\\";
+        //TODO : 修改文件地址
+        try {
+            HEAD_PATH = ResourceUtils.getURL("classpath:").getPath() + "avatar/";
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+//        HEAD_PATH = FileSystemView.getFileSystemView().getHomeDirectory().getAbsolutePath() + "\\avatar\\";
     }
 
     @Autowired
     AccountServiceT accountService;
 
-    @GetMapping("/{accountID}")
-    public AjaxResponse getAccount(@PathVariable("accountID") Integer accountID) {
+    @GetMapping
+    public AjaxResponse getAccount(HttpSession session) {
         try {
-            return AjaxResponse.success(accountService.getAccount(accountID));
+            Account account = (Account) session.getAttribute("account");
+            return AjaxResponse.success(accountService.getAccount(account.getAccountID()));
         } catch (ModelException e) {
             return new AjaxResponse(true, 400, e.getMessage(), null);
         }
     }
 
-    @GetMapping("/avatar/{accountID}")
-    public AjaxResponse getAvatar(@PathVariable("accountID") Integer accountID) {
+    @GetMapping("/avatar")
+    public AjaxResponse getAvatar(HttpSession session) {
         try {
-            return AjaxResponse.success(accountService.getAvatar(HEAD_PATH, accountID));
+            Account account = (Account) session.getAttribute("account");
+            return AjaxResponse.success(accountService.getAvatar(HEAD_PATH, account.getAccountID()));
         } catch (ModelException e) {
             return new AjaxResponse(true, 400, e.getMessage(), null);
         }
@@ -58,15 +69,16 @@ public class AccountController2 {
         }
     }
 
-    @PutMapping("/avatar/{accountID}")
+    @PutMapping("/avatar")
     public AjaxResponse updateAvatar(@RequestParam("avatar") MultipartFile avatar,
-                                     @PathVariable("accountID") Integer accountID) {
+                                     HttpSession session) {
         File file = null;
         try {
+            Account account = (Account) session.getAttribute("account");
             String filePath = HEAD_PATH + (new Date()).getTime() + avatar.getOriginalFilename();
             file = new File(filePath);
             avatar.transferTo(file);
-            return AjaxResponse.success(accountService.updateAvatar(file, accountID));
+            return AjaxResponse.success(accountService.updateAvatar(file, account.getAccountID()));
         } catch (ModelException | IOException e) {
             if (file != null)
                 file.delete();//删除有问题的图片

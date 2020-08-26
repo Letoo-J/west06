@@ -5,6 +5,8 @@ import com.mine.west.models.Comment;
 import com.mine.west.service.CommentService;
 import com.mine.west.util.AjaxResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +17,7 @@ import java.util.Date;
 @Controller
 @ResponseBody
 @RequestMapping(value = "/comment")
+@RequiresRoles(value = {"admin", "user"}, logical = Logical.OR)
 public class CommentController {
     @Autowired
     private CommentService commentService;

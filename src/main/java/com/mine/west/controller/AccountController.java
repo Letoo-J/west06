@@ -11,11 +11,13 @@ import com.mine.west.util.AjaxResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
 
@@ -38,8 +40,8 @@ public class AccountController {
      * @return
      */
     @PostMapping(value = "/login")
-    public AjaxResponse login(HttpSession session, @Param("username")String username,
-                     @Param("password")String password, @Param("rememberMe")String rememberMe){
+    public AjaxResponse login(HttpSession session, String username,
+                              String password, String rememberMe) {
         boolean isRememberMe = false;
         if(rememberMe != null ) {
             isRememberMe = true;
