@@ -93,6 +93,20 @@ public class ShiroConfigBean {
         filterChainDefinitionMap.put("/pic/**", "anon");
         //filterChainDefinitionMap.put("/Exception.class", "anon");
 
+        //被shiro拦截的swagger资源放行
+        filterChainDefinitionMap.put("/doc.html/**", "anon");
+        filterChainDefinitionMap.put("/swagger-resources/**", "anon");
+        filterChainDefinitionMap.put("/v2/api-docs/**", "anon");
+        filterChainDefinitionMap.put("/webjars/**", "anon");
+        filterChainDefinitionMap.put("/swagger-resources/configuration/ui/**", "anon");
+        filterChainDefinitionMap.put("/swagger-resources/configuration/security/**", "anon");
+        filterChainDefinitionMap.put("/swagger-ui.html", "anon");
+        filterChainDefinitionMap.put("/webjars/springfox-swagger-ui/**", "anon");
+        filterChainDefinitionMap.put("/configuration/security", "anon");
+        filterChainDefinitionMap.put("/configuration/ui", "anon");
+        filterChainDefinitionMap.put("/swagger-resources/**/**", "anon");
+
+
         // 退出系统的过滤器（记住我状态下，可清除记住我的cookie）
         filterChainDefinitionMap.put("/account/logout", "logout");
         //filterChainDefinitionMap.put("/home/**", "authc");
@@ -104,7 +118,7 @@ public class ShiroConfigBean {
         //filterChainDefinitionMap.put("/**", "authc");
         //其他资源都需要认证  authc 表示需要认证才能进行访问; user表示配置'记住我'或'认证通过'可以访问的地址
         filterChainDefinitionMap.put("/**","kickout,user" );//"kickout,user"
-//        filterChainDefinitionMap.put("/**", "anon");//"kickout,user"
+        //filterChainDefinitionMap.put("/**", "anon");//"kickout,user"
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
 
         //配置自定义拦截器

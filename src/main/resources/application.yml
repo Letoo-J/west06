@@ -164,14 +164,18 @@ xss:
     # 过滤开关
     enabled: true
     # 排除链接（多个用逗号分隔）--> 静态资源 + /home/reply:表示数据库存放原回复，显示在前端时再过滤
-    excludes: /others/*,/js/*,/webjars/*,/img/*,/ajax/*,
+    excludes: /others/*,/js/*,/img/*,/ajax/*,/webjars/*,/swagger-resources/*,/v2/*,/swagger-ui.html/*
 
 csrf:
   filter:
     #是否开启-防止csrf攻击
     enabled: true
     # 排除链接（多个用逗号分隔）
-    excludes: /account/login,account/register/*,
+    excludes: /account/login,account/register/*,/webjars/*,/swagger-resources/*,/v2/*,/swagger-ui.html/*
+
+swagger:
+  enable: true
+
 #---
 #第三文档快
 

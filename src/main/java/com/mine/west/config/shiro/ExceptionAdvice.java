@@ -1,3 +1,4 @@
+/*
 package com.mine.west.config.shiro;
 
 import com.mine.west.constant.ResultStatusCode;
@@ -22,9 +23,11 @@ import javax.validation.ConstraintViolationException;
 @ControllerAdvice
 @ResponseBody
 public class ExceptionAdvice {
-    /**
+    */
+/**
      * 400 - Bad Request
-     */
+     *//*
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({HttpMessageNotReadableException.class, MissingServletRequestParameterException.class, BindException.class,
             ServletRequestBindingException.class, MethodArgumentNotValidException.class, ConstraintViolationException.class})
@@ -36,9 +39,11 @@ public class ExceptionAdvice {
         return new Result(ResultStatusCode.BAD_REQUEST.getCode(), e.getMessage());
     }
 
-    /**
+    */
+/**
      * 405 - Method Not Allowed
-     */
+     *//*
+
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public Result handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
@@ -46,10 +51,12 @@ public class ExceptionAdvice {
         return new Result(ResultStatusCode.METHOD_NOT_ALLOWED, null);
     }
 
-    /**
+    */
+/**
      * shiro权限异常处理
      * @return
-     */
+     *//*
+
     @ExceptionHandler(UnauthorizedException.class)
     public Result unauthorizedException(UnauthorizedException e){
         log.error(e.getMessage(), e);
@@ -57,11 +64,13 @@ public class ExceptionAdvice {
         return new Result(ResultStatusCode.UNAUTHO_ERROR);
     }
 
-    /**
+    */
+/**
      * 500
      * @param e
      * @return
-     */
+     *//*
+
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public Result handleException(Exception e) {
@@ -69,4 +78,4 @@ public class ExceptionAdvice {
         log.error("服务运行异常", e);
         return new Result(ResultStatusCode.SYSTEM_ERR, null);
     }
-}
+}*/
