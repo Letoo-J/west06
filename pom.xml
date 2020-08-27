@@ -153,6 +153,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
         <!--offline doc-->
         <dependency>
             <groupId>org.springframework.restdocs</groupId>
@@ -167,12 +168,12 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
+        <!--<dependency>
             <groupId>io.github.swagger2markup</groupId>
             <artifactId>swagger2markup</artifactId>
             <version>1.3.1</version>
             <exclusions>
-                <!-- 排除mail包冲突，避免发送邮件失败 -->
+                &lt;!&ndash; 排除mail包冲突，避免发送邮件失败 &ndash;&gt;
                 <exclusion>
                     <groupId>javax.mail</groupId>
                     <artifactId>mailapi</artifactId>
@@ -184,7 +185,7 @@
             <artifactId>swagger-core</artifactId>
             <version>1.5.16</version>
             <exclusions>
-                <!-- 排除mail包冲突，避免发送邮件失败 -->
+                &lt;!&ndash; 排除mail包冲突，避免发送邮件失败 &ndash;&gt;
                 <exclusion>
                     <groupId>javax.mail</groupId>
                     <artifactId>mailapi</artifactId>
@@ -196,13 +197,13 @@
             <artifactId>swagger-models</artifactId>
             <version>1.5.16</version>
             <exclusions>
-                <!-- 排除mail包冲突，避免发送邮件失败 -->
+                &lt;!&ndash; 排除mail包冲突，避免发送邮件失败 &ndash;&gt;
                 <exclusion>
                     <groupId>javax.mail</groupId>
                     <artifactId>mailapi</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
+        </dependency>-->
 
         <!--引入shiro依赖-->
         <dependency>

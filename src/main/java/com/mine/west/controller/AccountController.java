@@ -37,7 +37,7 @@ public class AccountController {
      * @param rememberMe
      * @return
      */
-    @RequestMapping(value = "/login")  //Post
+    @RequestMapping(value = "/login",method = RequestMethod.POST)  //Post
     public AjaxResponse login(HttpSession session, String username,
                               String password, String rememberMe){
         boolean isRememberMe = false;
@@ -85,7 +85,7 @@ public class AccountController {
      * @param verifyInput
      * @return
      */
-    @PostMapping(value = "/register")
+    @RequestMapping(value = "/register",method = RequestMethod.POST)
     public AjaxResponse register(String username,String password,String mail,String verifyInput){
 
         String verifyInput02 = verifyInput.toUpperCase(); //转换为大写
@@ -107,7 +107,7 @@ public class AccountController {
      *     对应前端的remote中的URL地址
      *     远程地址只能输出 "true" 或 "false"，不能有其他输出!
      */
-    @GetMapping("/register/validateUsername")
+    @RequestMapping(value = "/register/validateUsername",method = RequestMethod.GET)
     public boolean validateUsername(@Param("username") String username){
         Account u = _accountService.selectAccountByName(username);
         if(u == null){  //不存在此用户名
@@ -121,7 +121,7 @@ public class AccountController {
      * @param mailBox
      * @return
      */
-    @GetMapping("/register/validateEMail")
+    @RequestMapping(value = "/register/validateEMail",method = RequestMethod.GET)
     public boolean validateEMail(@Param("mailBox") String mailBox){
         Account u = _accountService.selectAccountByMailbox(mailBox);
         if(u == null){  //不存在此用户邮箱
@@ -135,7 +135,7 @@ public class AccountController {
      * 退出系统
      * @return
      */
-    @PostMapping("/logout")
+    @RequestMapping(value = "/logout",method = RequestMethod.POST)
     public AjaxResponse logout(){
         Subject subject = SecurityUtils.getSubject();//取出当前验证主体
         if (subject != null) {
@@ -149,7 +149,7 @@ public class AccountController {
      * @param mailBox
      * @return
      */
-    @GetMapping("/register/emaliVerification")
+    @RequestMapping(value = "/register/emaliVerification",method = RequestMethod.GET)
     public AjaxResponse emaliVerification(@Param("mailBox") String mailBox){
         try {
             boolean b = MailboxVerificationUtil.sendEmail(mailBox);
@@ -164,7 +164,7 @@ public class AccountController {
      * 未授权跳转方法
      * @return
      */
-    @RequestMapping("/unauth")
+    @RequestMapping(value = "/unauth",method = RequestMethod.GET)
     public AjaxResponse unauth(){
         SecurityUtils.getSubject().logout();
         return AjaxResponse.fail(ResultStatusCode.UNAUTHO_ERROR,"您没有该权限");
@@ -174,7 +174,7 @@ public class AccountController {
      * 被踢出后跳转方法
      * @return
      */
-    @RequestMapping("/kickout")
+    @RequestMapping(value = "/kickout",method = RequestMethod.GET)
     public AjaxResponse kickout(){
         return AjaxResponse.fail(ResultStatusCode.INVALID_TOKEN,"您已经被踢出");
     }
