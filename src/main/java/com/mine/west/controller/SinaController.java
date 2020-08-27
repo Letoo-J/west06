@@ -1,13 +1,22 @@
 package com.mine.west.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.mine.west.config.shiro.AccountToken;
+import com.mine.west.models.Account;
+import com.mine.west.service.impl.RegisterServiceImpl;
+import com.mine.west.util.AjaxResponse;
 import com.mine.west.util.HttpUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.subject.Subject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,31 +27,80 @@ import java.util.Map;
 @Controller
 @RequestMapping(value = "/sina")
 public class SinaController {
+    @Autowired
+    private RegisterServiceImpl _registerService;
+
     //查看文档：https://open.weibo.com/wiki/Oauth2/access_token
     private static final String REDIRECT_URI = "http://127.0.0.1:8080/sina/callback";
-    private static final String CLIENT_ID = "3307968672";
-    private static final String CLIENT_SECRET = "7dc91961086ffb68c7607e9b4346c19e";
+    private static final String CLIENT_ID = "3307968672"; //可以使用basic方式加入header中
+    private static final String CLIENT_SECRET = "7dc91961086ffb68c7607e9b4346c19e";  //可以使用basic方式加入header中
     private static final String GET_TOKEN_URL = "https://api.weibo.com/oauth2/access_token";
     private static final String GET_ACCOUNT_URL = "https://api.weibo.com/2/users/show.json";
 
     @RequestMapping(value = "/callback", method = {RequestMethod.GET})
-    public String callback(String code, Model model) {
+    public String callback(HttpSession session, String code, Model model) {
         Map<String, String> params = new HashMap<>(5);
         params.put("client_id", CLIENT_ID);
         params.put("client_secret", CLIENT_SECRET);
         params.put("grant_type", "authorization_code");
         params.put("code", code);
         params.put("redirect_uri", REDIRECT_URI);
-        String result = getMessage(GET_TOKEN_URL, params);
 
+        /**
+         * 1.访问Oauth2/access token接口，换取Access Token，返回值JSON
+         * {
+         *     "access_token": "SlAV32hkKG",
+         *     "remind_in": 3600,
+         *     "expires_in": 3600,
+         *     "uid":"12341234"
+         * }
+         */
+        String result = getMessage(GET_TOKEN_URL, params);
         JSONObject jsonObject = (JSONObject) JSONObject.parse(result);
+
+        /**
+         * 2.访问users/show接口，获取用户信息，返回JSON
+         *   返回的信息里面包含用户的信息
+         *   具体信息查看https://open.weibo.com/wiki/2/users/show
+         */
         String getUserInfo = getAccount(jsonObject.get("access_token"), jsonObject.get("uid"));
-        //返回的信息里面包含用户的信息
-        //具体信息查看https://open.weibo.com/wiki/2/users/show
         jsonObject = (JSONObject) JSONObject.parse(getUserInfo);
 
-        //取出用户名
+
+        //获取微博用户的idstr，作为注册的name
+        String idstr = (String)jsonObject.get("idstr");
+        /**
+         * 进行第三方注册：
+         */
+        Account account02 = _registerService.TPregister(idstr);
+
+        /**
+         * 进行第三方登录：
+         */
+        //初始化自定义token
+        AccountToken token = new AccountToken(idstr, null,false);
+        //获取主体对象
+        Subject subject = SecurityUtils.getSubject();
+        try {
+            log.info("第三方登录-开始验证！！");
+            //进行登录验证
+            subject.login(token);
+            //获取登录的用户信息
+            Account account = (Account) subject.getPrincipal();
+            //登陆成功的话，用户信息放到session中
+            session.setAttribute("account", account);
+
+            log.info("登陆成功！");
+            model.addAttribute("msg", "登陆成功！");
+
+        } catch (AuthenticationException e){
+            log.warn(e.getMessage());
+            model.addAttribute("msg", e.getMessage());
+        }
+        //放入用户名
         model.addAttribute("name", jsonObject.get("name"));
+        //放入idstr
+        model.addAttribute("idstr", idstr);
 
         //登录成功操作
         //TODO : 登录成功

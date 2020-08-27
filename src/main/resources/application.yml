@@ -173,6 +173,7 @@ csrf:
     # 排除链接（多个用逗号分隔）
     excludes: /account/login,account/register/*,/webjars/*,/swagger-resources/*,/v2/*,/swagger-ui.html/*
 
+#swagger开关
 swagger:
   enable: true
 
