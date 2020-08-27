@@ -44,7 +44,7 @@ public class CommentController {
      *
      * @return
      */
-    @GetMapping("/{blogID}")
+    @RequestMapping(value = "/{blogID}",method = RequestMethod.GET)
     public AjaxResponse readeByBlockID(@PathVariable("blogID") Integer blogID) {
         return AjaxResponse.success(commentService.readeByBlockID(blogID));
     }

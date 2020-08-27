@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class HttpsConfig {
     private static final Integer httpPort = 8080;
-    private static final Integer httpsPort = 8443;
+    private static final Integer httpsPort = 443;
 
     @Bean
     public TomcatServletWebServerFactory servletContainer() {

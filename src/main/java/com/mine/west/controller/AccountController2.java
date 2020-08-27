@@ -40,7 +40,7 @@ public class AccountController2 {
     @Autowired
     AccountServiceT accountService;
 
-    @GetMapping
+    @RequestMapping(method = RequestMethod.GET)
     public AjaxResponse getAccount(HttpSession session) {
         try {
             Account account = (Account) session.getAttribute("account");
@@ -50,7 +50,7 @@ public class AccountController2 {
         }
     }
 
-    @GetMapping("/avatar")
+    @RequestMapping(value = "/avatar",method = RequestMethod.GET)
     public AjaxResponse getAvatar(HttpSession session) {
         try {
             Account account = (Account) session.getAttribute("account");

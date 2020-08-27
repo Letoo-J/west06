@@ -29,7 +29,7 @@ public class FollowController {
      * @param session
      * @return
      */
-    @GetMapping("/follow/number")
+    @RequestMapping(value = "/follow/number",method = RequestMethod.GET)
     public AjaxResponse readFollowNumber(HttpSession session) {
         try {
             Account account = (Account) session.getAttribute("account");
@@ -45,7 +45,7 @@ public class FollowController {
      * @param session
      * @return
      */
-    @GetMapping("/fan/number")
+    @RequestMapping(value = "/fan/number",method = RequestMethod.GET)
     public AjaxResponse readFanNumber(HttpSession session) {
         try {
             Account account = (Account) session.getAttribute("account");
@@ -61,7 +61,7 @@ public class FollowController {
      * @param session
      * @return
      */
-    @GetMapping("/follow")
+    @RequestMapping(value = "/follow",method = RequestMethod.GET)
     public AjaxResponse readFollowAccount(HttpSession session) {
         try {
             Account account = (Account) session.getAttribute("account");
@@ -77,7 +77,7 @@ public class FollowController {
      * @param session
      * @return
      */
-    @GetMapping("/fan/{accountID}")
+    @RequestMapping(value = "/fan",method = RequestMethod.GET)
     public AjaxResponse readFanAccount(HttpSession session) {
         try {
             Account account = (Account) session.getAttribute("account");

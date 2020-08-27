@@ -39,8 +39,8 @@ public class SwaggerConfig {
                 .select()
                 //扫描basePackage包下面的“/user/”路径下的所有controller的接口 内容作为接口文档构建的目标
                 .apis(RequestHandlerSelectors.basePackage("com.mine.west.controller"))
-                .paths(PathSelectors.regex("/account/.*"))
-                //.paths(PathSelectors.any())
+//                .paths(PathSelectors.regex("/account/.*"))
+                .paths(PathSelectors.any())
                 .build();
     }
 

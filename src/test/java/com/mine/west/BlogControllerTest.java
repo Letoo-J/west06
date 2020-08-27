@@ -1,10 +1,8 @@
 package com.mine.west;
 
-import com.mine.west.controller.BlogController;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.springframework.core.ReactiveAdapterRegistry;
 import org.springframework.http.HttpMethod;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -21,7 +19,7 @@ public class BlogControllerTest {
     @BeforeAll  //在所有测试执行之前去执行！
     static  void setUp(){
         //对 BlogController类 进行测试
-        mockMvc = MockMvcBuilders.standaloneSetup(new BlogController()).build();
+//        mockMvc = MockMvcBuilders.standaloneSetup(new BlogController()).build();
     }
 
     @Test //测试方法

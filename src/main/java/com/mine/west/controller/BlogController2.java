@@ -50,7 +50,7 @@ public class BlogController2 {
      * @param session
      * @return
      */
-    @GetMapping
+    @RequestMapping(method = RequestMethod.GET)
     public AjaxResponse read(HttpSession session) {
         try {
             Account account = (Account) session.getAttribute("account");
@@ -66,7 +66,7 @@ public class BlogController2 {
      * @param session
      * @return
      */
-    @GetMapping("/blogNumber")
+    @RequestMapping(value = "/blogNumber",method = RequestMethod.GET)
     public AjaxResponse readNumber(HttpSession session) {
         try {
             Account account = (Account) session.getAttribute("account");
@@ -97,7 +97,7 @@ public class BlogController2 {
      * @param session
      * @return
      */
-    @GetMapping("/all")
+    @RequestMapping(value = "/all",method = RequestMethod.GET)
     public AjaxResponse readAll(HttpSession session) {
         try {
             Account account = (Account) session.getAttribute("account");
