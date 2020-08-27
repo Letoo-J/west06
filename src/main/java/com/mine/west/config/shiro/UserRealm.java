@@ -1,6 +1,7 @@
 package com.mine.west.config.shiro;
 
 import com.mine.west.exception.account.*;
+import com.mine.west.exception.base.BaseException;
 import com.mine.west.models.Account;
 import com.mine.west.models.Pers;
 import com.mine.west.service.AccountService;
@@ -96,14 +97,25 @@ public class UserRealm extends AuthorizingRealm {
         // 获得从表单传过来的用户名
         String username = upToken.getUsername();
         String password = "";
-        String uString;
-        if (upToken.getPassword() != null) {
-            password = new String(upToken.getPassword()); //拿到表单的密码
+
+        String t_password = upToken.getPassword();
+        Account account = null;
+        //若为第三方登录，则不自动设置密码
+        if(t_password == null){
+            log.info("----------【第三方】- Shiro 凭证认证 ------------");
+            try{
+                account = _loginService.TPlogin(username);
+            }catch (BaseException e){
+                throw new AuthenticationException(e.getMessage(), e);
+            }
+            log.info("---------------- 【第三方】- Shiro 凭证认证成功 ----------------------");
+            SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(account, account.getPassword(),
+                    ByteSource.Util.bytes(account.getSalt()), getName());
+            return info;
         }
 
-        Account account = null;
-        try
-        {
+        password = new String(t_password); //拿到表单的密码
+        try {
             //尝试登入！（里面进行 验证码、密码加盐校验）
             account = _loginService.login(username, password);
             log.info("登录成功！");

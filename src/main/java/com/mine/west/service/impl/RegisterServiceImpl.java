@@ -98,6 +98,24 @@ public class RegisterServiceImpl {
         return "注册成功";
     }
 
+    /**
+     * 第三方登录时，先注册
+     * @param idstr 字符串型的用户UID
+     * @return Account
+     */
+    public Account TPregister(String idstr){
+        Account account01 = _accountMapper.selectAccountByName(idstr);
+        //若之前已经第三方登录过，则不需要注册
+        if(account01 != null){
+            return account01;
+        }
+
+        Account account = new Account();
+        account.setName(idstr);
+        _accountMapper.insertAccount(account);
+        return account;
+    }
+
     private boolean maybeEmail(String mail)
     {
         if (!mail.matches(AccountConstants.EMAIL_PATTERN))

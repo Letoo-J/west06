@@ -70,4 +70,25 @@ public class LoginServiceImpl {
 
         return account;
     }
+
+    /**
+     * 第三方登录
+     * @param idstr 第三方登录的注册账户
+     * @return
+     */
+    public Account TPlogin(String idstr){
+        Account account = _accountMapper.selectAccountByName(idstr);
+
+        //用户不存在
+        if (account == null) {
+            throw new UserNotExistsException();  //抛出异常：第三方用户不存在
+        }
+
+        //校验用户是否被禁用
+        if (!account.getIdentity().equals("0")) {
+            throw new UserBlockedException();  //用户已被封禁！
+        }
+
+        return account;
+    }
 }

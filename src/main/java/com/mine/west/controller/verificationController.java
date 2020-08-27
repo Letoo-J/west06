@@ -14,6 +14,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping(value = "/verification")
 public class verificationController {
 
+    /**
+     * 滑块验证码
+     * @return
+     */
     //测试http://localhost:8080/scTest.html
     @GetMapping
     public AjaxResponse getVerification() {
