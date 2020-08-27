@@ -1,6 +1,7 @@
 package com.mine.west.filter.shiro;
 
 import com.alibaba.fastjson.JSON;
+import com.mine.west.constant.ResultStatusCode;
 import com.mine.west.models.Account;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.cache.Cache;
@@ -133,8 +134,8 @@ public class KickoutSessionControlFilter extends AccessControlFilter {
             Map<String, String> resultMap = new HashMap<String, String>();
             //判断是不是Ajax请求
             if ("XMLHttpRequest".equalsIgnoreCase(((HttpServletRequest) request).getHeader("X-Requested-With"))) {
-                resultMap.put("user_status", "300");
-                resultMap.put("message", "您已经在其他地方登录，请重新登录！");
+                resultMap.put("code", ResultStatusCode.INVALID_TOKEN.toString());
+                resultMap.put("msg", "您已经被踢出");
                 //输出json串
                 out(response, resultMap);
             }else{

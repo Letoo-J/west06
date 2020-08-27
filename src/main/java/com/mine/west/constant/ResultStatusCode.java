@@ -13,7 +13,7 @@ public enum ResultStatusCode {
     SIGN_ERROR(120, "签名错误"),
     TIME_OUT(130, "访问超时"),
     BAD_REQUEST(400, "参数解析失败"),
-    INVALID_TOKEN(401, "无效的授权码"),
+    INVALID_TOKEN(401, "您已经被踢出"), //无效的授权码
     INVALID_CLIENTID(402, "无效的密钥"),
     METHOD_NOT_ALLOWED(405, "不支持当前请求方法"),
     SYSTEM_ERR(500, "服务器运行异常"),
