@@ -93,8 +93,19 @@ public class BlogServiceImpl implements BlogService2 {
     }
 
     @Override
-    public int repost(Integer blogID) {
-        //TODO : 待开发
+    public int repost(Integer accountID, Integer blogID) throws BlogException {
+        Blog blog = blogMapper.selectByPrimaryKey(blogID);
+        if (blog == null)
+            throw new BlogException(ExceptionInfo.BLOG_ID_NOT_EXIT);
+        blog.setRepostNumber(blog.getRepostNumber() + 1);
+        blogMapper.updateByPrimaryKey(blog);
+        Accountoperation accountoperation = accountoperationMapper.select(accountID, blogID);
+        if (accountoperation == null) {
+            accountoperationMapper.insert(new Accountoperation(0, accountID, blogID, repostWeight));
+        } else {
+            accountoperation.setInterest(accountoperation.getInterest() + repostWeight);
+            accountoperationMapper.updateByPrimaryKey(accountoperation);
+        }
         return 0;
     }
 }

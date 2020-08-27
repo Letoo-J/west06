@@ -1,5 +1,6 @@
 package com.mine.west.service;
 
+import com.mine.west.exception.BlogException;
 import com.mine.west.exception.ModelException;
 import com.mine.west.models.Blog;
 
@@ -65,8 +66,9 @@ public interface BlogService2 {
     /**
      * 转发
      *
+     * @param accountID
      * @param blogID
      * @return
      */
-    int repost(Integer blogID);
+    int repost(Integer accountID, Integer blogID) throws BlogException;
 }
