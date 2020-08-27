@@ -22,7 +22,8 @@ server:
     context-path: /
   tomcat:
     # 存放Tomcat的日志目录
-    basedir: C:/tomcat
+    #    basedir: C:/tomcat
+    basedir: /root/myhome
     accesslog:
       # 开启日志记录
       enabled: true
