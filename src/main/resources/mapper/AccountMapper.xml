@@ -131,6 +131,9 @@
       <if test="name != null and name != ''">
         OR mailbox like "%"#{name}"%"
       </if>
+      <if test="name != null and name != ''">
+        OR nickname like "%"#{name}"%"
+      </if>
     </where>
   </select>
 

@@ -78,7 +78,7 @@ public class AdminController {
     }
 
     @ApiOperation(value = "模糊查询用户", notes = "模糊查询用户")
-    @RequestMapping(value = "/Accounts",method = RequestMethod.GET)
+    @RequestMapping(value = "/accounts",method = RequestMethod.GET)
     public AjaxResponse searchUser(@RequestParam(value = "name")String name){
         List<Account> list = _accountService.selectAccountLikeName(name);
         log.info("admin-searchUser后端【模糊】查询到了账户：" + name);
