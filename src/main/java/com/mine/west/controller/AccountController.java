@@ -45,7 +45,7 @@ public class AccountController {
      * @param rememberMe
      * @return
      */
-    @RequestMapping(value = "/login",method = RequestMethod.GET)  //Post
+    @RequestMapping(value = "/login",method = RequestMethod.POST)  //Post
     public AjaxResponse login(HttpSession session, String username,
                               String password, String rememberMe){
         boolean isRememberMe = false;

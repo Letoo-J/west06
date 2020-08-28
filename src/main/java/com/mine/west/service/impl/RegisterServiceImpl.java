@@ -113,6 +113,16 @@ public class RegisterServiceImpl {
         Account account = new Account();
         account.setName(idstr);
         _accountMapper.insertAccount(account);
+        //获得默认密码：
+        account = _accountMapper.selectAccountByName(idstr);
+        //1.生成随机盐：
+        String salt = SaltUtils.getSalt(10);
+        String d_password = new Md5Hash(account.getPassword(), salt,1023).toHex();
+        account.setSalt(salt);
+        account.setPassword(d_password);
+        //更新用户
+        _accountMapper.updateByPrimaryKey(account);
+
         return account;
     }
 

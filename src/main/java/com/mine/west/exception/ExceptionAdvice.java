@@ -1,4 +1,4 @@
-package com.mine.west.config.shiro;
+package com.mine.west.exception;
 
 import com.mine.west.constant.ResultStatusCode;
 import com.mine.west.util.AjaxResponse;
@@ -58,10 +58,9 @@ public class ExceptionAdvice {
 */
 
     @ExceptionHandler(UnauthorizedException.class)
-    public Result unauthorizedException(UnauthorizedException e){
+    public AjaxResponse unauthorizedException(UnauthorizedException e){
         log.error("用户无权限"+e.getMessage(), e);
-        new AjaxResponse(false, ResultStatusCode.UNAUTHO_ERROR.getCode(),"用户无权限");
-        return new Result(ResultStatusCode.UNAUTHO_ERROR);
+        return AjaxResponse.fail(ResultStatusCode.UNAUTHO_ERROR,"您没有该权限");
     }
 
 /**
