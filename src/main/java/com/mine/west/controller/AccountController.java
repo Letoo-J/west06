@@ -1,17 +1,23 @@
 package com.mine.west.controller;
 
 import com.mine.west.config.shiro.AccountToken;
+import com.mine.west.config.shiro.UserRealm;
 import com.mine.west.constant.ResultStatusCode;
 import com.mine.west.email.MailboxVerificationUtil;
 import com.mine.west.exception.AccountException;
+import com.mine.west.exception.ModelException;
 import com.mine.west.models.Account;
 import com.mine.west.service.AccountService;
+import com.mine.west.service.AccountServiceT;
 import com.mine.west.service.impl.RegisterServiceImpl;
 import com.mine.west.util.AjaxResponse;
+import com.mine.west.util.SaltUtils;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.crypto.hash.Md5Hash;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
@@ -28,6 +34,8 @@ public class AccountController {
 
     @Autowired
     private AccountService _accountService;
+    @Autowired
+    private AccountServiceT accountService;
 
     /**
      * 用户登录
@@ -37,7 +45,7 @@ public class AccountController {
      * @param rememberMe
      * @return
      */
-    @RequestMapping(value = "/login",method = RequestMethod.POST)  //Post
+    @RequestMapping(value = "/login",method = RequestMethod.GET)  //Post
     public AjaxResponse login(HttpSession session, String username,
                               String password, String rememberMe){
         boolean isRememberMe = false;
@@ -66,7 +74,7 @@ public class AccountController {
             return AjaxResponse.success("登陆成功！");
 
         } catch (AuthenticationException e){
-            log.warn(e.getMessage());
+            log.warn("登录失败："+e.getMessage());
             return AjaxResponse.fail(500,e.getMessage());
         } /*catch (UnknownAccountException e) {
             e.printStackTrace();
@@ -107,6 +115,7 @@ public class AccountController {
      *     对应前端的remote中的URL地址
      *     远程地址只能输出 "true" 或 "false"，不能有其他输出!
      */
+    @ApiOperation(value = "验证用户名是否存在")
     @RequestMapping(value = "/register/validateUsername",method = RequestMethod.GET)
     public boolean validateUsername(@Param("username") String username){
         Account u = _accountService.selectAccountByName(username);
@@ -121,6 +130,7 @@ public class AccountController {
      * @param mailBox
      * @return
      */
+    @ApiOperation(value = "验证邮箱是否存在")
     @RequestMapping(value = "/register/validateEMail",method = RequestMethod.GET)
     public boolean validateEMail(@Param("mailBox") String mailBox){
         Account u = _accountService.selectAccountByMailbox(mailBox);
@@ -135,28 +145,16 @@ public class AccountController {
      * 退出系统
      * @return
      */
-    @RequestMapping(value = "/logout",method = RequestMethod.POST)
+    @ApiOperation(value = "退出系统")
+    @RequestMapping(value = "/logout",method = RequestMethod.GET)
     public AjaxResponse logout(){
+        log.info("【执行logout！】");
         Subject subject = SecurityUtils.getSubject();//取出当前验证主体
         if (subject != null) {
             subject.logout(); //不为空，执行一次logout的操作，将session全部清空
+            return AjaxResponse.success("退出成功");   //重定向到“/login”
         }
-        return AjaxResponse.success("退出成功");   //重定向到“/login”
-    }
-
-    /**
-     * 向邮箱发送验证码
-     * @param mailBox
-     * @return
-     */
-    @RequestMapping(value = "/register/emaliVerification",method = RequestMethod.GET)
-    public AjaxResponse emaliVerification(@Param("mailBox") String mailBox){
-        try {
-            boolean b = MailboxVerificationUtil.sendEmail(mailBox);
-        } catch (AccountException e) {
-            e.printStackTrace();
-        }
-        return AjaxResponse.success("邮箱验证码发送成功！");
+        return AjaxResponse.fail(500,"退出失败");
     }
 
 
@@ -164,6 +162,7 @@ public class AccountController {
      * 未授权跳转方法
      * @return
      */
+    @ApiOperation(value = "未授权跳转方法")
     @RequestMapping(value = "/unauth",method = RequestMethod.GET)
     public AjaxResponse unauth(){
         SecurityUtils.getSubject().logout();
@@ -174,8 +173,90 @@ public class AccountController {
      * 被踢出后跳转方法
      * @return
      */
+    @ApiOperation(value = "被踢出后跳转方法")
     @RequestMapping(value = "/kickout",method = RequestMethod.GET)
     public AjaxResponse kickout(){
         return AjaxResponse.fail(ResultStatusCode.INVALID_TOKEN,"您已经被踢出");
     }
+
+    /**
+     * 向邮箱发送验证码
+     * @param mailBox
+     * @return
+     */
+    @ApiOperation(value = "向邮箱发送验证码", notes = "向邮箱发送验证码")
+    @RequestMapping(value = "/send/emaliVerification",method = RequestMethod.GET)
+    public AjaxResponse emaliVerification(@Param("mailBox") String mailBox){
+        try {
+            boolean b = MailboxVerificationUtil.sendEmail(mailBox);
+        } catch (AccountException e) {
+            e.printStackTrace();
+        }
+        return AjaxResponse.success("邮箱验证码发送成功！");
+    }
+
+    /**
+     * 找回密码 ：验证邮箱验证码
+     * @param email
+     * @param verifyInput
+     * @return
+     */
+    @ApiOperation(value = "找回密码 ：1.验证邮箱验证码", notes = "找回密码 ：1.验证邮箱验证码")
+    @RequestMapping(value = "/find/emaliVerification",method = RequestMethod.GET)
+    public AjaxResponse emaliVerificationMatched(@RequestParam("email")String email,
+                                                 @RequestParam("verifyInput")String verifyInput){
+        boolean b = false;
+        // 验证码校验
+        try {
+            b = MailboxVerificationUtil.verificationCodeIsLegal(verifyInput,email);
+        } catch (AccountException e) {
+            e.printStackTrace();
+        }
+
+        if(!b){  //校验不成功
+            return AjaxResponse.fail(400,"验证码不正确");
+        }
+        return AjaxResponse.success("邮箱验证码 验证成功");
+    }
+
+    /**
+     * 找回密码 ： 2.重置密码
+     * @param session
+     * @param newPassword1
+     * @param newPassword2
+     * @param email
+     * @return
+     */
+    @ApiOperation(value = "找回密码 ： 2.重置密码", notes = "找回密码 ： 2.重置密码")
+    @RequestMapping(value = "/find/password",method = RequestMethod.GET)
+    public AjaxResponse updatePassword(HttpSession session, @RequestParam("newPassword1")String newPassword1,
+               @RequestParam("newPassword2")String newPassword2,@RequestParam("email")String email) {
+
+        Account account = _accountService.selectAccountByMailbox(email);
+        if(!newPassword1.equals(newPassword2)){
+            return AjaxResponse.fail(400,"两次输入密码不一致！");
+        }
+
+        String newsalt = SaltUtils.getSalt(10);
+        String newPassword = new Md5Hash(newPassword1, newsalt,1023).toHex();
+        account.setPassword(newPassword);
+        account.setSalt(newsalt);
+        try {
+            accountService.updateAccount(account);
+            Subject subject= SecurityUtils.getSubject();
+            subject.logout();
+            return AjaxResponse.success("密码重置成功");
+            /*//退出并清理缓存
+            Subject subject= SecurityUtils.getSubject();
+            subject.logout();
+            //自定义清除缓存
+            Cache<Object,AuthenticationInfo> cache=systemUserRealm.getAuthenticationCache();
+            if (cache!=null){
+                cache.remove(sysUserDO.getUsername());
+            }*/
+        } catch (ModelException e) {
+            return new AjaxResponse(true, 400, e.getMessage(), null);
+        }
+    }
+
 }

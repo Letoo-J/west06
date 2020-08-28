@@ -114,7 +114,7 @@ public class KickoutSessionControlFilter extends AccessControlFilter {
                     kickoutSession.setAttribute("kickout", true);
                 }
             } catch (Exception e) {//ignore exception
-
+                e.printStackTrace();
             }
         }
 

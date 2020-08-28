@@ -4,6 +4,7 @@ package com.mine.west.config.shiro;
 import com.mine.west.config.shiro.manager.SessionManager;
 import com.mine.west.filter.shiro.AddPrincipalToSessionFilter;
 import com.mine.west.filter.shiro.KickoutSessionControlFilter;
+import com.mine.west.filter.shiro.MyFormAuthenticationFilter;
 import com.mine.west.filter.shiro.ShiroLogoutFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
@@ -24,9 +25,11 @@ import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreato
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Properties;
 import javax.servlet.Filter;
 
 /**
@@ -76,28 +79,35 @@ public class ShiroConfigBean {
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
 
         // 对静态资源设置匿名访问
+        filterChainDefinitionMap.put("/favicon.ico**", "anon");
+        filterChainDefinitionMap.put("/ajax/**", "anon");
+        filterChainDefinitionMap.put("/css/**", "anon");
+        filterChainDefinitionMap.put("/icon/**", "anon");
+        filterChainDefinitionMap.put("/image/**", "anon");;
+        filterChainDefinitionMap.put("/webjars/**", "anon");
+        filterChainDefinitionMap.put("/defaultPicture/**", "anon");
+        filterChainDefinitionMap.put("/js/**", "anon");
         // 设置登录的URL为匿名访问，因为一开始没有用户验证
-        filterChainDefinitionMap.put("/account/login", "anon");
         filterChainDefinitionMap.put("/", "anon");
+        filterChainDefinitionMap.put("/account/login", "anon");
         filterChainDefinitionMap.put("/account/register/**", "anon");
-        filterChainDefinitionMap.put("/user/checkCode", "anon");
-        //放行验证码：
-        filterChainDefinitionMap.put("/getVerifyCode", "anon");
-        //获得RES公钥、模块
-        filterChainDefinitionMap.put("/getMoudle", "anon");
         //忘记密码：
-        filterChainDefinitionMap.put("/resetPassword", "anon");
-        filterChainDefinitionMap.put("/user/resetPassword", "anon");
-        filterChainDefinitionMap.put("/user/resetPasswordForm", "anon");
+        filterChainDefinitionMap.put("/account/find/**", "anon");
+        //邮箱验证码
+        filterChainDefinitionMap.put("/account/send/emaliVerification", "anon");
+        //获得滑块验证码
+        filterChainDefinitionMap.put("/verification", "anon");
+        //放行第三方登录：
+        filterChainDefinitionMap.put("/sina/**", "anon");
+
         //放行头像
-        filterChainDefinitionMap.put("/pic/**", "anon");
+        //filterChainDefinitionMap.put("/pic/**", "anon");
         //filterChainDefinitionMap.put("/Exception.class", "anon");
 
         //被shiro拦截的swagger资源放行
         filterChainDefinitionMap.put("/doc.html/**", "anon");
         filterChainDefinitionMap.put("/swagger-resources/**", "anon");
         filterChainDefinitionMap.put("/v2/api-docs/**", "anon");
-        filterChainDefinitionMap.put("/webjars/**", "anon");
         filterChainDefinitionMap.put("/swagger-resources/configuration/ui/**", "anon");
         filterChainDefinitionMap.put("/swagger-resources/configuration/security/**", "anon");
         filterChainDefinitionMap.put("/swagger-ui.html", "anon");
@@ -111,14 +121,10 @@ public class ShiroConfigBean {
         filterChainDefinitionMap.put("/account/logout", "logout");
         //filterChainDefinitionMap.put("/home/**", "authc");
 
-        //**admin的url，要用角色是admix的才可以登录,对应的拦截器是RolesAuthorizationFilte
-        //filterChainDefinitionMap.put("/admin", "roles[admin]");
-
         //主要这行代码必须放在所有权限设置的最后，不然会导致所有 url 都被拦截 剩余的都需要认证
-        //filterChainDefinitionMap.put("/**", "authc");
         //其他资源都需要认证  authc 表示需要认证才能进行访问; user表示配置'记住我'或'认证通过'可以访问的地址
         filterChainDefinitionMap.put("/**","kickout,user" );//"kickout,user"
-        //filterChainDefinitionMap.put("/**", "anon");//"kickout,user"
+        //filterChainDefinitionMap.put("/**", "anon");//"kickout,user"//"authc"
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
 
         //配置自定义拦截器
@@ -126,9 +132,11 @@ public class ShiroConfigBean {
         //限制同一帐号同时在线的个数。
         filtersMap.put("kickout", kickoutSessionControlFilter());
         //解决session丢失
-        //filtersMap .put("addPrincipal", addPrincipalToSessionFilter());
+        filtersMap .put("addPrincipal", addPrincipalToSessionFilter());
         //配置自定义登出 覆盖 logout 之前默认的LogoutFilter
         //filtersMap.put("logout", shiroLogoutFilter());
+        //自定义过滤器，前后分离重定向会出现302等ajax跨域错误，这里直接返回错误不重定向
+        filtersMap.put("authc", new MyFormAuthenticationFilter());
         shiroFilterFactoryBean.setFilters(filtersMap );
 
         return shiroFilterFactoryBean;
@@ -164,20 +172,20 @@ public class ShiroConfigBean {
         credentialsMatcher.setHashIterations(1023);
         myShiroRealm.setCredentialsMatcher(credentialsMatcher);
 
-        /*
-        //开启缓存管理器（本地缓存，应用内部）
+
+        /*//开启缓存管理器（本地缓存，应用内部）
         //开启全局缓存
         myShiroRealm.setCachingEnabled(true);
         //启用授权缓存，即缓存AuthorizationInfo信息，默认false
         myShiroRealm.setAuthorizationCachingEnabled(true);
         //启用身份验证缓存，即缓存AuthenticationInfo信息，默认false
-        myShiroRealm.setAuthenticationCachingEnabled(true);
+        myShiroRealm.setAuthenticationCachingEnabled(false);
         //缓存AuthorizationInfo信息的缓存名称  在ehcache-shiro.xml中有对应缓存的配置
         myShiroRealm.setAuthorizationCacheName("authorizationCache");
         //缓存AuthenticationInfo信息的缓存名称 在ehcache-shiro.xml中有对应缓存的配置
         myShiroRealm.setAuthenticationCacheName("authenticationCache");
-        myShiroRealm.setCacheManager(new EhCacheManager());
-         */
+        myShiroRealm.setCacheManager(new EhCacheManager());*/
+
 
         return myShiroRealm;
     }
@@ -257,6 +265,10 @@ public class ShiroConfigBean {
         RedisCacheManager redisCacheManager = new RedisCacheManager();
         redisCacheManager.setRedisManager(redisManager());
         redisCacheManager.setKeyPrefix("SPRINGBOOT_CACHE:");   //设置前缀
+        // 配置缓存的话要求放在session里面的实体类必须有个id标识
+        redisCacheManager.setPrincipalIdFieldName("accountID");
+        //用户权限信息缓存时间
+        redisCacheManager.setExpire(200000);
         return redisCacheManager;
     }
 
@@ -272,6 +284,8 @@ public class ShiroConfigBean {
         RedisSessionDAO redisSessionDAO = new RedisSessionDAO();
         redisSessionDAO.setRedisManager(redisManager());
         redisSessionDAO.setKeyPrefix("SPRINGBOOT_SESSION:");
+        //session在redis中的保存时间,最好大于session会话超时时间
+        redisSessionDAO.setExpire(12000);
         return redisSessionDAO;
     }
 
@@ -290,15 +304,15 @@ public class ShiroConfigBean {
         simpleCookie.setMaxAge(-1);
 
         SessionManager sessionManager = new SessionManager();
+        sessionManager.setSessionIdCookie(simpleCookie);
         sessionManager.setSessionDAO(redisSessionDAO());
-        sessionManager.setCacheManager(cacheManager());
+        //sessionManager.setCacheManager(cacheManager());
         sessionManager.setSessionIdCookieEnabled(false);
         sessionManager.setSessionIdUrlRewritingEnabled(false);
         sessionManager.setDeleteInvalidSessions(true);
-        sessionManager.setSessionIdCookie(simpleCookie);
+
         //取消url 后面的 JSESSIONID
         sessionManager.setSessionIdUrlRewritingEnabled(false);
-        /*
         //全局会话超时时间（单位毫秒），默认30分钟  暂时设置为10秒钟 用来测试
         sessionManager.setGlobalSessionTimeout(1800000);
         //是否开启删除无效的session对象  默认为true
@@ -309,7 +323,7 @@ public class ShiroConfigBean {
         //设置session失效的扫描时间, 清理用户直接关闭浏览器造成的孤立会话 默认为 1个小时
         //设置该属性 就不需要设置 ExecutorServiceSessionValidationScheduler 底层也是默认自动调用ExecutorServiceSessionValidationScheduler
         sessionManager.setSessionValidationInterval(3600000);
-        */
+
 
         return sessionManager;
     }
@@ -324,9 +338,8 @@ public class ShiroConfigBean {
         RedisManager redisManager = new RedisManager();
         redisManager.setHost(redis_host);  //"127.0.0.1"
         redisManager.setPort(redis_port);  //6379"
-        redisManager.setTimeout(0); //设置过期时间（1800）
+        redisManager.setTimeout(0);
         redisManager.setPassword(redis_password); //"123456"
-        log.info("连接Redis~~~~~~~~:"+redis_host);
         return redisManager;
     }
 
@@ -395,9 +408,29 @@ public class ShiroConfigBean {
     public ShiroLogoutFilter shiroLogoutFilter(){
         ShiroLogoutFilter shiroLogoutFilter = new ShiroLogoutFilter();
         //配置登出后重定向的地址，等出后配置跳转到登录接口
-        shiroLogoutFilter.setRedirectUrl("/account/login");
+        shiroLogoutFilter.setRedirectUrl("/account/logout");
         return shiroLogoutFilter;
     }
+
+    /**
+     * 解决： 无权限页面不跳转 shiroFilterFactoryBean.setUnauthorizedUrl("/unauthorized") 无效
+     * shiro的源代码ShiroFilterFactoryBean.Java定义的filter必须满足filter instanceof AuthorizationFilter，
+     * 只有perms，roles，ssl，rest，port才是属于AuthorizationFilter，而anon，authcBasic，auchc，user是AuthenticationFilter，
+     * 所以unauthorizedUrl设置后页面不跳转 Shiro注解模式下，登录失败与没有权限都是通过抛出异常。
+     * 并且默认并没有去处理或者捕获这些异常。在SpringMVC下需要配置捕获相应异常来通知用户信息
+     * @return
+     */
+    @Bean
+    public SimpleMappingExceptionResolver simpleMappingExceptionResolver() {
+        SimpleMappingExceptionResolver simpleMappingExceptionResolver=new SimpleMappingExceptionResolver();
+        Properties properties=new Properties();
+        //这里的 /unauthorized 是页面，不是访问的路径
+        properties.setProperty("org.apache.shiro.authz.UnauthorizedException","/unauthorized");
+        properties.setProperty("org.apache.shiro.authz.UnauthenticatedException","/unauthorized");
+        simpleMappingExceptionResolver.setExceptionMappings(properties);
+        return simpleMappingExceptionResolver;
+    }
+
 }
 
 

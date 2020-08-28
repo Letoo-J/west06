@@ -1,13 +1,18 @@
 package com.mine.west.filter.shiro;
 
+import com.mine.west.config.shiro.UserRealm;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authc.LogoutFilter;
+import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 /**
- * @author: wangsaichao
- * @date: 2018/11/27
+ * @author:
+ * @date:
  * @description: 自定义 LogoutFilter
  */
 public class ShiroLogoutFilter extends LogoutFilter {
@@ -25,7 +30,7 @@ public class ShiroLogoutFilter extends LogoutFilter {
         //登出操作 清除缓存  subject.logout() 可以自动清理缓存信息, 这些代码是可以省略的  这里只是做个笔记 表示这种方式也可以清除
         Subject subject = getSubject(request,response);
 //        DefaultWebSecurityManager securityManager = (DefaultWebSecurityManager) SecurityUtils.getSecurityManager();
-//        MyShiroRealm  shiroRealm = (MyShiroRealm )securityManager.getRealms().iterator().next();
+//        UserRealm  shiroRealm = (UserRealm)securityManager.getRealms().iterator().next();
 //        PrincipalCollection principals = subject.getPrincipals();
 //        shiroRealm.clearCache(principals);
 

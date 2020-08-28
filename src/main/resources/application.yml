@@ -164,7 +164,7 @@ xss:
     # 过滤开关
     enabled: true
     # 排除链接（多个用逗号分隔）--> 静态资源 + /home/reply:表示数据库存放原回复，显示在前端时再过滤
-    excludes: /others/*,/js/*,/img/*,/ajax/*,/webjars/*,/swagger-resources/*,/v2/*,/swagger-ui.html/*
+    excludes: /js/*,/img/*,/ajax/*,/webjars/*,/swagger-resources/*,/v2/*,/swagger-ui.html/*,/account/*
 
 csrf:
   filter:

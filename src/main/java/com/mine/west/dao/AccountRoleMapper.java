@@ -4,6 +4,9 @@ import com.mine.west.models.AccountRole;
 import java.util.List;
 
 public interface AccountRoleMapper {
+
+    int updateByAccountID(AccountRole record);
+
     int deleteByPrimaryKey(Integer arID);
 
     int insert(AccountRole record);
