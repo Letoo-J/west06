@@ -1,11 +1,9 @@
 package com.mine.west;
 
-import com.mine.west.controller.BlogController;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
@@ -14,10 +12,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
-import javax.annotation.Resource;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 @Slf4j
 /** 当所测试代码有使用依赖注入时（@Resource / @Autowired）加上：
@@ -39,7 +35,7 @@ public class BlogControllerTest02 {
     @BeforeAll  //在所有测试执行之前去执行！
     static  void setUp(){
         //对 BlogController类 进行测试
-        mockMvc = MockMvcBuilders.standaloneSetup(new BlogController()).build();
+//        mockMvc = MockMvcBuilders.standaloneSetup(new BlogController()).build();
     }
 
     @Test //测试方法

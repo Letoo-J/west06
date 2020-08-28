@@ -5,6 +5,8 @@ import com.mine.west.models.Account;
 import com.mine.west.models.Followlist;
 import com.mine.west.service.FollowService;
 import com.mine.west.util.AjaxResponse;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresRoles;
@@ -29,7 +31,10 @@ public class FollowController {
      * @param session
      * @return
      */
-    @GetMapping("/follow/number")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "关注人数")
+    })
+    @RequestMapping(value = "/follow/number", method = RequestMethod.GET)
     public AjaxResponse readFollowNumber(HttpSession session) {
         try {
             Account account = (Account) session.getAttribute("account");
@@ -45,7 +50,10 @@ public class FollowController {
      * @param session
      * @return
      */
-    @GetMapping("/fan/number")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "粉丝人数")
+    })
+    @RequestMapping(value = "/fan/number", method = RequestMethod.GET)
     public AjaxResponse readFanNumber(HttpSession session) {
         try {
             Account account = (Account) session.getAttribute("account");
@@ -61,7 +69,10 @@ public class FollowController {
      * @param session
      * @return
      */
-    @GetMapping("/follow")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "关注列表，单个如下", response = Followlist.class)
+    })
+    @RequestMapping(value = "/follow", method = RequestMethod.GET)
     public AjaxResponse readFollowAccount(HttpSession session) {
         try {
             Account account = (Account) session.getAttribute("account");
@@ -77,7 +88,10 @@ public class FollowController {
      * @param session
      * @return
      */
-    @GetMapping("/fan/{accountID}")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "粉丝列表，单个如下", response = Followlist.class)
+    })
+    @RequestMapping(value = "/fan", method = RequestMethod.GET)
     public AjaxResponse readFanAccount(HttpSession session) {
         try {
             Account account = (Account) session.getAttribute("account");
@@ -93,7 +107,7 @@ public class FollowController {
      * @param followlist
      * @return
      */
-    @PostMapping
+    @RequestMapping(method = RequestMethod.POST)
     public AjaxResponse create(@RequestBody Followlist followlist) {
         try {
             return AjaxResponse.success(followService.create(followlist));
@@ -108,7 +122,7 @@ public class FollowController {
      * @param fID
      * @return
      */
-    @DeleteMapping("/{fID}")
+    @RequestMapping(value = "/{fID}", method = RequestMethod.DELETE)
     public AjaxResponse cancelFollow(@PathVariable("fID") Integer fID) {
         try {
             return AjaxResponse.success(followService.cancelFollow(fID));

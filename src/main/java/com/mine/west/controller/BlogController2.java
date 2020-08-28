@@ -5,6 +5,8 @@ import com.mine.west.models.Account;
 import com.mine.west.models.Blog;
 import com.mine.west.service.BlogService2;
 import com.mine.west.util.AjaxResponse;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresRoles;
@@ -31,7 +33,7 @@ public class BlogController2 {
      * @param blog
      * @return blogID
      */
-    @PostMapping
+    @RequestMapping(method = RequestMethod.POST)
     public AjaxResponse create(@RequestBody Blog blog) {
         try {
             blog.setReleaseTime(new Date());
@@ -50,7 +52,10 @@ public class BlogController2 {
      * @param session
      * @return
      */
-    @GetMapping
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "博客列表，用户发布的所有博客\n当个博客如下", response = Blog.class)
+    })
+    @RequestMapping(method = RequestMethod.GET)
     public AjaxResponse read(HttpSession session) {
         try {
             Account account = (Account) session.getAttribute("account");
@@ -66,7 +71,10 @@ public class BlogController2 {
      * @param session
      * @return
      */
-    @GetMapping("/blogNumber")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "用户发布博客数量")
+    })
+    @RequestMapping(value = "/blogNumber", method = RequestMethod.GET)
     public AjaxResponse readNumber(HttpSession session) {
         try {
             Account account = (Account) session.getAttribute("account");
@@ -82,7 +90,7 @@ public class BlogController2 {
      * @param blogID
      * @return
      */
-    @DeleteMapping("/{blogID}")
+    @RequestMapping(value = "/{blogID}", method = RequestMethod.DELETE)
     public AjaxResponse delete(@PathVariable("blogID") Integer blogID) {
         try {
             return AjaxResponse.success(blogService.delete(blogID));
@@ -97,7 +105,10 @@ public class BlogController2 {
      * @param session
      * @return
      */
-    @GetMapping("/all")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "博客列表，所有的博客", response = Blog.class)
+    })
+    @RequestMapping(value = "/all", method = RequestMethod.GET)
     public AjaxResponse readAll(HttpSession session) {
         try {
             Account account = (Account) session.getAttribute("account");
@@ -113,7 +124,7 @@ public class BlogController2 {
      * @param blogID
      * @return
      */
-    @PutMapping("/like/{blogID}")
+    @RequestMapping(value = "/like/{blogID}", method = RequestMethod.PUT)
     public AjaxResponse like(HttpSession session,
                              @PathVariable("blogID") Integer blogID) {
         try {
@@ -130,9 +141,15 @@ public class BlogController2 {
      * @param blogID
      * @return
      */
-    @PutMapping("/repost/{blogID}")
-    public AjaxResponse repost(@PathVariable("blogID") Integer blogID) {
-        return AjaxResponse.success(blogService.repost(blogID));
+    @RequestMapping(value = "/repost/{blogID}", method = RequestMethod.PUT)
+    public AjaxResponse repost(@PathVariable("blogID") Integer blogID,
+                               HttpSession session) {
+        try {
+            Account account = (Account) session.getAttribute("account");
+            return AjaxResponse.success(blogService.repost(account.getAccountID(), blogID));
+        } catch (ModelException e) {
+            return new AjaxResponse(true, 400, e.getMessage(), null);
+        }
     }
 
 }

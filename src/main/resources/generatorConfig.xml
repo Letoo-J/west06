@@ -8,7 +8,8 @@
     <!-- 引入配置文件：此yml必须与xml在统一文件夹下 -->
     <!-- <properties resource="application.yml"/>-->
     <!-- classPathEntry:数据库的JDBC驱动,换成你自己的驱动位置 可选-->
-    <classPathEntry location="G:\.m2\repository\mysql\mysql-connector-java\8.0.18\mysql-connector-java-8.0.18.jar"/>
+    <classPathEntry
+            location="C:\Users\Administrator\.m2\repository\mysql\mysql-connector-java\8.0.18\mysql-connector-java-8.0.18.jar"/>
 
     <!-- 一个数据库一个context -->
     <!-- 一个数据库一个context,defaultModelType="flat" 大数据字段，不分表 -->
@@ -142,6 +143,7 @@
         <table tableName="account_role" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">
             <property name="useActualColumnNames" value="true" />
         </table>-->
-
+        <!--        无用table标签-->
+        <table tableName="t_city"/>
     </context>
 </generatorConfiguration>

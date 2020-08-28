@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.mine.west.config.shiro.AccountToken;
 import com.mine.west.models.Account;
 import com.mine.west.service.impl.RegisterServiceImpl;
-import com.mine.west.util.AjaxResponse;
 import com.mine.west.util.HttpUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
@@ -31,7 +30,7 @@ public class SinaController {
     private RegisterServiceImpl _registerService;
 
     //查看文档：https://open.weibo.com/wiki/Oauth2/access_token
-    private static final String REDIRECT_URI = "http://127.0.0.1:8080/sina/callback";
+    private static final String REDIRECT_URI = "https://39.101.199.3:443/sina/callback";
     private static final String CLIENT_ID = "3307968672"; //可以使用basic方式加入header中
     private static final String CLIENT_SECRET = "7dc91961086ffb68c7607e9b4346c19e";  //可以使用basic方式加入header中
     private static final String GET_TOKEN_URL = "https://api.weibo.com/oauth2/access_token";

@@ -4,6 +4,8 @@ import com.mine.west.exception.ModelException;
 import com.mine.west.models.Account;
 import com.mine.west.service.AccountServiceT;
 import com.mine.west.util.AjaxResponse;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresRoles;
@@ -40,7 +42,10 @@ public class AccountController2 {
     @Autowired
     AccountServiceT accountService;
 
-    @GetMapping
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "返回的内层数据（即data值）", response = Account.class)
+    })
+    @RequestMapping(method = RequestMethod.GET)
     public AjaxResponse getAccount(HttpSession session) {
         try {
             Account account = (Account) session.getAttribute("account");
@@ -50,7 +55,11 @@ public class AccountController2 {
         }
     }
 
-    @GetMapping("/avatar")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "返回的data的值为byte数组，\n" +
+                    "前端接收：$('#img').attr('src', \"data:image/png;base64,\" + Image);")
+    })
+    @RequestMapping(value = "/avatar", method = RequestMethod.GET)
     public AjaxResponse getAvatar(HttpSession session) {
         try {
             Account account = (Account) session.getAttribute("account");
@@ -60,16 +69,19 @@ public class AccountController2 {
         }
     }
 
-    @PutMapping
-    public AjaxResponse updateAccount(@RequestBody Account account) {
+    @RequestMapping(method = RequestMethod.PUT)
+    public AjaxResponse updateAccount(@RequestBody Account account,
+                                      HttpSession session) {
         try {
+            Account account0 = (Account) session.getAttribute("account");
+            account.setAccountID(account0.getAccountID());
             return AjaxResponse.success(accountService.updateAccount(account));
         } catch (ModelException e) {
             return new AjaxResponse(true, 400, e.getMessage(), null);
         }
     }
 
-    @PutMapping("/avatar")
+    @RequestMapping(value = "/avatar", method = RequestMethod.PUT)
     public AjaxResponse updateAvatar(@RequestParam("avatar") MultipartFile avatar,
                                      HttpSession session) {
         File file = null;
@@ -80,8 +92,9 @@ public class AccountController2 {
             avatar.transferTo(file);
             return AjaxResponse.success(accountService.updateAvatar(file, account.getAccountID()));
         } catch (ModelException | IOException e) {
-            if (file != null)
+            if (file != null) {
                 file.delete();//删除有问题的图片
+            }
             return new AjaxResponse(true, 400, e.getMessage(), null);
         }
     }
