@@ -1,0 +1,5 @@
+{"properties": [{
+  "name": "shiro.user.login-url",
+  "type": "java.lang.String",
+  "description": "A description for 'shiro.user.login-url'"
+}]}

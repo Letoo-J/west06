@@ -8,29 +8,44 @@
       <arg column="roleID" javaType="java.lang.Integer" jdbcType="INTEGER" />
     </constructor>
   </resultMap>
+
+  <update id="updateByAccountID" parameterType="com.mine.west.models.AccountRole">
+    update account_role
+    <set>
+      <if test="accountID != null and accountID != 0">accountID = #{accountID},</if>
+      <if test="roleID != null and roleID != 0 ">roleID = #{roleID},</if>
+    </set>
+    where accountID = #{accountID,jdbcType=INTEGER}
+  </update>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from account_role
     where arID = #{arID,jdbcType=INTEGER}
   </delete>
+
   <insert id="insert" parameterType="com.mine.west.models.AccountRole">
     insert into account_role (arID, accountID, roleID
       )
     values (#{arID,jdbcType=INTEGER}, #{accountID,jdbcType=INTEGER}, #{roleID,jdbcType=INTEGER}
       )
   </insert>
+
   <update id="updateByPrimaryKey" parameterType="com.mine.west.models.AccountRole">
     update account_role
     set accountID = #{accountID,jdbcType=INTEGER},
       roleID = #{roleID,jdbcType=INTEGER}
     where arID = #{arID,jdbcType=INTEGER}
   </update>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select arID, accountID, roleID
     from account_role
     where arID = #{arID,jdbcType=INTEGER}
   </select>
+
   <select id="selectAll" resultMap="BaseResultMap">
     select arID, accountID, roleID
     from account_role
   </select>
+
 </mapper>

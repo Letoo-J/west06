@@ -1,5 +1,6 @@
 package com.mine.west.config.shiro;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mine.west.exception.account.*;
 import com.mine.west.exception.base.BaseException;
 import com.mine.west.models.Account;
@@ -7,15 +8,22 @@ import com.mine.west.models.Pers;
 import com.mine.west.service.AccountService;
 import com.mine.west.service.impl.LoginServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
+import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.subject.SimplePrincipalCollection;
+import org.apache.shiro.subject.support.DefaultSubjectContext;
 import org.apache.shiro.util.ByteSource;
+import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
@@ -108,6 +116,8 @@ public class UserRealm extends AuthorizingRealm {
             }catch (BaseException e){
                 throw new AuthenticationException(e.getMessage(), e);
             }
+            //this.deleteSession(username);
+
             log.info("---------------- 【第三方】- Shiro 凭证认证成功 ----------------------");
             SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(account, account.getPassword(),
                     ByteSource.Util.bytes(account.getSalt()), getName());
@@ -118,7 +128,7 @@ public class UserRealm extends AuthorizingRealm {
         try {
             //尝试登入！（里面进行 验证码、密码加盐校验）
             account = _loginService.login(username, password);
-            log.info("登录成功！");
+            log.info("【登录成功的用户】："+ account);
             //uString = JSON.toJSONString(user);
         }
         catch (CaptchaException e) {
@@ -143,6 +153,7 @@ public class UserRealm extends AuthorizingRealm {
             log.info("对用户[" + username + "]进行登录验证..验证未通过{}", e.getMessage());
             throw new AuthenticationException(e.getMessage(), e);
         }
+        //this.deleteSession(username);
 
         log.info("---------------- Shiro 凭证认证成功 ----------------------");
         // 创建SimpleAuthenticationInfo对象，并且把account和password等信息封装到里面
@@ -152,6 +163,28 @@ public class UserRealm extends AuthorizingRealm {
         SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(account, account.getPassword(),
                 ByteSource.Util.bytes(account.getSalt()), getName());
         return info;
+    }
+
+    private void deleteSession(String username){
+        //处理session
+        DefaultWebSecurityManager securityManager = (DefaultWebSecurityManager) SecurityUtils.getSecurityManager();
+        DefaultWebSessionManager sessionManager = (DefaultWebSessionManager)securityManager.getSessionManager();
+        //获取当前已登录的用户session列表
+        Collection<Session> sessions = sessionManager.getSessionDAO().getActiveSessions();
+        if(sessions.size()>0){
+            for(Session session:sessions){
+                //清除该用户以前登录时保存的session
+                if(session.getAttribute(DefaultSubjectContext.PRINCIPALS_SESSION_KEY)!=null){
+                    Object obj = ((SimplePrincipalCollection) session.getAttribute(DefaultSubjectContext.PRINCIPALS_SESSION_KEY)).asList().get(0);
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    Account tUser = objectMapper.convertValue(obj, Account.class);
+                    if(username.equals(tUser.getName())) {
+                        log.info("认证时，清除该用户以前登录时保存的session");
+                        sessionManager.getSessionDAO().delete(session);
+                    }
+                }
+            }
+        }
     }
 
 
@@ -165,4 +198,63 @@ public class UserRealm extends AuthorizingRealm {
         return account.getAccountID();
 //      	return super.getAuthorizationCacheKey(principals);
     }
+
+
+    /**
+     * 建议重写此方法，提供唯一的缓存Key
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    protected Object getAuthenticationCacheKey(PrincipalCollection principals) {
+        Account account = (Account) principals.getPrimaryPrincipal();
+        return account.getAccountID();
+//        return super.getAuthenticationCacheKey(principals);
+    }
+
+
+    /**
+     * 重写方法,清除当前用户的的 授权缓存
+     * @param principals
+     */
+    @Override
+    public void clearCachedAuthorizationInfo(PrincipalCollection principals) {
+        super.clearCachedAuthorizationInfo(principals);
+    }
+
+    /**
+     * 重写方法，清除当前用户的 认证缓存
+     * @param principals
+     */
+    @Override
+    public void clearCachedAuthenticationInfo(PrincipalCollection principals) {
+        super.clearCachedAuthenticationInfo(principals);
+    }
+
+    @Override
+    public void clearCache(PrincipalCollection principals) {
+        super.clearCache(principals);
+    }
+
+    /**
+     * 自定义方法：清除所有 授权缓存
+     */
+    public void clearAllCachedAuthorizationInfo() {
+        getAuthorizationCache().clear();
+    }
+
+    /**
+     * 自定义方法：清除所有 认证缓存
+     */
+    public void clearAllCachedAuthenticationInfo() {
+        getAuthenticationCache().clear();
+    }
+
+    /**
+     * 自定义方法：清除所有的  认证缓存  和 授权缓存
+     */
+    public void clearAllCache() {
+        clearAllCachedAuthenticationInfo();
+        clearAllCachedAuthorizationInfo();
+    }
+
 }

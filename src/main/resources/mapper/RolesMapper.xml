@@ -7,24 +7,35 @@
       <arg column="roleName" javaType="java.lang.String" jdbcType="VARCHAR" />
     </constructor>
   </resultMap>
+
+  <select id="selectIDByRoleName" parameterType="java.lang.String" resultType="java.lang.Integer">
+    select roleID
+    from roles
+    where roleName = #{roleName,jdbcType=VARCHAR}
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from roles
     where roleID = #{roleID,jdbcType=INTEGER}
   </delete>
+
   <insert id="insert" parameterType="com.mine.west.models.Roles">
     insert into roles (roleID, roleName)
     values (#{roleID,jdbcType=INTEGER}, #{roleName,jdbcType=VARCHAR})
   </insert>
+
   <update id="updateByPrimaryKey" parameterType="com.mine.west.models.Roles">
     update roles
     set roleName = #{roleName,jdbcType=VARCHAR}
     where roleID = #{roleID,jdbcType=INTEGER}
   </update>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select roleID, roleName
     from roles
     where roleID = #{roleID,jdbcType=INTEGER}
   </select>
+
   <select id="selectAll" resultMap="BaseResultMap">
     select roleID, roleName
     from roles

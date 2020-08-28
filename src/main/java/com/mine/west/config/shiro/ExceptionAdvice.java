@@ -1,10 +1,11 @@
-/*
 package com.mine.west.config.shiro;
 
 import com.mine.west.constant.ResultStatusCode;
+import com.mine.west.util.AjaxResponse;
 import com.mine.west.util.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.UnauthorizedException;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
@@ -17,16 +18,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import javax.validation.ConstraintViolationException;
-
 @Slf4j
 @ControllerAdvice
 @ResponseBody
 public class ExceptionAdvice {
-    */
 /**
      * 400 - Bad Request
-     *//*
+     */
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({HttpMessageNotReadableException.class, MissingServletRequestParameterException.class, BindException.class,
@@ -39,10 +37,11 @@ public class ExceptionAdvice {
         return new Result(ResultStatusCode.BAD_REQUEST.getCode(), e.getMessage());
     }
 
-    */
-/**
+/*
+*
      * 405 - Method Not Allowed
-     *//*
+
+*/
 
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
@@ -51,25 +50,25 @@ public class ExceptionAdvice {
         return new Result(ResultStatusCode.METHOD_NOT_ALLOWED, null);
     }
 
-    */
 /**
+*
      * shiro权限异常处理
      * @return
-     *//*
+
+*/
 
     @ExceptionHandler(UnauthorizedException.class)
     public Result unauthorizedException(UnauthorizedException e){
-        log.error(e.getMessage(), e);
-
+        log.error("用户无权限"+e.getMessage(), e);
+        new AjaxResponse(false, ResultStatusCode.UNAUTHO_ERROR.getCode(),"用户无权限");
         return new Result(ResultStatusCode.UNAUTHO_ERROR);
     }
 
-    */
 /**
      * 500
      * @param e
      * @return
-     *//*
+     */
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
@@ -78,4 +77,4 @@ public class ExceptionAdvice {
         log.error("服务运行异常", e);
         return new Result(ResultStatusCode.SYSTEM_ERR, null);
     }
-}*/
+}

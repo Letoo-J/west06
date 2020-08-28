@@ -25,6 +25,7 @@ public class SessionManager extends DefaultWebSessionManager {
     private static final String REFERENCED_SESSION_ID_SOURCE = "Stateless request";
 
     public SessionManager() {
+        super();
     }
 
     @Override

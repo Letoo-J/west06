@@ -1,6 +1,7 @@
 package com.mine.west.models;
 
 import lombok.Builder;
+import org.apache.shiro.crypto.hash.Md5Hash;
 
 import java.io.Serializable;
 import java.util.List;
@@ -186,6 +187,21 @@ public class Account implements Serializable {
 
     public void setRoles(List<Roles> roles) {
         this.roles = roles;
+    }
+
+
+    /**
+     * 明文密码加盐加密
+     * @param password 明文密码
+     * @param salt 盐
+     * @param passwordSalt 数据库密码
+     * @return
+     */
+    public static Boolean passwordMatch(String password,String salt,String passwordSalt){
+        //明文密码加盐加密
+        Md5Hash md5Hash = new Md5Hash(password, salt,1023);
+        String passwordHash = md5Hash.toHex();
+        return passwordHash.equals(passwordSalt);
     }
 
     @Override
