@@ -1,5 +1,8 @@
 package com.mine.west.email;
 
+import com.sun.mail.util.MailSSLSocketFactory;
+import org.apache.commons.codec.binary.Base64;
+
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
@@ -8,8 +11,8 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import java.security.GeneralSecurityException;
 import java.util.Properties;
-import org.apache.commons.codec.binary.Base64;
 
 public class BaseEmail {
     private static final String HOST = "smtp.sina.com";//smtp服务器
@@ -38,7 +41,21 @@ public class BaseEmail {
         AFFIXNAME = affixName;
         SUBJECT = title;
 
-        Properties props = new Properties();
+        Properties props = new Properties(); // SSL加密
+        MailSSLSocketFactory sf = null;
+        try {
+            sf = new MailSSLSocketFactory();      // 设置信任所有的主机
+            sf.setTrustAllHosts(true);
+            props.put("mail.smtp.ssl.enable", "true");
+            props.put("mail.smtp.ssl.socketFactory", sf);
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
+        }
+        props.setProperty("mail.transport.protocol", "smtp");
+//        props.setProperty("mail.smtp.host", "smtp.ym.163.com");
+//        props.setProperty("mail.smtp.auth", "true");//请求身份认证
+
+//        Properties props = new Properties();
         props.put("mail.smtp.host", HOST);//设置发送邮件的邮件服务器的属性
         props.put("mail.smtp.auth", "true");//需要经过授权，有户名和密码的校验
         Session session = Session.getDefaultInstance(props);//用props对象构建一个session
