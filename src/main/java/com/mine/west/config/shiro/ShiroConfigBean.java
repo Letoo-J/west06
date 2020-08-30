@@ -100,10 +100,6 @@ public class ShiroConfigBean {
         //放行第三方登录：
         filterChainDefinitionMap.put("/sina/**", "anon");
 
-        //放行头像
-        //filterChainDefinitionMap.put("/pic/**", "anon");
-        //filterChainDefinitionMap.put("/Exception.class", "anon");
-
         //被shiro拦截的swagger资源放行
         filterChainDefinitionMap.put("/doc.html/**", "anon");
         filterChainDefinitionMap.put("/swagger-resources/**", "anon");
@@ -115,7 +111,6 @@ public class ShiroConfigBean {
         filterChainDefinitionMap.put("/configuration/security", "anon");
         filterChainDefinitionMap.put("/configuration/ui", "anon");
         filterChainDefinitionMap.put("/swagger-resources/**/**", "anon");
-
 
         // 退出系统的过滤器（记住我状态下，可清除记住我的cookie）
         filterChainDefinitionMap.put("/account/logout", "logout");
@@ -176,6 +171,7 @@ public class ShiroConfigBean {
         //开启缓存管理器（本地缓存，应用内部）
         //开启全局缓存
         myShiroRealm.setCachingEnabled(true);
+        /*
         //启用授权缓存，即缓存AuthorizationInfo信息，默认false
         myShiroRealm.setAuthorizationCachingEnabled(true);
         //启用身份验证缓存，即缓存AuthenticationInfo信息，默认false
@@ -185,8 +181,7 @@ public class ShiroConfigBean {
         //缓存AuthenticationInfo信息的w缓存名称 在ehcache-shiro.xml中有对应缓存的配置
         myShiroRealm.setAuthenticationCacheName("authenticationCache");
         myShiroRealm.setCacheManager(new EhCacheManager());
-
-
+        */
         return myShiroRealm;
     }
 
@@ -306,7 +301,7 @@ public class ShiroConfigBean {
         SessionManager sessionManager = new SessionManager();
         sessionManager.setSessionIdCookie(simpleCookie);
         sessionManager.setSessionDAO(redisSessionDAO());
-        //sessionManager.setCacheManager(cacheManager());
+        sessionManager.setCacheManager(cacheManager());
         sessionManager.setSessionIdCookieEnabled(false);
         sessionManager.setSessionIdUrlRewritingEnabled(false);
         sessionManager.setDeleteInvalidSessions(true);
@@ -420,7 +415,7 @@ public class ShiroConfigBean {
      * 并且默认并没有去处理或者捕获这些异常。在SpringMVC下需要配置捕获相应异常来通知用户信息
      * @return
      */
-    @Bean
+    /*@Bean
     public SimpleMappingExceptionResolver simpleMappingExceptionResolver() {
         SimpleMappingExceptionResolver simpleMappingExceptionResolver=new SimpleMappingExceptionResolver();
         Properties properties=new Properties();
@@ -429,7 +424,7 @@ public class ShiroConfigBean {
         properties.setProperty("org.apache.shiro.authz.UnauthenticatedException","/unauthorized");
         simpleMappingExceptionResolver.setExceptionMappings(properties);
         return simpleMappingExceptionResolver;
-    }
+    }*/
 
 }
 

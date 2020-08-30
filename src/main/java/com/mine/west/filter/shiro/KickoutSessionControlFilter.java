@@ -1,6 +1,17 @@
 package com.mine.west.filter.shiro;
 
-import com.alibaba.fastjson.JSON;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Serializable;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+
 import com.mine.west.constant.ResultStatusCode;
 import com.mine.west.models.Account;
 import lombok.extern.slf4j.Slf4j;
@@ -13,16 +24,8 @@ import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.AccessControlFilter;
 import org.apache.shiro.web.util.WebUtils;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Serializable;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+
+import com.alibaba.fastjson.JSON;
 
 @Slf4j
 public class KickoutSessionControlFilter extends AccessControlFilter {
