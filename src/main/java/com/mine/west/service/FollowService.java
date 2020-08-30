@@ -50,9 +50,10 @@ public interface FollowService {
     /**
      * 取消关注
      *
-     * @param fID
+     * @param followlist
      * @return
+     * @throws ModelException
      */
-    boolean cancelFollow(Integer fID) throws ModelException;
+    boolean cancelFollow(Followlist followlist) throws ModelException;
 
 }

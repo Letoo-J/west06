@@ -34,12 +34,14 @@ public class BlogController2 {
      * @return blogID
      */
     @RequestMapping(method = RequestMethod.POST)
-    public AjaxResponse create(@RequestBody Blog blog) {
+    public AjaxResponse create(@RequestBody Blog blog, HttpSession session) {
         try {
+            Account account = (Account) session.getAttribute("account");
             blog.setReleaseTime(new Date());
             blog.setLikeNumber(0);
             blog.setCommentNumber(0);
             blog.setRepostNumber(0);
+            blog.setAccountID(account.getAccountID());
             return AjaxResponse.success(blogService.create(blog));
         } catch (ModelException e) {
             return new AjaxResponse(true, 400, e.getMessage(), null);

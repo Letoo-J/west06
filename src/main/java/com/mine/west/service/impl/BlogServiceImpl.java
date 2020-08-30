@@ -106,6 +106,6 @@ public class BlogServiceImpl implements BlogService2 {
             accountoperation.setInterest(accountoperation.getInterest() + repostWeight);
             accountoperationMapper.updateByPrimaryKey(accountoperation);
         }
-        return 0;
+        return blog.getRepostNumber();
     }
 }

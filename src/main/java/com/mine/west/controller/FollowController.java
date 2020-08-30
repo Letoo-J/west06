@@ -12,7 +12,10 @@ import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
 
@@ -104,13 +107,17 @@ public class FollowController {
     /**
      * 增加关注
      *
-     * @param followlist
+     * @param followID
+     * @param session
      * @return
      */
-    @RequestMapping(method = RequestMethod.POST)
-    public AjaxResponse create(@RequestBody Followlist followlist) {
+    @RequestMapping(value = "/follow/{accountID}", method = RequestMethod.POST)
+    public AjaxResponse create(@PathVariable("accountID") Integer followID,
+                               HttpSession session) {
         try {
-            return AjaxResponse.success(followService.create(followlist));
+            Account account = (Account) session.getAttribute("account");
+            Followlist f = new Followlist(0, followID, account.getAccountID());
+            return AjaxResponse.success(followService.create(f));
         } catch (ModelException e) {
             return new AjaxResponse(true, 400, e.getMessage(), null);
         }
@@ -119,13 +126,15 @@ public class FollowController {
     /**
      * 取消关注
      *
-     * @param fID
+     * @param followID
      * @return
      */
-    @RequestMapping(value = "/{fID}", method = RequestMethod.DELETE)
-    public AjaxResponse cancelFollow(@PathVariable("fID") Integer fID) {
+    @RequestMapping(value = "/{accountID}", method = RequestMethod.DELETE)
+    public AjaxResponse cancelFollow(@PathVariable("accountID") Integer followID,
+                                     HttpSession session) {
         try {
-            return AjaxResponse.success(followService.cancelFollow(fID));
+            Account account = (Account) session.getAttribute("account");
+            return AjaxResponse.success(followService.cancelFollow(new Followlist(0, followID, account.getAccountID())));
         } catch (ModelException e) {
             return new AjaxResponse(true, 400, e.getMessage(), null);
         }
