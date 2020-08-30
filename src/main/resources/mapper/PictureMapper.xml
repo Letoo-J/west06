@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mine.west.dao.PictureMapper">
+    <resultMap id="BaseResultMap" type="com.mine.west.models.Picture">
+        <constructor>
+            <idArg column="pbID" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="blogID" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="pictureName" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        </constructor>
+    </resultMap>
+
+    <insert id="insertPicture" parameterType="com.mine.west.models.Picture" useGeneratedKeys="true" keyProperty="pbID">
+    insert into picture (pictureName, blogID)
+    values (#{pictureName,jdbcType=VARCHAR},#{blogID,jdbcType=INTEGER})
+  </insert>
+
+    <select id="readByBlogID" resultMap="BaseResultMap">
+    select pbID, blogID, pictureName
+    from picture
+    where blogID = #{blogID,jdbcType=INTEGER}
+  </select>
+</mapper>
