@@ -46,8 +46,8 @@ public class AccountController {
      * @return
      */
     @RequestMapping(value = "/login",method = RequestMethod.POST)  //Post
-    public AjaxResponse login(HttpSession session, String username,
-                              String password, String rememberMe){
+    public AjaxResponse login(HttpSession session, @RequestParam("username")String username,
+                              @RequestParam("password")String password, @RequestParam("rememberMe")String rememberMe){
         boolean isRememberMe = false;
         if(rememberMe != null ) {
             isRememberMe = true;
@@ -94,7 +94,8 @@ public class AccountController {
      * @return
      */
     @RequestMapping(value = "/register",method = RequestMethod.POST)
-    public AjaxResponse register(String username,String password,String mail,String verifyInput){
+    public AjaxResponse register(@RequestParam("username")String username, @RequestParam("password")String password,
+                                 @RequestParam("mail")String mail,@RequestParam("verifyInput")String verifyInput){
 
         String verifyInput02 = verifyInput.toUpperCase(); //转换为大写
 
@@ -117,7 +118,7 @@ public class AccountController {
      */
     @ApiOperation(value = "验证用户名是否存在")
     @RequestMapping(value = "/register/validateUsername",method = RequestMethod.GET)
-    public boolean validateUsername(@Param("username") String username){
+    public boolean validateUsername(@Param("username")String username){
         Account u = _accountService.selectAccountByName(username);
         if(u == null){  //不存在此用户名
             return true;
