@@ -173,7 +173,7 @@ public class ShiroConfigBean {
         myShiroRealm.setCredentialsMatcher(credentialsMatcher);
 
 
-        /*//开启缓存管理器（本地缓存，应用内部）
+        //开启缓存管理器（本地缓存，应用内部）
         //开启全局缓存
         myShiroRealm.setCachingEnabled(true);
         //启用授权缓存，即缓存AuthorizationInfo信息，默认false
@@ -182,9 +182,9 @@ public class ShiroConfigBean {
         myShiroRealm.setAuthenticationCachingEnabled(false);
         //缓存AuthorizationInfo信息的缓存名称  在ehcache-shiro.xml中有对应缓存的配置
         myShiroRealm.setAuthorizationCacheName("authorizationCache");
-        //缓存AuthenticationInfo信息的缓存名称 在ehcache-shiro.xml中有对应缓存的配置
+        //缓存AuthenticationInfo信息的w缓存名称 在ehcache-shiro.xml中有对应缓存的配置
         myShiroRealm.setAuthenticationCacheName("authenticationCache");
-        myShiroRealm.setCacheManager(new EhCacheManager());*/
+        myShiroRealm.setCacheManager(new EhCacheManager());
 
 
         return myShiroRealm;

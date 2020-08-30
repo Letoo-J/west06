@@ -114,7 +114,7 @@ public class AccountController2 {
      * @return
      */
     @ApiOperation(value = "修改密码")
-    @RequestMapping(value = "/password",method = RequestMethod.GET)
+    @RequestMapping(value = "/password",method = RequestMethod.PUT)
     public AjaxResponse updatePassword(HttpSession session,@RequestParam("password")String password,
            @RequestParam("newPassword1")String newPassword1,@RequestParam("newPassword2")String newPassword2) {
 

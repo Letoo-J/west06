@@ -1,5 +1,7 @@
 package com.mine.west.models;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import org.apache.shiro.crypto.hash.Md5Hash;
 
@@ -19,29 +21,42 @@ import java.util.List;
  *         .build();
  */
 @Builder
+@ApiModel(value = "Account（账户）对象结构体")
 public class Account implements Serializable {
+    @ApiModelProperty(value="账户ID")
     private Integer accountID;
 
+    @ApiModelProperty(value="用户名（唯一）")
     private String name;
 
+    @ApiModelProperty(value="邮箱")
     private String mailbox;
 
+    @ApiModelProperty(value="密码")
     private String password;
 
+    @ApiModelProperty(value="昵称")
     private String nickname;
 
+    @ApiModelProperty(value="电话")
     private String mobilePhone;
 
+    @ApiModelProperty(value="性别")
     private String sex;
 
+    @ApiModelProperty(value="头像文件名")
     private String avatar;
 
+    @ApiModelProperty(value="个签")
     private String individualitySignature;
 
+    @ApiModelProperty(value="封禁状态")
     private String identity;
 
+    @ApiModelProperty(value="密码盐值")
     private String salt;
 
+    @ApiModelProperty(value="角色（无用的属性，不要用）")
     private String role;
 
     private static final long serialVersionUID = 1L;
