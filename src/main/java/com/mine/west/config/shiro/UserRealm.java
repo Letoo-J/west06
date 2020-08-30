@@ -187,8 +187,6 @@ public class UserRealm extends AuthorizingRealm {
         }
     }
 
-
-
     /**
      * 建议重写此方法，提供唯一的缓存Key!!!!【才可以进行正常退出、清除缓存】
      */
