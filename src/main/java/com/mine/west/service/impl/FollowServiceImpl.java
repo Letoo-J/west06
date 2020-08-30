@@ -67,10 +67,11 @@ public class FollowServiceImpl implements FollowService {
     }
 
     @Override
-    public boolean cancelFollow(Integer fID) throws ModelException {
-        if (followlistMapper.selectByPrimaryKey(fID) == null)
+    public boolean cancelFollow(Followlist followlist) throws ModelException {
+        Followlist f = followlistMapper.readOne(followlist.getFollowID(), followlist.getFanID());
+        if (f == null)
             throw new FollowlistException(ExceptionInfo.FOLLOW_NOT_EXIT);
-        followlistMapper.deleteByPrimaryKey(fID);
+        followlistMapper.deleteByPrimaryKey(f.getfID());
         return true;
     }
 }

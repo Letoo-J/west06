@@ -1,6 +1,7 @@
 package com.mine.west.controller;
 
 import com.mine.west.exception.ModelException;
+import com.mine.west.models.Account;
 import com.mine.west.models.Comment;
 import com.mine.west.service.CommentService;
 import com.mine.west.util.AjaxResponse;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.Date;
 
 @Slf4j
@@ -31,10 +33,12 @@ public class CommentController {
      * @return 评论ID
      */
     @RequestMapping(method = RequestMethod.POST)
-    public AjaxResponse create(@RequestBody Comment comment) {
+    public AjaxResponse create(@RequestBody Comment comment, HttpSession session) {
         try {
+            Account account = (Account) session.getAttribute("account");
             comment.setLikeNumber(0);
             comment.setCommentTime(new Date());
+            comment.setAccountID(account.getAccountID());
             return AjaxResponse.success(commentService.create(comment));
         } catch (ModelException e) {
             return new AjaxResponse(true, 400, e.getMessage(), null);
@@ -60,7 +64,7 @@ public class CommentController {
      * @param commentID
      * @return 当前点赞数
      */
-    @RequestMapping(value = "/{commentID}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/like/{commentID}", method = RequestMethod.PUT)
     public AjaxResponse like(@PathVariable("commentID") Integer commentID) {
         try {
             return AjaxResponse.success(commentService.like(commentID));
