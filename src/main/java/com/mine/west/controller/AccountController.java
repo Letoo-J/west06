@@ -1,12 +1,13 @@
 package com.mine.west.controller;
 
 import com.mine.west.config.shiro.AccountToken;
-import com.mine.west.config.shiro.UserRealm;
 import com.mine.west.constant.ResultStatusCode;
 import com.mine.west.email.MailboxVerificationUtil;
 import com.mine.west.exception.AccountException;
 import com.mine.west.exception.ModelException;
 import com.mine.west.models.Account;
+import com.mine.west.models.LoginAccount;
+import com.mine.west.models.RegisterAccount;
 import com.mine.west.service.AccountService;
 import com.mine.west.service.AccountServiceT;
 import com.mine.west.service.impl.RegisterServiceImpl;
@@ -16,7 +17,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,8 +46,14 @@ public class AccountController {
      * @return
      */
     @RequestMapping(value = "/login",method = RequestMethod.POST)  //Post
-    public AjaxResponse login(HttpSession session, @RequestParam("username")String username,
-                              @RequestParam("password")String password, @RequestParam("rememberMe")String rememberMe){
+    public AjaxResponse login(@RequestBody LoginAccount ac, HttpSession session) {
+//    public AjaxResponse login(HttpSession session, @RequestParam("username")String username,
+//                              @RequestParam("password")String password, @RequestParam("rememberMe")String rememberMe){
+        String username = ac.getUsername();
+        String password = ac.getPassword();
+        String rememberMe = ac.getRememberMe();
+
+
         boolean isRememberMe = false;
         if(rememberMe != null ) {
             isRememberMe = true;
@@ -94,8 +100,11 @@ public class AccountController {
      * @return
      */
     @RequestMapping(value = "/register",method = RequestMethod.POST)
-    public AjaxResponse register(@RequestParam("username")String username, @RequestParam("password")String password,
-                                 @RequestParam("mail")String mail,@RequestParam("verifyInput")String verifyInput){
+    public AjaxResponse register(@RequestBody RegisterAccount ac) {
+        String username = ac.getUsername();
+        String password = ac.getPassword();
+        String mail = ac.getMail();
+        String verifyInput = ac.getVerifyInput();
 
         String verifyInput02 = verifyInput.toUpperCase(); //转换为大写
 
