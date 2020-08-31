@@ -1,8 +1,11 @@
 package com.mine.west.controller;
 
+import com.mine.west.exception.AccountException;
 import com.mine.west.exception.ModelException;
 import com.mine.west.models.Account;
 import com.mine.west.models.Comment;
+import com.mine.west.models.CommentAll;
+import com.mine.west.service.AccountServiceT;
 import com.mine.west.service.CommentService;
 import com.mine.west.util.AjaxResponse;
 import io.swagger.annotations.ApiResponse;
@@ -15,7 +18,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -25,6 +30,9 @@ import java.util.Date;
 public class CommentController {
     @Autowired
     private CommentService commentService;
+
+    @Autowired
+    AccountServiceT accountService;
 
     /**
      * 发布评论
@@ -55,7 +63,17 @@ public class CommentController {
     })
     @RequestMapping(value = "/{blogID}", method = RequestMethod.GET)
     public AjaxResponse readeByBlockID(@PathVariable("blogID") Integer blogID) {
-        return AjaxResponse.success(commentService.readeByBlockID(blogID));
+        try {
+            List<Comment> commentList = commentService.readeByBlockID(blogID);
+            List<CommentAll> allList = new ArrayList<>();
+            for (Comment c : commentList) {
+                Account account1 = accountService.getAccount(c.getAccountID());
+                allList.add(new CommentAll(c, account1.getName()));
+            }
+            return AjaxResponse.success(allList);
+        } catch (AccountException e) {
+            return new AjaxResponse(true, 400, e.getMessage(), null);
+        }
     }
 
     /**
