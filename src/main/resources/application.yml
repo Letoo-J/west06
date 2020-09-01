@@ -11,18 +11,19 @@ spring:
 
 #HTTPS配置，和HTTP不可同时配置
 server:
+  #443
   port: 443
-  ssl:
-    key-store: src/main/resources/tomcat.keystore
-    key-store-password: 123456
-    key-alias: tomcat
-    key-store-type: JKS
+#  ssl:
+#    key-store: src/main/resources/tomcat.keystore
+#    key-store-password: 123456
+#    key-alias: tomcat
+#    key-store-type: JKS
   servlet:
     # 应用的访问路径
     context-path: /
   tomcat:
-    # 存放Tomcat的日志目录
-    basedir: /root/myhome
+    # 存放Tomcat的日志目录    /root/myhome
+    basedir: C:/tomcat
     accesslog:
       # 开启日志记录
       enabled: true
@@ -118,7 +119,7 @@ shiro:
     # 登录地址
     loginUrl: /account/login
     # 权限认证失败地址
-    unauthorizedUrl: account/unauth
+    unauthorizedUrl: /account/unauth
     #被踢出后重定向到的地址
     kickoutUrl: /account/kickout
     # 首页地址

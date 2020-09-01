@@ -1,11 +1,7 @@
 package com.mine.west.filter.shiro;
 
-import com.mine.west.config.shiro.UserRealm;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authc.LogoutFilter;
-import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;

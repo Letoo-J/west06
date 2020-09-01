@@ -1,15 +1,13 @@
 package com.mine.west.config.shiro;
 
-
-import com.mine.west.config.shiro.manager.SessionManager;
 import com.mine.west.filter.shiro.AddPrincipalToSessionFilter;
 import com.mine.west.filter.shiro.KickoutSessionControlFilter;
 import com.mine.west.filter.shiro.MyFormAuthenticationFilter;
 import com.mine.west.filter.shiro.ShiroLogoutFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
-import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.codec.Base64;
+import org.apache.shiro.session.SessionListener;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
@@ -18,18 +16,17 @@ import org.apache.shiro.web.mgt.CookieRememberMeManager;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.servlet.OncePerRequestFilter;
 import org.apache.shiro.web.servlet.SimpleCookie;
+import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.crazycake.shiro.RedisCacheManager;
 import org.crazycake.shiro.RedisManager;
 import org.crazycake.shiro.RedisSessionDAO;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import javax.servlet.Filter;
 
 /**
@@ -142,7 +139,7 @@ public class ShiroConfigBean {
     public DefaultWebSecurityManager securityManager() {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         // 注入自定义的realm;
-        securityManager.setRealm(userRealm());
+        securityManager.setRealm(myShiroRealm());
         //配置记住我
         securityManager.setRememberMeManager(rememberMeManager());
         // 自定义缓存实现 使用redis
@@ -157,8 +154,8 @@ public class ShiroConfigBean {
 
     //3.创建自定义realm
     @Bean
-    public UserRealm userRealm() {
-        UserRealm myShiroRealm = new UserRealm();
+    public MyShiroRealm myShiroRealm() {
+        MyShiroRealm myShiroRealm = new MyShiroRealm();
         //设置hashed凭证匹配器
         HashedCredentialsMatcher credentialsMatcher = new HashedCredentialsMatcher();
         //设置md5加密
@@ -170,20 +167,229 @@ public class ShiroConfigBean {
 
         //开启缓存管理器（本地缓存，应用内部）
         //开启全局缓存
-        myShiroRealm.setCachingEnabled(true);
-        /*
-        //启用授权缓存，即缓存AuthorizationInfo信息，默认false
-        myShiroRealm.setAuthorizationCachingEnabled(true);
-        //启用身份验证缓存，即缓存AuthenticationInfo信息，默认false
-        myShiroRealm.setAuthenticationCachingEnabled(false);
-        //缓存AuthorizationInfo信息的缓存名称  在ehcache-shiro.xml中有对应缓存的配置
-        myShiroRealm.setAuthorizationCacheName("authorizationCache");
-        //缓存AuthenticationInfo信息的w缓存名称 在ehcache-shiro.xml中有对应缓存的配置
-        myShiroRealm.setAuthenticationCacheName("authenticationCache");
-        myShiroRealm.setCacheManager(new EhCacheManager());
-        */
+        //myShiroRealm.setCachingEnabled(true);
+
+//        //启用身份验证缓存，即缓存AuthenticationInfo信息，默认false
+//        myShiroRealm.setAuthenticationCachingEnabled(true);
+//        //启用授权缓存，即缓存AuthorizationInfo信息，默认false
+//        myShiroRealm.setAuthorizationCachingEnabled(true);
+//        //缓存AuthenticationInfo信息的w缓存名称 在ehcache-shiro.xml中有对应缓存的配置
+//        myShiroRealm.setAuthenticationCacheName("authenticationCache");
+//        //缓存AuthorizationInfo信息的缓存名称  在ehcache-shiro.xml中有对应缓存的配置
+//        myShiroRealm.setAuthorizationCacheName("authorizationCache");
+
+        //myShiroRealm.setCacheManager(new EhCacheManager());
+
         return myShiroRealm;
     }
+
+    /**
+     * Shiro自定义过滤器（解决session丢失）
+     * @return
+     */
+    @Bean
+    public OncePerRequestFilter addPrincipalToSessionFilter() {
+        return new AddPrincipalToSessionFilter();
+    }
+
+    /**
+     * 	配置Shiro生命周期处理器
+     * @return
+     */
+    @Bean(name = "lifecycleBeanPostProcessor")
+    public static LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
+        return new LifecycleBeanPostProcessor();
+    }
+
+
+    /*
+     * 凭证匹配器 （由于我们的密码校验交给Shiro的SimpleAuthenticationInfo进行处理了
+     * 所以我们需要修改下doGetAuthenticationInfo中的代码; )
+     */
+//	@Bean
+//	public HashedCredentialsMatcher hashedCredentialsMatcher() {
+//		HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();
+//		hashedCredentialsMatcher.setHashAlgorithmName("md5");// 散列算法:这里使用MD5算法;
+//		hashedCredentialsMatcher.setHashIterations(1024);// 散列的次数，比如散列两次，相当于md5(md5(""));
+//		return hashedCredentialsMatcher;
+//	}
+
+
+
+
+    /**
+     * shiro缓存管理器;
+     * 使用的是shiro-redis开源插件
+     * 需要添加到securityManager中
+     * @return
+     */
+    @Bean
+    public RedisCacheManager cacheManager(){
+        RedisCacheManager redisCacheManager = new RedisCacheManager();
+        redisCacheManager.setRedisManager(redisManager());
+        //redis中针对不同用户缓存
+        redisCacheManager.setPrincipalIdFieldName("accountID");
+        //用户权限信息缓存时间
+        redisCacheManager.setExpire(200000);
+        return redisCacheManager;
+    }
+
+
+
+    /*
+     * 开启shiro aop注解支持 使用代理方式;所以需要开启代码支持;
+     * 同：在pom文件中加入
+     *      <dependency>
+     *          <groupId>org.springframework.boot</groupId>
+     *          <artifactId>spring-boot-starter-aop</artifactId>
+     *      </dependency>
+     */
+    @Bean
+    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(
+            DefaultWebSecurityManager securityManager) {
+        AuthorizationAttributeSourceAdvisor advisor = new AuthorizationAttributeSourceAdvisor();
+        advisor.setSecurityManager(securityManager);
+        return advisor;
+    }
+
+    /**
+     *	 配置shiro redisManager
+     * 	使用的是shiro-redis开源插件
+     *
+     * @return
+     */
+    public RedisManager redisManager() {
+        RedisManager redisManager = new RedisManager();
+        redisManager.setHost(redis_host);  //
+        redisManager.setPort(redis_port);  //redis_port
+        redisManager.setPassword(redis_password);  //
+        //redisManager.setExpire(1800);// 配置缓存过期时间
+        redisManager.setTimeout(0);
+
+        return redisManager;
+    }
+
+    /**
+     * Session Manager
+     * 	使用的是shiro-redis开源插件
+     */
+    @Bean
+    public DefaultWebSessionManager sessionManager() {
+        DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
+        Collection<SessionListener> listeners = new ArrayList<SessionListener>();
+        //配置监听
+        listeners.add(sessionListener());
+        sessionManager.setSessionListeners(listeners);
+
+        sessionManager.setSessionIdCookie(sessionIdCookie());
+        sessionManager.setSessionDAO(sessionDAO());
+        sessionManager.setCacheManager(cacheManager());
+
+        //全局会话超时时间（单位毫秒），默认30分钟  暂时设置为10秒钟 用来测试
+        sessionManager.setGlobalSessionTimeout(1800000);
+        //是否开启删除无效的session对象  默认为true
+        sessionManager.setDeleteInvalidSessions(true);
+        //是否开启定时调度器进行检测过期session 默认为true
+        sessionManager.setSessionValidationSchedulerEnabled(true);
+
+        //设置session失效的扫描时间, 清理用户直接关闭浏览器造成的孤立会话 默认为 1个小时
+        //设置该属性 就不需要设置 ExecutorServiceSessionValidationScheduler 底层也是默认自动调用ExecutorServiceSessionValidationScheduler
+        sessionManager.setSessionValidationInterval(3600000);
+        //取消url 后面的 JSESSIONID
+        sessionManager.setSessionIdUrlRewritingEnabled(false);
+
+        return sessionManager;
+    }
+
+    /**
+     * 配置session监听
+     * @return
+     */
+    @Bean("sessionListener")
+    public ShiroSessionListener sessionListener(){
+        ShiroSessionListener sessionListener = new ShiroSessionListener();
+        return sessionListener;
+    }
+
+    /**
+     * 配置保存sessionId的cookie
+     * 注意：这里的cookie 不是记住我 cookie 记住我需要一个cookie session管理 也需要自己的cookie
+     * 默认为: JSESSIONID 问题: 与SERVLET容器名冲突,重新定义为sid
+     * @return
+     */
+    @Bean("sessionIdCookie")
+    public SimpleCookie sessionIdCookie(){
+        //这个参数是cookie的名称
+        SimpleCookie simpleCookie = new SimpleCookie("sid");
+        //setcookie的httponly属性如果设为true的话，会增加对xss防护的安全系数。它有以下特点：
+
+        //setcookie()的第七个参数
+        //设为true后，只能通过http访问，javascript无法访问
+        //防止xss读取cookie
+        simpleCookie.setHttpOnly(true);
+        simpleCookie.setPath("/");
+        //maxAge=-1表示浏览器关闭时失效此Cookie
+        simpleCookie.setMaxAge(-1);
+        return simpleCookie;
+    }
+
+    /**
+     * shiro sessionDao层的实现 通过redis ：使用的是shiro-redis开源插件
+     * SessionDAO的作用是为Session提供CRUD并进行持久化的一个shiro组件
+     * MemorySessionDAO 直接在内存中进行会话维护
+     * EnterpriseCacheSessionDAO  提供了缓存功能的会话维护，默认情况下使用MapCache实现，内部使用ConcurrentHashMap保存缓存的会话。
+     * @return
+     */
+    @Bean
+    public RedisSessionDAO sessionDAO() {
+        RedisSessionDAO redisSessionDAO = new RedisSessionDAO();
+        redisSessionDAO.setRedisManager(redisManager());
+        //session在redis中的保存时间,最好大于session会话超时时间
+        redisSessionDAO.setExpire(12000);
+        return redisSessionDAO;
+    }
+
+
+    /**
+     * 	限制同一账号登录同时登录人数控制
+     *
+     * @return
+     */
+    @Bean
+    public KickoutSessionControlFilter kickoutSessionControlFilter() {
+        KickoutSessionControlFilter kickoutSessionControlFilter = new KickoutSessionControlFilter();
+        //使用cacheManager获取相应的cache来缓存用户登录的会话；用于保存用户—会话之间的关系的；
+        kickoutSessionControlFilter.setCacheManager(cacheManager());
+        //用于根据会话ID，获取会话进行踢出操作的；
+        kickoutSessionControlFilter.setSessionManager(sessionManager());
+
+        //是否踢出后来登录的，默认是false；即后者登录的用户踢出前者登录的用户；
+        kickoutSessionControlFilter.setKickoutAfter(kickoutAfter);  //
+
+        //同一个用户最大的会话数，默认1；比如2的意思是同一个用户允许最多同时两个人登录；
+        kickoutSessionControlFilter.setMaxSession(maxSession);  //
+        //被踢出后重定向到的地址；
+        kickoutSessionControlFilter.setKickoutUrl(kickoutUrl);  //kickoutUrl
+
+        return kickoutSessionControlFilter;
+    }
+
+
+    /**
+     * DefaultAdvisorAutoProxyCreator，Spring的一个bean，由Advisor决定对哪些类的方法进行AOP代理。
+     *  DefaultAdvisorAutoProxyCreator实现了BeanProcessor接口,
+     * 	当ApplicationContext读如所有的Bean配置信息后，这个类将扫描上下文,
+     * 	找出所有的Advistor(一个切入点和一个通知的组成),将这些Advisor应用到所有符合切入点的Bean中
+     *  @return
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
+        DefaultAdvisorAutoProxyCreator defaultAAP = new DefaultAdvisorAutoProxyCreator();
+        defaultAAP.setProxyTargetClass(true);
+        return defaultAAP;
+    }
+
 
     /**
      *	记住我cookie
@@ -230,170 +436,6 @@ public class ShiroConfigBean {
         //对应前端的checkbox的name = rememberMe
         formAuthenticationFilter.setRememberMeParam("rememberMe");
         return formAuthenticationFilter;
-    }
-
-    /*
-     * 开启shiro aop注解支持 使用代理方式;所以需要开启代码支持;
-     * 同：在pom文件中加入
-     *      <dependency>
-     *          <groupId>org.springframework.boot</groupId>
-     *          <artifactId>spring-boot-starter-aop</artifactId>
-     *      </dependency>
-     */
-    @Bean
-    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(
-            DefaultWebSecurityManager securityManager) {
-        AuthorizationAttributeSourceAdvisor advisor = new AuthorizationAttributeSourceAdvisor();
-        advisor.setSecurityManager(securityManager);
-        return advisor;
-    }
-
-
-    /**
-     * cacheManager 缓存 redis实现
-     * 使用的是shiro-redis开源插件
-     * 需要添加到securityManager中
-     *
-     * @return
-     */
-    public RedisCacheManager cacheManager() {
-        RedisCacheManager redisCacheManager = new RedisCacheManager();
-        redisCacheManager.setRedisManager(redisManager());
-        redisCacheManager.setKeyPrefix("SPRINGBOOT_CACHE:");   //设置前缀
-        // 配置缓存的话要求放在session里面的实体类必须有个id标识
-        redisCacheManager.setPrincipalIdFieldName("accountID");
-        //用户权限信息缓存时间
-        redisCacheManager.setExpire(200000);
-        return redisCacheManager;
-    }
-
-    /**
-     * shiro sessionDao层的实现 通过redis ：使用的是shiro-redis开源插件
-     * SessionDAO的作用是为Session提供CRUD并进行持久化的一个shiro组件
-     * MemorySessionDAO 直接在内存中进行会话维护
-     * EnterpriseCacheSessionDAO  提供了缓存功能的会话维护，默认情况下使用MapCache实现，内部使用ConcurrentHashMap保存缓存的会话。
-     * @return
-     */
-    @Bean
-    public RedisSessionDAO redisSessionDAO() {
-        RedisSessionDAO redisSessionDAO = new RedisSessionDAO();
-        redisSessionDAO.setRedisManager(redisManager());
-        redisSessionDAO.setKeyPrefix("SPRINGBOOT_SESSION:");
-        //session在redis中的保存时间,最好大于session会话超时时间
-        redisSessionDAO.setExpire(12000);
-        return redisSessionDAO;
-    }
-
-    /**
-     * Session Manager
-     * 使用的是shiro-redis开源插件
-     */
-    @Bean
-    public SessionManager sessionManager() {
-        SimpleCookie simpleCookie = new SimpleCookie("Token");
-        simpleCookie.setPath("/");
-        //设为true后，只能通过http访问，javascript无法访问
-        //防止xss读取cookie
-        simpleCookie.setHttpOnly(true);
-        //maxAge=-1表示浏览器关闭时失效此Cookie
-        simpleCookie.setMaxAge(-1);
-
-        SessionManager sessionManager = new SessionManager();
-        sessionManager.setSessionIdCookie(simpleCookie);
-        sessionManager.setSessionDAO(redisSessionDAO());
-        sessionManager.setCacheManager(cacheManager());
-        sessionManager.setSessionIdCookieEnabled(false);
-        sessionManager.setSessionIdUrlRewritingEnabled(false);
-        sessionManager.setDeleteInvalidSessions(true);
-
-        //取消url 后面的 JSESSIONID
-        sessionManager.setSessionIdUrlRewritingEnabled(false);
-        //全局会话超时时间（单位毫秒），默认30分钟  暂时设置为10秒钟 用来测试
-        sessionManager.setGlobalSessionTimeout(1800000);
-        //是否开启删除无效的session对象  默认为true
-        sessionManager.setDeleteInvalidSessions(true);
-        //是否开启定时调度器进行检测过期session 默认为true
-        sessionManager.setSessionValidationSchedulerEnabled(true);
-
-        //设置session失效的扫描时间, 清理用户直接关闭浏览器造成的孤立会话 默认为 1个小时
-        //设置该属性 就不需要设置 ExecutorServiceSessionValidationScheduler 底层也是默认自动调用ExecutorServiceSessionValidationScheduler
-        sessionManager.setSessionValidationInterval(3600000);
-
-
-        return sessionManager;
-    }
-
-    /**
-     * 配置shiro redisManager
-     * 使用的是shiro-redis开源插件
-     *
-     * @return
-     */
-    public RedisManager redisManager() {
-        RedisManager redisManager = new RedisManager();
-        redisManager.setHost(redis_host);  //"127.0.0.1"
-        redisManager.setPort(redis_port);  //6379"
-        redisManager.setTimeout(0);
-        redisManager.setPassword(redis_password); //"123456"
-        return redisManager;
-    }
-
-    /**
-     * 限制同一账号登录同时登录人数控制
-     *
-     * @return
-     */
-    @Bean
-    public KickoutSessionControlFilter kickoutSessionControlFilter() {
-        KickoutSessionControlFilter kickoutSessionControlFilter = new KickoutSessionControlFilter();
-        //使用cacheManager获取相应的cache来缓存用户登录的会话；用于保存用户—会话之间的关系的；
-        kickoutSessionControlFilter.setCache(cacheManager());
-        //用于根据会话ID，获取会话进行踢出操作的；
-        kickoutSessionControlFilter.setSessionManager(sessionManager());
-        //是否踢出后来登录的，默认是false；即后者登录的用户踢出前者登录的用户；
-        kickoutSessionControlFilter.setKickoutAfter(kickoutAfter);  // false
-        //同一个用户最大的会话数，默认1；比如2的意思是同一个用户允许最多同时两个人登录；
-        kickoutSessionControlFilter.setMaxSession(maxSession); // 1
-        //被踢出后重定向到的地址；
-        log.warn("kickoutUrl:"+kickoutUrl);
-        kickoutSessionControlFilter.setKickoutUrl(kickoutUrl); //  /account/login
-        return kickoutSessionControlFilter;
-    }
-
-    /***
-     * 授权所用配置
-     * DefaultAdvisorAutoProxyCreator，Spring的一个bean，由Advisor决定对哪些类的方法进行AOP代理。
-     * DefaultAdvisorAutoProxyCreator实现了BeanProcessor接口,
-     * 当ApplicationContext读如所有的Bean配置信息后，这个类将扫描上下文,
-     * 找出所有的Advistor(一个切入点和一个通知的组成),将这些Advisor应用到所有符合切入点的Bean中
-     *      DelegatingFilterProxy作用是自动到spring容器查找名字为shiroFilter（filter-name）
-     *      的bean并把所有Filter的操作委托给它。
-     * @return
-     */
-    @Bean
-    public DefaultAdvisorAutoProxyCreator getDefaultAdvisorAutoProxyCreator() {
-        DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
-        defaultAdvisorAutoProxyCreator.setProxyTargetClass(true);
-        return defaultAdvisorAutoProxyCreator;
-    }
-
-    /**
-     * Shiro生命周期处理器
-     * 此方法需要用static作为修饰词，否则无法通过@Value()注解的方式获取配置文件的值
-     *
-     */
-    @Bean
-    public static LifecycleBeanPostProcessor getLifecycleBeanPostProcessor() {
-        return new LifecycleBeanPostProcessor();
-    }
-
-    /**
-     * Shiro自定义过滤器（解决session丢失）
-     * @return
-     */
-    @Bean
-    public OncePerRequestFilter addPrincipalToSessionFilter() {
-        return new AddPrincipalToSessionFilter();
     }
 
     /**
