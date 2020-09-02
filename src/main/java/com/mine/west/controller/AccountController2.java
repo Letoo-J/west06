@@ -121,9 +121,6 @@ public class AccountController2 {
     /**
      * 修改密码
      * @param session
-     * @param password
-     * @param newPassword1
-     * @param newPassword2
      * @return
      */
     @ApiOperation(value = "修改密码")
@@ -170,14 +167,17 @@ public class AccountController2 {
     /**
      * 第三方登录用户进行初始密码设置
      * @param session
-     * @param password1
-     * @param password2
      * @return
      */
     @ApiOperation(value = "第三方登录用户进行初始密码设置")
     @RequestMapping(value = "/TP/password",method = RequestMethod.PUT)
-    public AjaxResponse setPassword(HttpSession session,
-                  @RequestParam("password1")String password1,@RequestParam("password2")String password2){
+    public AjaxResponse setPassword(HttpSession session,@RequestBody Map<String, String> m){
+        /*
+        @RequestParam("password1")String password1,@RequestParam("password2")String password2
+         */
+        String password1 = m.get("password1");
+        String password2 = m.get("password2");
+
         Account account = (Account) session.getAttribute("account");
         //密码为空才可以设置
         if(StringUtils.isEmpty(account.getPassword())){
