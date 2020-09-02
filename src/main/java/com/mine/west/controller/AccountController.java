@@ -24,6 +24,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -39,10 +40,6 @@ public class AccountController {
 
     /**
      * 用户登录
-     * @param session
-     * @param username
-     * @param password
-     * @param rememberMe
      * @return
      */
     @RequestMapping(value = "/login",method = RequestMethod.POST)  //Post
@@ -93,10 +90,6 @@ public class AccountController {
 
     /**
      * 用户注册
-     * @param username
-     * @param password
-     * @param mail
-     * @param verifyInput
      * @return
      */
     @RequestMapping(value = "/register",method = RequestMethod.POST)
@@ -127,7 +120,7 @@ public class AccountController {
      */
     @ApiOperation(value = "验证用户名是否存在")
     @RequestMapping(value = "/register/validateUsername",method = RequestMethod.GET)
-    public boolean validateUsername(@Param("username")String username){
+    public boolean validateUsername(@RequestParam("username")String username){
         Account u = _accountService.selectAccountByName(username);
         if(u == null){  //不存在此用户名
             return true;
@@ -142,7 +135,7 @@ public class AccountController {
      */
     @ApiOperation(value = "验证邮箱是否存在")
     @RequestMapping(value = "/register/validateEMail",method = RequestMethod.GET)
-    public boolean validateEMail(@Param("mailBox") String mailBox){
+    public boolean validateEMail(@RequestParam("mailBox") String mailBox){
         Account u = _accountService.selectAccountByMailbox(mailBox);
         if(u == null){  //不存在此用户邮箱
             return true;
@@ -196,7 +189,7 @@ public class AccountController {
      */
     @ApiOperation(value = "向邮箱发送验证码", notes = "向邮箱发送验证码")
     @RequestMapping(value = "/send/emaliVerification",method = RequestMethod.GET)
-    public AjaxResponse emaliVerification(@Param("mailBox") String mailBox){
+    public AjaxResponse emaliVerification(@RequestParam("mailBox") String mailBox){
         try {
             boolean b = MailboxVerificationUtil.sendEmail(mailBox);
         } catch (AccountException e) {
@@ -207,14 +200,16 @@ public class AccountController {
 
     /**
      * 找回密码 ：验证邮箱验证码
-     * @param email
-     * @param verifyInput
      * @return
      */
     @ApiOperation(value = "找回密码 ：1.验证邮箱验证码", notes = "找回密码 ：1.验证邮箱验证码")
     @RequestMapping(value = "/find/emaliVerification",method = RequestMethod.GET)
-    public AjaxResponse emaliVerificationMatched(@RequestParam("email")String email,
-                                                 @RequestParam("verifyInput")String verifyInput){
+    public AjaxResponse emaliVerificationMatched(@RequestBody Map<String, String> m){
+        /*
+         @RequestParam("email")String email,@RequestParam("verifyInput")String verifyInput
+         */
+        String email = m.get("email");
+        String verifyInput = m.get("verifyInput");
         boolean b = false;
         // 验证码校验
         try {
@@ -232,15 +227,19 @@ public class AccountController {
     /**
      * 找回密码 ： 2.重置密码
      * @param session
-     * @param newPassword1
-     * @param newPassword2
-     * @param email
+     * @param m
      * @return
      */
     @ApiOperation(value = "找回密码 ： 2.重置密码", notes = "找回密码 ： 2.重置密码")
     @RequestMapping(value = "/find/password",method = RequestMethod.GET)
-    public AjaxResponse updatePassword(HttpSession session, @RequestParam("newPassword1")String newPassword1,
-               @RequestParam("newPassword2")String newPassword2,@RequestParam("email")String email) {
+    public AjaxResponse updatePassword(HttpSession session, @RequestBody Map<String, String> m) {
+        /*
+        @RequestParam("newPassword1")String newPassword1,
+        @RequestParam("newPassword2")String newPassword2,@RequestParam("email")String email
+         */
+        String newPassword1 = m.get("newPassword1");
+        String newPassword2 = m.get("newPassword2");
+        String email = m.get("email");
 
         Account account = _accountService.selectAccountByMailbox(email);
         if(!newPassword1.equals(newPassword2)){

@@ -12,10 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
@@ -39,7 +36,11 @@ public class AdminController {
 
     @ApiOperation(value = "修改用户角色", notes = "修改用户角色")
     @RequestMapping(value = "/role",method = RequestMethod.PUT)
-    public AjaxResponse updateAccountRole(HttpSession session,@Param("roleName")String roleName){
+    public AjaxResponse updateAccountRole(HttpSession session,@RequestBody Map<String, String> m){
+        /*
+        @Param("roleName")String roleName
+         */
+        String roleName = m.get("roleName");
         Account account = (Account) session.getAttribute("account");
         //查询roleName对应的roleID
         int roleID = _rolesService.selectIDByRoleName(roleName);
@@ -58,7 +59,11 @@ public class AdminController {
 
     @ApiOperation(value = "修改用户封禁状态", notes = "修改用户封禁状态")
     @RequestMapping(value = "/identity",method = RequestMethod.PUT)
-    public AjaxResponse updateAccountIdentity(HttpSession session,@Param("identity")String identity){
+    public AjaxResponse updateAccountIdentity(HttpSession session,@RequestBody Map<String, String> m){
+        /*
+        @Param("identity")String identity
+         */
+        String identity = m.get("identity");
         Account account = (Account) session.getAttribute("account");
 
         account.setIdentity(identity);
