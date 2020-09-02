@@ -27,6 +27,7 @@ import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Map;
 
 @Slf4j
 @Controller
@@ -127,8 +128,15 @@ public class AccountController2 {
      */
     @ApiOperation(value = "修改密码")
     @RequestMapping(value = "/password",method = RequestMethod.PUT)
-    public AjaxResponse updatePassword(HttpSession session,@RequestParam("password")String password,
-           @RequestParam("newPassword1")String newPassword1,@RequestParam("newPassword2")String newPassword2) {
+    public AjaxResponse updatePassword(HttpSession session,@RequestBody Map<String, String> pas) {
+        /*
+           @RequestParam("password")String password,
+           @RequestParam("newPassword1")String newPassword1,
+           @RequestParam("newPassword2")String newPassword2
+         */
+        String password = pas.get("password");
+        String newPassword1 = pas.get("newPassword1");
+        String newPassword2 = pas.get("newPassword2");
 
         Account account = (Account) session.getAttribute("account");
         String salt = account.getSalt();
