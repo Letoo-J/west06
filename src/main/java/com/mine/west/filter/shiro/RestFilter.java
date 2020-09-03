@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * 前后端分离RESTful接口过滤器
  *
- * @author xuguoqin
+ * @author
  *
  */
 public class RestFilter implements Filter {
