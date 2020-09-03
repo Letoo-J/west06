@@ -1,9 +1,7 @@
 package com.mine.west.config.shiro;
 
-import com.mine.west.filter.shiro.AddPrincipalToSessionFilter;
-import com.mine.west.filter.shiro.KickoutSessionControlFilter;
-import com.mine.west.filter.shiro.MyFormAuthenticationFilter;
-import com.mine.west.filter.shiro.ShiroLogoutFilter;
+import com.mine.west.config.shiro.manager.SessionManager;
+import com.mine.west.filter.shiro.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.codec.Base64;
@@ -65,11 +63,11 @@ public class ShiroConfigBean {
         shiroFilterFactoryBean.setSecurityManager(securityManager);
 
         // 设置login URL
-        shiroFilterFactoryBean.setLoginUrl("/account/login");
+        shiroFilterFactoryBean.setLoginUrl("/account/unauth");
         // 登录成功后要跳转的链接
-        shiroFilterFactoryBean.setSuccessUrl("/home");
+        //shiroFilterFactoryBean.setSuccessUrl("/home");
         // 未授权的页面
-        shiroFilterFactoryBean.setUnauthorizedUrl("/account/unauth");
+        //shiroFilterFactoryBean.setUnauthorizedUrl("/account/unauth");
 
         // 配置访问权限 必须是LinkedHashMap，因为它必须保证有序
         //<!-- authc:所有url都必须认证通过才可以访问;  anon:所有url都都可以匿名访问-->
@@ -88,6 +86,7 @@ public class ShiroConfigBean {
         filterChainDefinitionMap.put("/", "anon");
         filterChainDefinitionMap.put("/account/login", "anon");
         filterChainDefinitionMap.put("/account/register/**", "anon");
+        filterChainDefinitionMap.put("/account/unauth", "anon");
         //忘记密码：
         filterChainDefinitionMap.put("/account/find/**", "anon");
         //邮箱验证码
@@ -110,12 +109,12 @@ public class ShiroConfigBean {
         filterChainDefinitionMap.put("/swagger-resources/**/**", "anon");
 
         // 退出系统的过滤器（记住我状态下，可清除记住我的cookie）
-        filterChainDefinitionMap.put("/account/logout", "logout");
+        filterChainDefinitionMap.put("/account/logout", "anon,corsFilter");
         //filterChainDefinitionMap.put("/home/**", "authc");
 
         //主要这行代码必须放在所有权限设置的最后，不然会导致所有 url 都被拦截 剩余的都需要认证
         //其他资源都需要认证  authc 表示需要认证才能进行访问; user表示配置'记住我'或'认证通过'可以访问的地址
-        filterChainDefinitionMap.put("/**","kickout,user" );//"kickout,user"
+        filterChainDefinitionMap.put("/**","kickout,user,corsFilter" );//"kickout,user"
         //filterChainDefinitionMap.put("/**", "anon");//"kickout,user"//"authc"
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
 
@@ -129,6 +128,8 @@ public class ShiroConfigBean {
         //filtersMap.put("logout", shiroLogoutFilter());
         //自定义过滤器，前后分离重定向会出现302等ajax跨域错误，这里直接返回错误不重定向
         filtersMap.put("authc", new MyFormAuthenticationFilter());
+        //
+        filtersMap.put("corsFilter", new RestFilter());
         shiroFilterFactoryBean.setFilters(filtersMap );
 
         return shiroFilterFactoryBean;
@@ -272,10 +273,11 @@ public class ShiroConfigBean {
     /**
      * Session Manager
      * 	使用的是shiro-redis开源插件
+     * 	DefaultWebSessionManager
      */
     @Bean
-    public DefaultWebSessionManager sessionManager() {
-        DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
+    public SessionManager sessionManager() {
+        SessionManager sessionManager = new SessionManager();
         Collection<SessionListener> listeners = new ArrayList<SessionListener>();
         //配置监听
         listeners.add(sessionListener());
@@ -320,7 +322,7 @@ public class ShiroConfigBean {
     @Bean("sessionIdCookie")
     public SimpleCookie sessionIdCookie(){
         //这个参数是cookie的名称
-        SimpleCookie simpleCookie = new SimpleCookie("sid");
+        SimpleCookie simpleCookie = new SimpleCookie("Token");
         //setcookie的httponly属性如果设为true的话，会增加对xss防护的安全系数。它有以下特点：
 
         //setcookie()的第七个参数
