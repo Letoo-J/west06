@@ -40,6 +40,8 @@ public class AccountController {
 
     /**
      * 用户登录
+     * 登录成功则返回sessionId作为token给前端存储，前端请求时将该token放入请求头，
+     * 以Authorization为key，以此来鉴权。如果出现账号或密码错误等异常则返回错误信息。
      * @return
      */
     @RequestMapping(value = "/login",method = RequestMethod.POST)  //Post
@@ -68,6 +70,7 @@ public class AccountController {
             Account account = (Account) subject.getPrincipal();
             //登陆成功的话，用户信息放到session中
             session.setAttribute("account", account);
+            session.setAttribute("token",subject.getSession().getId());
             //放入csrf-token:
             //String uuidToken = (String) session.getAttribute("uuidToken");
             //String uuidToken = UUID.randomUUID().toString();
@@ -165,11 +168,11 @@ public class AccountController {
      * 未授权跳转方法
      * @return
      */
-    @ApiOperation(value = "未授权跳转方法")
+    @ApiOperation(value = "未登录跳转方法")
     @RequestMapping(value = "/unauth",method = RequestMethod.GET)
     public AjaxResponse unauth(){
         SecurityUtils.getSubject().logout();
-        return AjaxResponse.fail(ResultStatusCode.UNAUTHO_ERROR,"您没有该权限");
+        return AjaxResponse.fail(ResultStatusCode.UNAUTHO_ERROR,"您没有登录");
     }
 
     /**

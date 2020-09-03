@@ -14,13 +14,13 @@ import javax.servlet.ServletResponse;
 import java.io.Serializable;
 
 /**
- * 自定义session容器，用于实现前后端分离，前端请求接口时将Token放在请求Header中，
- * 即可获取到用户的session信息（建议前端是将Token放在Header中，
- * 而不是放到body请求参数中，这样可以统一做封装处理，下面的代码中是获取Header中或者body中Token，
- * 建议直接获取Header中Token即可）
+ * 自定义session容器，用于实现前后端分离，前端请求接口时将Authorization放在请求Header中，
+ * 即可获取到用户的session信息（建议前端是将Authorization放在Header中，
+ * 而不是放到body请求参数中，这样可以统一做封装处理，下面的代码中是获取Header中或者body中Authorization，
+ * 建议直接获取Header中Authorization即可）
  */
 public class SessionManager extends DefaultWebSessionManager {
-    private static final String AUTHORIZATION = "Token";
+    private static final String AUTHORIZATION = "Authorization";
 
     private static final String REFERENCED_SESSION_ID_SOURCE = "Stateless request";
 
@@ -30,10 +30,10 @@ public class SessionManager extends DefaultWebSessionManager {
 
     @Override
     protected Serializable getSessionId(ServletRequest request, ServletResponse response) {
-        //获取请求头，或者请求参数中的Token
+        //获取请求头，或者请求参数中的Authorization
         String id = StringUtils.isEmpty(WebUtils.toHttp(request).getHeader(AUTHORIZATION))
                 ? request.getParameter(AUTHORIZATION) : WebUtils.toHttp(request).getHeader(AUTHORIZATION);
-        // 如果请求头中有 Token 则其值为sessionId
+        // 如果请求头中有 Authorization 则其值为sessionId
         if (StringUtils.isNotEmpty(id)) {
             request.setAttribute(ShiroHttpServletRequest.REFERENCED_SESSION_ID_SOURCE, REFERENCED_SESSION_ID_SOURCE);
             request.setAttribute(ShiroHttpServletRequest.REFERENCED_SESSION_ID, id);
