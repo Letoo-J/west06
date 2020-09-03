@@ -83,18 +83,18 @@ public class ShiroConfigBean {
         filterChainDefinitionMap.put("/defaultPicture/**", "anon");
         filterChainDefinitionMap.put("/js/**", "anon");
         // 设置登录的URL为匿名访问，因为一开始没有用户验证
-        filterChainDefinitionMap.put("/", "anon");
-        filterChainDefinitionMap.put("/account/login", "anon");
-        filterChainDefinitionMap.put("/account/register/**", "anon");
-        filterChainDefinitionMap.put("/account/unauth", "anon");
+        filterChainDefinitionMap.put("/", "anon,corsFilter");
+        filterChainDefinitionMap.put("/account/login", "anon,corsFilter");
+        filterChainDefinitionMap.put("/account/register/**", "anon,corsFilter");
+        filterChainDefinitionMap.put("/account/unauth", "anon,corsFilter");
         //忘记密码：
-        filterChainDefinitionMap.put("/account/find/**", "anon");
+        filterChainDefinitionMap.put("/account/find/**", "anon,corsFilter");
         //邮箱验证码
-        filterChainDefinitionMap.put("/account/send/emaliVerification", "anon");
+        filterChainDefinitionMap.put("/account/send/emaliVerification", "anon,corsFilter");
         //获得滑块验证码
-        filterChainDefinitionMap.put("/verification", "anon");
+        filterChainDefinitionMap.put("/verification", "anon,corsFilter");
         //放行第三方登录：
-        filterChainDefinitionMap.put("/sina/**", "anon");
+        filterChainDefinitionMap.put("/sina/**", "anon,corsFilter");
 
         //被shiro拦截的swagger资源放行
         filterChainDefinitionMap.put("/doc.html/**", "anon");
