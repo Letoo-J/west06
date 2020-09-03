@@ -1,18 +1,12 @@
 package com.mine.west.service.impl;
 
-import com.mine.west.dao.AccountMapper;
-import com.mine.west.dao.AccountoperationMapper;
-import com.mine.west.dao.BlogMapper;
-import com.mine.west.dao.PictureMapper;
+import com.mine.west.dao.*;
 import com.mine.west.exception.AccountException;
 import com.mine.west.exception.BlogException;
 import com.mine.west.exception.ExceptionInfo;
 import com.mine.west.exception.ModelException;
 import com.mine.west.modelLegal.BlogLegal;
-import com.mine.west.models.Account;
-import com.mine.west.models.Accountoperation;
-import com.mine.west.models.Blog;
-import com.mine.west.models.Picture;
+import com.mine.west.models.*;
 import com.mine.west.service.BlogService2;
 import com.mine.west.userBasedCollaborativeFiltering.UserCF;
 import com.mine.west.util.ImageUtil;
@@ -24,6 +18,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -37,6 +32,10 @@ public class BlogServiceImpl implements BlogService2 {
     private AccountoperationMapper accountoperationMapper;
     @Autowired
     private PictureMapper pictureMapper;
+    @Autowired
+    private EndorseMapper endorseMapper;
+    @Autowired
+    private CollectMapper collectMapper;
 
     public static final float likeWeight = 2L;
     public static final float repostWeight = 4L;
@@ -99,7 +98,17 @@ public class BlogServiceImpl implements BlogService2 {
             accountoperation.setInterest(accountoperation.getInterest() + likeWeight);
             accountoperationMapper.updateByPrimaryKey(accountoperation);
         }
+        endorseMapper.insert(new Endorse(0, accountID, blogID));
         return blog.getLikeNumber();
+    }
+
+    @Override
+    public List<Blog> getLike(Integer accountID) {
+        List<Endorse> endorseList = endorseMapper.selectByAccountID(accountID);
+        List<Blog> blogList = new ArrayList<>();
+        for (Endorse e : endorseList)
+            blogList.add(blogMapper.selectByPrimaryKey(e.getBlogID()));
+        return blogList;
     }
 
     @Override
@@ -157,5 +166,24 @@ public class BlogServiceImpl implements BlogService2 {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public int collect(Integer accountID, Integer blogID) throws BlogException {
+        Blog blog = blogMapper.selectByPrimaryKey(blogID);
+        if (blog == null)
+            throw new BlogException(ExceptionInfo.BLOG_ID_NOT_EXIT);
+
+        collectMapper.insert(new Collect(0, accountID, blogID));
+        return 0;
+    }
+
+    @Override
+    public List<Blog> getCollect(Integer accountID) {
+        List<Collect> collectList = collectMapper.selectByAccountID(accountID);
+        List<Blog> blogList = new ArrayList<>();
+        for (Collect c : collectList)
+            blogList.add(blogMapper.selectByPrimaryKey(c.getBlogID()));
+        return blogList;
     }
 }
