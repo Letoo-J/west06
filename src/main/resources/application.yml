@@ -13,17 +13,18 @@ spring:
 server:
   #443
   port: 443
-#  ssl:
-#    key-store: src/main/resources/tomcat.keystore
-#    key-store-password: 123456
-#    key-alias: tomcat
-#    key-store-type: JKS
+  ssl:
+    key-store: src/main/resources/tomcat.keystore
+    key-store-password: 123456
+    key-alias: tomcat
+    key-store-type: JKS
   servlet:
     # 应用的访问路径
     context-path: /
   tomcat:
     # 存放Tomcat的日志目录    /root/myhome
-    basedir: C:/tomcat
+    #    basedir: C:/tomcat
+    basedir: /root/myhome
     accesslog:
       # 开启日志记录
       enabled: true

@@ -144,5 +144,6 @@
             <property name="useActualColumnNames" value="true" />
         </table>-->
         <!--        无用table标签-->
+        <table tableName="noUse"></table>
     </context>
 </generatorConfiguration>
