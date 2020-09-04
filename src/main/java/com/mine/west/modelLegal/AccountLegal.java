@@ -1,5 +1,7 @@
 package com.mine.west.modelLegal;
 
+import com.mine.west.constant.AccountConstants;
+
 public class AccountLegal extends BaseLegal {
     public static boolean accountIDLegal(Integer accountID) {
         if (accountID < 1)
@@ -8,13 +10,12 @@ public class AccountLegal extends BaseLegal {
     }
 
     public static boolean emailLegal(String email) {
+        //return true;
+        if (!email.matches(AccountConstants.EMAIL_PATTERN))
+        {
+            return false;
+        }
         return true;
-//        if (stringIsEmpty(email))
-//            return true;
-//        if (emailRegex.matches(email) || email.matches(emailRegex))
-//            return true;
-//        else
-//            return false;
     }
 
     public static boolean phoneLegal(String phone) {

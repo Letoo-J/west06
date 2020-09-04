@@ -158,7 +158,7 @@ public class AccountController {
         Subject subject = SecurityUtils.getSubject();//取出当前验证主体
         if (subject != null) {
             subject.logout(); //不为空，执行一次logout的操作，将session全部清空
-            return AjaxResponse.success("退出成功");   //重定向到“/login”
+            return AjaxResponse.success("退出成功");
         }
         return AjaxResponse.fail(500,"退出失败");
     }
@@ -207,12 +207,13 @@ public class AccountController {
      */
     @ApiOperation(value = "找回密码 ：1.验证邮箱验证码", notes = "找回密码 ：1.验证邮箱验证码")
     @RequestMapping(value = "/find/emaliVerification",method = RequestMethod.GET)
-    public AjaxResponse emaliVerificationMatched(@RequestBody Map<String, String> m){
+    public AjaxResponse emaliVerificationMatched(@RequestParam("email")String email,@RequestParam("verifyInput")String verifyInput){
         /*
-         @RequestParam("email")String email,@RequestParam("verifyInput")String verifyInput
+
+         @RequestBody Map<String, String> m
          */
-        String email = m.get("email");
-        String verifyInput = m.get("verifyInput");
+//        String email = m.get("email");
+//        String verifyInput = m.get("verifyInput");
         boolean b = false;
         // 验证码校验
         try {
@@ -234,7 +235,7 @@ public class AccountController {
      * @return
      */
     @ApiOperation(value = "找回密码 ： 2.重置密码", notes = "找回密码 ： 2.重置密码")
-    @RequestMapping(value = "/find/password",method = RequestMethod.GET)
+    @RequestMapping(value = "/find/password",method = RequestMethod.PUT)
     public AjaxResponse updatePassword(HttpSession session, @RequestBody Map<String, String> m) {
         /*
         @RequestParam("newPassword1")String newPassword1,

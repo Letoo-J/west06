@@ -88,6 +88,7 @@ public class SinaController {
             Account account = (Account) subject.getPrincipal();
             //登陆成功的话，用户信息放到session中
             session.setAttribute("account", account);
+            session.setAttribute("token",subject.getSession().getId());
 
             log.info("登陆成功！");
             model.addAttribute("msg", "登陆成功！");

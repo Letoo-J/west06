@@ -31,6 +31,13 @@ public class AccountServiceTImpl implements AccountServiceT {
         return account;
     }
 
+    /**
+     * 返回头像的字节数组
+     * @param headPath
+     * @param accountID
+     * @return
+     * @throws AccountException
+     */
     @Override
     public byte[] getAvatar(String headPath, Integer accountID) throws AccountException {
         try {
