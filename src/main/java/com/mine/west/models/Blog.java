@@ -3,6 +3,7 @@ package com.mine.west.models;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 
 import java.io.Serializable;
@@ -13,6 +14,7 @@ import java.util.Date;
  *    @JsonPropertyOrder(value = {"content","releaseTime"})
  */
 @Builder
+@AllArgsConstructor
 @ApiModel(value = "Blog对象结构体")
 public class Blog implements Serializable {
     @ApiModelProperty(value="博客ID")
@@ -44,6 +46,9 @@ public class Blog implements Serializable {
     @ApiModelProperty(value="评论数")
     private Integer commentNumber;  //评论数
 
+    @ApiModelProperty(value = "收藏数")
+    private Integer collectNumber;//收藏数
+
     @ApiModelProperty(value="博客内容")
     private String content;         //博客内容
 
@@ -54,15 +59,16 @@ public class Blog implements Serializable {
         this.blogID = blogID;
     }
 
-    public Blog(Integer blogID, Integer accountID, Date releaseTime, Integer likeNumber, Integer repostNumber, Integer commentNumber, String content) {
-        this.blogID = blogID;
-        this.accountID = accountID;
-        this.releaseTime = releaseTime;
-        this.likeNumber = likeNumber;
-        this.repostNumber = repostNumber;
-        this.commentNumber = commentNumber;
-        this.content = content;
-    }
+//    public Blog(Integer blogID, Integer accountID, Date releaseTime, Integer likeNumber, Integer repostNumber, Integer commentNumber, String content,Integer collectNumber) {
+//        this.blogID = blogID;
+//        this.accountID = accountID;
+//        this.releaseTime = releaseTime;
+//        this.likeNumber = likeNumber;
+//        this.repostNumber = repostNumber;
+//        this.commentNumber = commentNumber;
+//        this.content = content;
+//        this.collectNumber=collectNumber;
+//    }
 
     public Blog() {
         super();
@@ -122,6 +128,14 @@ public class Blog implements Serializable {
 
     public void setContent(String content) {
         this.content = content == null ? null : content.trim();
+    }
+
+    public void setCollectNumber(Integer collectNumber) {
+        this.collectNumber = collectNumber;
+    }
+
+    public Integer getCollectNumber() {
+        return collectNumber;
     }
 
     @Override

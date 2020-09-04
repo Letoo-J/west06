@@ -89,6 +89,10 @@ public class BlogServiceImpl implements BlogService2 {
         Blog blog = blogMapper.selectByPrimaryKey(blogID);
         if (blog == null)
             throw new BlogException(ExceptionInfo.BLOG_ID_NOT_EXIT);
+        Endorse endorse = endorseMapper.readOne(accountID, blogID);
+        if (endorse != null)
+            throw new BlogException(ExceptionInfo.BLOG_LIKED);
+
         blog.setLikeNumber(blog.getLikeNumber() + 1);
         blogMapper.updateByPrimaryKey(blog);
         Accountoperation accountoperation = accountoperationMapper.select(accountID, blogID);
@@ -129,7 +133,7 @@ public class BlogServiceImpl implements BlogService2 {
     }
 
     @Override
-    public boolean createPicture(File file, Integer blogID) throws AccountException {
+    public boolean createPicture(File file) throws AccountException {
         String ext = (file.getName().substring(file.getName().lastIndexOf(".") + 1)).toLowerCase();
         if ((!ext.equals("jpg")) && (!ext.equals("png")))
             throw new AccountException(ExceptionInfo.ACCOUNT_AVATAR_ILLEGAL);
@@ -137,9 +141,8 @@ public class BlogServiceImpl implements BlogService2 {
             throw new AccountException(ExceptionInfo.ACCOUNT_AVATAR_ILLEGAL);
 
         ImageUtil.waterMarkByText("picture", file.getAbsolutePath(), file.getAbsolutePath(), 3, 100, 100, 0F);
-        pictureMapper.insertPicture(new Picture(file.getName(), 0, blogID));
 
-        return false;
+        return true;
     }
 
     @Override
@@ -173,9 +176,14 @@ public class BlogServiceImpl implements BlogService2 {
         Blog blog = blogMapper.selectByPrimaryKey(blogID);
         if (blog == null)
             throw new BlogException(ExceptionInfo.BLOG_ID_NOT_EXIT);
+        Collect collect = collectMapper.readOne(accountID, blogID);
+        if (collect != null)
+            throw new BlogException(ExceptionInfo.BLOG_COLLECTED);
 
+        blog.setCollectNumber(blog.getCollectNumber() + 1);
         collectMapper.insert(new Collect(0, accountID, blogID));
-        return 0;
+        blogMapper.updateByPrimaryKey(blog);
+        return blog.getCollectNumber();
     }
 
     @Override

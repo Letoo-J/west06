@@ -1,5 +1,6 @@
 package com.mine.west.config.shiro;
 
+import com.mine.west.config.AddressMapping;
 import com.mine.west.config.shiro.manager.SessionManager;
 import com.mine.west.filter.shiro.*;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +15,6 @@ import org.apache.shiro.web.mgt.CookieRememberMeManager;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.servlet.OncePerRequestFilter;
 import org.apache.shiro.web.servlet.SimpleCookie;
-import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.crazycake.shiro.RedisCacheManager;
 import org.crazycake.shiro.RedisManager;
 import org.crazycake.shiro.RedisSessionDAO;
@@ -24,8 +24,11 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.*;
 import javax.servlet.Filter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  *  Shiro配置类
@@ -78,10 +81,12 @@ public class ShiroConfigBean {
         filterChainDefinitionMap.put("/ajax/**", "anon");
         filterChainDefinitionMap.put("/css/**", "anon");
         filterChainDefinitionMap.put("/icon/**", "anon");
-        filterChainDefinitionMap.put("/image/**", "anon");;
+        filterChainDefinitionMap.put("/image/**", "anon");
         filterChainDefinitionMap.put("/webjars/**", "anon");
         filterChainDefinitionMap.put("/defaultPicture/**", "anon");
         filterChainDefinitionMap.put("/js/**", "anon");
+        filterChainDefinitionMap.put("/picture/**", "anon");
+        filterChainDefinitionMap.put(AddressMapping.resourceHandler, "anon");
         // 设置登录的URL为匿名访问，因为一开始没有用户验证
         filterChainDefinitionMap.put("/", "anon,corsFilter");
         filterChainDefinitionMap.put("/account/login", "anon,corsFilter");

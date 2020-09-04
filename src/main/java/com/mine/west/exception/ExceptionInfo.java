@@ -12,6 +12,8 @@ public enum ExceptionInfo {
     BLOG_ID_NOT_EXIT(2001, "博客ID不存在"),
     BLOG_CONTENT_EMPTY(2002, "博客内容为空"),
     BLOG_CONTENT_ILLEGAL(2003, "博客内容非法"),
+    BLOG_COLLECTED(2004, "您已收藏了该博客"),
+    BLOG_LIKED(2005, "您已点赞了该博客"),
 
     COMMENT_ID_ILLEGAL(3000, "评论ID非法"),
     COMMENT_CONTENT_ILLEGAL(3001, "评论内容非法"),
