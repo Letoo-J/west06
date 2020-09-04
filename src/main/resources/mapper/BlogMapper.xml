@@ -9,6 +9,7 @@
       <arg column="likeNumber" javaType="java.lang.Integer" jdbcType="INTEGER" />
       <arg column="repostNumber" javaType="java.lang.Integer" jdbcType="INTEGER" />
       <arg column="commentNumber" javaType="java.lang.Integer" jdbcType="INTEGER" />
+        <arg column="collectNumber" javaType="java.lang.Integer" jdbcType="INTEGER"/>
       <arg column="content" javaType="java.lang.String" jdbcType="LONGVARCHAR" />
     </constructor>
   </resultMap>
@@ -18,11 +19,11 @@
   </delete>
     <insert id="insert" parameterType="com.mine.west.models.Blog" useGeneratedKeys="true" keyProperty="blogID">
     insert into blog (accountID, releaseTime,
-      likeNumber, repostNumber, commentNumber, 
-      content)
+      likeNumber, repostNumber, commentNumber,
+      content, collectNumber)
     values (#{accountID,jdbcType=INTEGER}, #{releaseTime,jdbcType=TIMESTAMP},
       #{likeNumber,jdbcType=INTEGER}, #{repostNumber,jdbcType=INTEGER}, #{commentNumber,jdbcType=INTEGER}, 
-      #{content,jdbcType=LONGVARCHAR})
+      #{content,jdbcType=LONGVARCHAR}, #{collectNumber,jdbcType=INTEGER})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.mine.west.models.Blog">
     update blog
@@ -31,20 +32,21 @@
       likeNumber = #{likeNumber,jdbcType=INTEGER},
       repostNumber = #{repostNumber,jdbcType=INTEGER},
       commentNumber = #{commentNumber,jdbcType=INTEGER},
-      content = #{content,jdbcType=LONGVARCHAR}
+      content = #{content,jdbcType=LONGVARCHAR},
+      collectNumber = #{collectNumber,jdbcType=INTEGER}
     where blogID = #{blogID,jdbcType=INTEGER}
   </update>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select blogID, accountID, releaseTime, likeNumber, repostNumber, commentNumber, content
+    select *
     from blog
     where blogID = #{blogID,jdbcType=INTEGER}
   </select>
   <select id="selectAll" resultMap="BaseResultMap">
-    select blogID, accountID, releaseTime, likeNumber, repostNumber, commentNumber, content
+    select *
     from blog
   </select>
     <select id="selectByAccountID" resultMap="BaseResultMap">
-    select blogID, accountID, releaseTime, likeNumber, repostNumber, commentNumber, content
+    select *
     from blog
     where accountID = #{accountID,jdbcType=INTEGER}
   </select>

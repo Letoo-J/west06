@@ -86,11 +86,10 @@ public interface BlogService2 {
      * 上传博客图片
      *
      * @param file
-     * @param blogID
      * @return
      * @throws AccountException
      */
-    boolean createPicture(File file, Integer blogID) throws AccountException;
+    boolean createPicture(File file) throws AccountException;
 
     /**
      * 读取博客图片

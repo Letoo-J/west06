@@ -23,6 +23,7 @@ public class JacksonTest {
                 .repostNumber(110)
                 .commentNumber(15)
                 .content("test-Jackson...")
+                .collectNumber(15)
                 .build();
 
         //java对象转换为json

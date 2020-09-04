@@ -21,4 +21,16 @@
     from collect
     where accountID=#{accountID,jdbcType=INTEGER}
   </select>
+
+    <select id="getBlogNumber" parameterType="java.lang.Integer" resultType="int">
+    select count(*)
+    from collect
+    where blogID=#{blogID,jdbcType=INTEGER}
+  </select>
+
+    <select id="readOne" resultMap="BaseResultMap">
+    select *
+    from collect
+    where accountID = #{accountID,jdbcType=INTEGER} and blogID = #{blogID,jdbcType=INTEGER}
+  </select>
 </mapper>

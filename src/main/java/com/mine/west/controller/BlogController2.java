@@ -1,5 +1,6 @@
 package com.mine.west.controller;
 
+import com.mine.west.config.AddressMapping;
 import com.mine.west.exception.AccountException;
 import com.mine.west.exception.ModelException;
 import com.mine.west.models.Account;
@@ -32,10 +33,16 @@ import java.util.List;
 @RequiresRoles(value = {"admin", "user"}, logical = Logical.OR)
 public class BlogController2 {
     private static String HEAD_PATH;
+    private static final String PICTURE_URL_HEAD = "https://39.101.199.3/pictureImage/";
 
     static {
         //TODO : 修改文件地址
-        HEAD_PATH = AccountController2.HEAD_PATH;
+        HEAD_PATH = AddressMapping.location;
+//        try {
+//            HEAD_PATH = ResourceUtils.getURL("").getPath() + "src/main/resources/picture/";
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
         //        HEAD_PATH = FileSystemView.getFileSystemView().getHomeDirectory().getAbsolutePath() + "\\avatar\\";
     }
 
@@ -59,6 +66,7 @@ public class BlogController2 {
             blog.setLikeNumber(0);
             blog.setCommentNumber(0);
             blog.setRepostNumber(0);
+            blog.setCollectNumber(0);
             blog.setAccountID(account.getAccountID());
             return AjaxResponse.success(blogService.create(blog));
         } catch (ModelException e) {
@@ -209,38 +217,24 @@ public class BlogController2 {
     /**
      * 上传博客图片
      *
-     * @param blogID
      * @param picture
-     * @param session
      * @return
      */
-    @RequestMapping(value = "/picture/{blogID}", method = RequestMethod.POST)
-    public AjaxResponse createPicture(@PathVariable("blogID") Integer blogID,
-                                      @RequestParam("picture") MultipartFile picture,
-                                      HttpSession session) {
+    @RequestMapping(value = "/picture", method = RequestMethod.POST)
+    public AjaxResponse createPicture(@RequestParam("picture") MultipartFile picture) {
         File file = null;
         try {
             String filePath = HEAD_PATH + (new Date()).getTime() + picture.getOriginalFilename();
             file = new File(filePath);
             picture.transferTo(file);
-            return AjaxResponse.success(blogService.createPicture(file, blogID));
+            blogService.createPicture(file);
+            return AjaxResponse.success(PICTURE_URL_HEAD + file.getName());
         } catch (ModelException | IOException e) {
             if (file != null) {
                 file.delete();//删除有问题的图片
             }
             return new AjaxResponse(true, 400, e.getMessage(), null);
         }
-    }
-
-    /**
-     * 查询博客图片
-     *
-     * @param blogID
-     * @return
-     */
-    @RequestMapping(value = "/picture/{blogID}", method = RequestMethod.GET)
-    public AjaxResponse readPicture(@PathVariable("blogID") Integer blogID) {
-        return AjaxResponse.success(blogService.readPicture(HEAD_PATH, blogID));
     }
 
     /**

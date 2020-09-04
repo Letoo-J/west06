@@ -38,4 +38,9 @@
     from endorse
     where accountID=#{accountID,jdbcType=INTEGER}
   </select>
+    <select id="readOne" resultMap="BaseResultMap">
+    select *
+    from endorse
+    where accountID = #{accountID,jdbcType=INTEGER} and blogID = #{blogID,jdbcType=INTEGER}
+  </select>
 </mapper>

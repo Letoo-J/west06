@@ -48,7 +48,7 @@ public class CommentServiceImpl implements CommentService {
             accountoperationMapper.updateByPrimaryKey(accountoperation);
         }
 
-        return comment.getCommentID();
+        return blog.getCommentNumber();
     }
 
     @Override

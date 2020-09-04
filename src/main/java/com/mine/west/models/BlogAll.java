@@ -44,6 +44,9 @@ public class BlogAll implements Serializable {
     @ApiModelProperty(value = "博客内容")
     private String content;         //博客内容
 
+    @ApiModelProperty(value = "收藏数")
+    private Integer collectNumber;//收藏数
+
     @ApiModelProperty(value = "用户名")
     private String name;
 
@@ -58,5 +61,6 @@ public class BlogAll implements Serializable {
         this.likeNumber = blog.getLikeNumber();
         this.repostNumber = blog.getRepostNumber();
         this.content = blog.getContent();
+        this.collectNumber = blog.getCollectNumber();
     }
 }
