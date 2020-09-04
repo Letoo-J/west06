@@ -22,6 +22,12 @@ public class FollowServiceImpl implements FollowService {
     @Autowired
     private AccountMapper accountMapper;
 
+    /**
+     * 用户关注数
+     * @param accountID
+     * @return
+     * @throws ModelException
+     */
     @Override
     public int readFollowNumber(Integer accountID) throws ModelException {
         Account account = accountMapper.selectByPrimaryKey(accountID);
@@ -30,6 +36,12 @@ public class FollowServiceImpl implements FollowService {
         return (followlistMapper.readFollowAccount(accountID)).size();
     }
 
+    /**
+     * 用户粉丝数
+     * @param accountID
+     * @return
+     * @throws ModelException
+     */
     @Override
     public int readFanNumber(Integer accountID) throws ModelException {
         Account account = accountMapper.selectByPrimaryKey(accountID);

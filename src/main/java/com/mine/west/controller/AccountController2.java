@@ -57,6 +57,11 @@ public class AccountController2 {
     @Autowired
     FollowService followService;
 
+    /**
+     *
+     * @param session
+     * @return
+     */
     @ApiResponses({
             @ApiResponse(code = 200, message = "返回的内层数据（即data值）", response = Account.class)
     })
@@ -65,8 +70,11 @@ public class AccountController2 {
         try {
             Account account = (Account) session.getAttribute("account");
             Account account1 = accountService.getAccount(account.getAccountID());
+            //博客数
             int blogNum = blogService.readBlogNumber(account.getAccountID());
+            //用户关注数
             int followNum = followService.readFollowNumber(account.getAccountID());
+            //用户粉丝数
             int fanNum = followService.readFanNumber(account.getAccountID());
             return AjaxResponse.success(new AccountAll(account1, blogNum, followNum, fanNum));
         } catch (ModelException e) {
@@ -108,6 +116,7 @@ public class AccountController2 {
             Account account = (Account) session.getAttribute("account");
             String filePath = HEAD_PATH + (new Date()).getTime() + avatar.getOriginalFilename();
             file = new File(filePath);
+            //将avatar转化为file
             avatar.transferTo(file);
             return AjaxResponse.success(accountService.updateAvatar(file, account.getAccountID()));
         } catch (ModelException | IOException e) {
