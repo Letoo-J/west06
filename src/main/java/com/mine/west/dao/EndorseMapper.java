@@ -15,4 +15,6 @@ public interface EndorseMapper {
     List<Endorse> selectAll();
 
     int updateByPrimaryKey(Endorse record);
+
+    List<Endorse> selectByAccountID(Integer accountID);
 }

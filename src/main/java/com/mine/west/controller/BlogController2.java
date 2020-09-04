@@ -1,5 +1,6 @@
 package com.mine.west.controller;
 
+import com.mine.west.exception.AccountException;
 import com.mine.west.exception.ModelException;
 import com.mine.west.models.Account;
 import com.mine.west.models.Blog;
@@ -167,6 +168,28 @@ public class BlogController2 {
     }
 
     /**
+     * 查询点赞博客
+     *
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "/like", method = RequestMethod.GET)
+    public AjaxResponse getLike(HttpSession session) {
+        try {
+            Account account = (Account) session.getAttribute("account");
+            List<Blog> blogList = blogService.getLike(account.getAccountID());
+            List<BlogAll> blogAllList = new ArrayList<>();
+            for (Blog b : blogList) {
+                Account account1 = accountService.getAccount(b.getAccountID());
+                blogAllList.add(new BlogAll(b, account1.getName()));
+            }
+            return AjaxResponse.success(blogAllList);
+        } catch (AccountException e) {
+            return new AjaxResponse(true, 400, e.getMessage(), null);
+        }
+    }
+
+    /**
      * 转发博客
      *
      * @param blogID
@@ -183,6 +206,14 @@ public class BlogController2 {
         }
     }
 
+    /**
+     * 上传博客图片
+     *
+     * @param blogID
+     * @param picture
+     * @param session
+     * @return
+     */
     @RequestMapping(value = "/picture/{blogID}", method = RequestMethod.POST)
     public AjaxResponse createPicture(@PathVariable("blogID") Integer blogID,
                                       @RequestParam("picture") MultipartFile picture,
@@ -201,9 +232,55 @@ public class BlogController2 {
         }
     }
 
+    /**
+     * 查询博客图片
+     *
+     * @param blogID
+     * @return
+     */
     @RequestMapping(value = "/picture/{blogID}", method = RequestMethod.GET)
     public AjaxResponse readPicture(@PathVariable("blogID") Integer blogID) {
         return AjaxResponse.success(blogService.readPicture(HEAD_PATH, blogID));
+    }
+
+    /**
+     * 收藏博客
+     *
+     * @param session
+     * @param blogID
+     * @return
+     */
+    @RequestMapping(value = "/collect/{blogID}", method = RequestMethod.PUT)
+    public AjaxResponse collect(HttpSession session,
+                                @PathVariable("blogID") Integer blogID) {
+        try {
+            Account account = (Account) session.getAttribute("account");
+            return AjaxResponse.success(blogService.collect(account.getAccountID(), blogID));
+        } catch (ModelException e) {
+            return new AjaxResponse(true, 400, e.getMessage(), null);
+        }
+    }
+
+    /**
+     * 查询收藏博客
+     *
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "/collect", method = RequestMethod.GET)
+    public AjaxResponse getCollect(HttpSession session) {
+        try {
+            Account account = (Account) session.getAttribute("account");
+            List<Blog> blogList = blogService.getCollect(account.getAccountID());
+            List<BlogAll> blogAllList = new ArrayList<>();
+            for (Blog b : blogList) {
+                Account account1 = accountService.getAccount(b.getAccountID());
+                blogAllList.add(new BlogAll(b, account1.getName()));
+            }
+            return AjaxResponse.success(blogAllList);
+        } catch (AccountException e) {
+            return new AjaxResponse(true, 400, e.getMessage(), null);
+        }
     }
 
 }

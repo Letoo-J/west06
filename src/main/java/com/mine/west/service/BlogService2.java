@@ -66,6 +66,14 @@ public interface BlogService2 {
     int like(Integer accountID, Integer blogID) throws ModelException;
 
     /**
+     * 查询用户点赞博客
+     *
+     * @param accountID
+     * @return
+     */
+    List<Blog> getLike(Integer accountID);
+
+    /**
      * 转发
      *
      * @param accountID
@@ -74,7 +82,39 @@ public interface BlogService2 {
      */
     int repost(Integer accountID, Integer blogID) throws BlogException;
 
+    /**
+     * 上传博客图片
+     *
+     * @param file
+     * @param blogID
+     * @return
+     * @throws AccountException
+     */
     boolean createPicture(File file, Integer blogID) throws AccountException;
 
+    /**
+     * 读取博客图片
+     *
+     * @param headPath
+     * @param blogID
+     * @return
+     */
     byte[][] readPicture(String headPath, Integer blogID);
+
+    /**
+     * 收藏博客
+     *
+     * @param accountID
+     * @param blogID
+     * @return
+     */
+    int collect(Integer accountID, Integer blogID) throws BlogException;
+
+    /**
+     * 查询收藏博客
+     *
+     * @param accountID
+     * @return
+     */
+    List<Blog> getCollect(Integer accountID);
 }

@@ -13,9 +13,9 @@
     where eID = #{eID,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.mine.west.models.Endorse">
-    insert into endorse (eID, accountID, blogID
+    insert into endorse (accountID, blogID
       )
-    values (#{eID,jdbcType=INTEGER}, #{accountID,jdbcType=INTEGER}, #{blogID,jdbcType=INTEGER}
+    values (#{accountID,jdbcType=INTEGER}, #{blogID,jdbcType=INTEGER}
       )
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.mine.west.models.Endorse">
@@ -32,5 +32,10 @@
   <select id="selectAll" resultMap="BaseResultMap">
     select eID, accountID, blogID
     from endorse
+  </select>
+    <select id="selectByAccountID" resultMap="BaseResultMap">
+    select eID, accountID, blogID
+    from endorse
+    where accountID=#{accountID,jdbcType=INTEGER}
   </select>
 </mapper>
