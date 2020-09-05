@@ -86,6 +86,24 @@ public class FollowController {
     }
 
     /**
+     * 通过ID查看关注
+     *
+     * @param accountID
+     * @return
+     */
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "关注列表，单个如下", response = Followlist.class)
+    })
+    @RequestMapping(value = "/follow/read/{accountID}", method = RequestMethod.GET)
+    public AjaxResponse readFollowAccountByID(@PathVariable("accountID") Integer accountID) {
+        try {
+            return AjaxResponse.success(followService.readFollowAccount(accountID));
+        } catch (ModelException e) {
+            return new AjaxResponse(true, 400, e.getMessage(), null);
+        }
+    }
+
+    /**
      * 读取粉丝用户
      *
      * @param session
@@ -99,6 +117,24 @@ public class FollowController {
         try {
             Account account = (Account) session.getAttribute("account");
             return AjaxResponse.success(followService.readFanAccount(account.getAccountID()));
+        } catch (ModelException e) {
+            return new AjaxResponse(true, 400, e.getMessage(), null);
+        }
+    }
+
+    /**
+     * 通过ID查看粉丝
+     *
+     * @param accountID
+     * @return
+     */
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "粉丝列表，单个如下", response = Followlist.class)
+    })
+    @RequestMapping(value = "/fan/read/{accountID}", method = RequestMethod.GET)
+    public AjaxResponse readFanAccountByID(@PathVariable("accountID") Integer accountID) {
+        try {
+            return AjaxResponse.success(followService.readFanAccount(accountID));
         } catch (ModelException e) {
             return new AjaxResponse(true, 400, e.getMessage(), null);
         }
