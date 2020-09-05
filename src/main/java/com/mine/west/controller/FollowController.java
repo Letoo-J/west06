@@ -109,7 +109,7 @@ public class FollowController {
      *
      * @param followID
      * @param session
-     * @return
+     * @return fID
      */
     @RequestMapping(value = "/follow/{accountID}", method = RequestMethod.POST)
     public AjaxResponse create(@PathVariable("accountID") Integer followID,

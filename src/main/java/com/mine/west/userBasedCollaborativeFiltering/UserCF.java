@@ -12,6 +12,7 @@ public class UserCF {
     private static final int MAX_ACCOUNT_NUMBER = 10000 + 5;
 
     private static List<Blog> baseBlog;
+    //用户对某博客的兴趣度
     private static List<Accountoperation> accountoperationList;
 
     //博客ID映射

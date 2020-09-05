@@ -38,7 +38,7 @@ public class CommentController {
      * 发布评论
      *
      * @param comment
-     * @return 评论ID
+     * @return 评论数
      */
     @RequestMapping(method = RequestMethod.POST)
     public AjaxResponse create(@RequestBody Comment comment, HttpSession session) {
