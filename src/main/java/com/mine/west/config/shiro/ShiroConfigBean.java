@@ -87,6 +87,9 @@ public class ShiroConfigBean {
         filterChainDefinitionMap.put("/js/**", "anon");
         filterChainDefinitionMap.put("/picture/**", "anon");
         filterChainDefinitionMap.put(AddressMapping.resourceHandler, "anon");
+        filterChainDefinitionMap.put("/weiboLogin.html", "anon");
+        filterChainDefinitionMap.put("/index.html", "anon");
+        filterChainDefinitionMap.put("/scTest.html", "anon");
         // 设置登录的URL为匿名访问，因为一开始没有用户验证
         filterChainDefinitionMap.put("/", "anon,corsFilter");
         filterChainDefinitionMap.put("/account/login", "anon,corsFilter");

@@ -66,9 +66,16 @@ public class CommentController {
         try {
             List<Comment> commentList = commentService.readeByBlockID(blogID);
             List<CommentAll> allList = new ArrayList<>();
+            int k;
             for (Comment c : commentList) {
                 Account account1 = accountService.getAccount(c.getAccountID());
-                allList.add(new CommentAll(c, account1.getName()));
+                k = c.getReceivedID();
+                if (k != 0) {
+                    Account account2 = accountService.getAccount(c.getReceivedID());
+                    allList.add(new CommentAll(c, account1.getName(), account2.getName()));
+                    continue;
+                }
+                allList.add(new CommentAll(c, account1.getName(), null));
             }
             return AjaxResponse.success(allList);
         } catch (AccountException e) {

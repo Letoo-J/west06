@@ -9,7 +9,7 @@ $(function () {
     // 初始化验证码
     $.ajax({
         type: "get",
-        url: "http://localhost:8080/verification",
+        url: "https://39.101.199.3/verification",
         dataType: "json",
         async: false,
 
