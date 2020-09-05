@@ -116,7 +116,7 @@ public class AccountController2 {
             Account account = (Account) session.getAttribute("account");
             String filePath = HEAD_PATH + (new Date()).getTime() + avatar.getOriginalFilename();
             file = new File(filePath);
-            //将avatar转化为file
+            //将avatar转化为file，并存入file
             avatar.transferTo(file);
             return AjaxResponse.success(accountService.updateAvatar(file, account.getAccountID()));
         } catch (ModelException | IOException e) {

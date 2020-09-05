@@ -162,7 +162,7 @@ public class BlogController2 {
      * 给博客点赞
      *
      * @param blogID
-     * @return
+     * @return 博客点赞数
      */
     @RequestMapping(value = "/like/{blogID}", method = RequestMethod.PUT)
     public AjaxResponse like(HttpSession session,
@@ -201,7 +201,7 @@ public class BlogController2 {
      * 转发博客
      *
      * @param blogID
-     * @return
+     * @return 博客转发数
      */
     @RequestMapping(value = "/repost/{blogID}", method = RequestMethod.PUT)
     public AjaxResponse repost(@PathVariable("blogID") Integer blogID,
@@ -218,7 +218,7 @@ public class BlogController2 {
      * 上传博客图片
      *
      * @param picture
-     * @return
+     * @return https://39.101.199.3/pictureImage/图片名
      */
     @RequestMapping(value = "/picture", method = RequestMethod.POST)
     public AjaxResponse createPicture(@RequestParam("picture") MultipartFile picture) {
@@ -242,7 +242,7 @@ public class BlogController2 {
      *
      * @param session
      * @param blogID
-     * @return
+     * @return  博客收藏数
      */
     @RequestMapping(value = "/collect/{blogID}", method = RequestMethod.PUT)
     public AjaxResponse collect(HttpSession session,

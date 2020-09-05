@@ -5,7 +5,7 @@
     <constructor>
       <idArg column="fID" javaType="java.lang.Integer" jdbcType="INTEGER" />
       <arg column="followID" javaType="java.lang.Integer" jdbcType="INTEGER" />
-      <arg column="fanID" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="fanID" javaType="java.lang.InreadFollowAccountteger" jdbcType="INTEGER" />
     </constructor>
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
