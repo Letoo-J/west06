@@ -32,23 +32,11 @@ import java.util.List;
 @RequestMapping(value = "/blog")
 @RequiresRoles(value = {"admin", "user"}, logical = Logical.OR)
 public class BlogController2 {
-    private static String HEAD_PATH;
+    private static String HEAD_PATH = AddressMapping.location;
     private static final String PICTURE_URL_HEAD = "https://39.101.199.3/pictureImage/";
-
-    static {
-        //TODO : 修改文件地址
-        HEAD_PATH = AddressMapping.location;
-//        try {
-//            HEAD_PATH = ResourceUtils.getURL("").getPath() + "src/main/resources/picture/";
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        }
-        //        HEAD_PATH = FileSystemView.getFileSystemView().getHomeDirectory().getAbsolutePath() + "\\avatar\\";
-    }
 
     @Autowired
     private BlogService2 blogService;
-
     @Autowired
     AccountServiceT accountService;
 
@@ -88,6 +76,24 @@ public class BlogController2 {
         try {
             Account account = (Account) session.getAttribute("account");
             List<Blog> blogList = blogService.readByAccountID(account.getAccountID());
+            List<BlogAll> blogAllList = new ArrayList<>();
+            for (Blog b : blogList) {
+                Account account1 = accountService.getAccount(b.getAccountID());
+                blogAllList.add(new BlogAll(b, account1.getName()));
+            }
+            return AjaxResponse.success(blogAllList);
+        } catch (ModelException e) {
+            return new AjaxResponse(true, 400, e.getMessage(), null);
+        }
+    }
+
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "博客列表，用户发布的所有博客\n当个博客如下", response = Blog.class)
+    })
+    @RequestMapping(value = "/read/{accountID}", method = RequestMethod.GET)
+    public AjaxResponse readByID(@PathVariable("accountID") Integer accountID) {
+        try {
+            List<Blog> blogList = blogService.readByAccountID(accountID);
             List<BlogAll> blogAllList = new ArrayList<>();
             for (Blog b : blogList) {
                 Account account1 = accountService.getAccount(b.getAccountID());

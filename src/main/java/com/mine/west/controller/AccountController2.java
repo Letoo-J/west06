@@ -35,29 +35,17 @@ import java.util.Map;
 @RequestMapping(value = "/accountT")
 @RequiresRoles(value = {"admin", "user"}, logical = Logical.OR)
 public class AccountController2 {
-    public static String HEAD_PATH;
-
-    static {
-        //TODO : 修改文件地址
-//        try {
-        HEAD_PATH = "/root/myhome/src/main/resources/avatar/";
-//            HEAD_PATH = ResourceUtils.getURL("").getPath() + "avatar/";
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//        HEAD_PATH = FileSystemView.getFileSystemView().getHomeDirectory().getAbsolutePath() + "\\avatar\\";
-    }
+    public static final String HEAD_PATH = "/root/myhome/src/main/resources/avatar/";
 
     @Autowired
     AccountServiceT accountService;
-
     @Autowired
     private BlogService2 blogService;
-
     @Autowired
     FollowService followService;
 
     /**
+     * 查询用户信息
      *
      * @param session
      * @return
@@ -82,13 +70,43 @@ public class AccountController2 {
         }
     }
 
+    /**
+     * 通过ID查询用户信息
+     *
+     * @param accountID
+     * @return
+     */
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "返回的内层数据（即data值）", response = Account.class)
+    })
+    @RequestMapping(value = "/read/{accountID}", method = RequestMethod.GET)
+    public AjaxResponse getAccountByID(@PathVariable("accountID") Integer accountID) {
+        try {
+            Account account1 = accountService.getAccount(accountID);
+            //博客数
+            int blogNum = blogService.readBlogNumber(accountID);
+            //用户关注数
+            int followNum = followService.readFollowNumber(accountID);
+            //用户粉丝数
+            int fanNum = followService.readFanNumber(accountID);
+            return AjaxResponse.success(new AccountAll(account1, blogNum, followNum, fanNum));
+        } catch (ModelException e) {
+            return new AjaxResponse(true, 400, e.getMessage(), null);
+        }
+    }
+
+    /**
+     * 查询头像
+     *
+     * @param accountID
+     * @return
+     */
     @ApiResponses({
             @ApiResponse(code = 200, message = "返回的data的值为byte数组，\n" +
                     "前端接收：$('#img').attr('src', \"data:image/png;base64,\" + Image);")
     })
     @RequestMapping(value = "/avatar/{accountID}", method = RequestMethod.GET)
-    public AjaxResponse getAvatar(HttpSession session,
-                                  @PathVariable("accountID") Integer accountID) {
+    public AjaxResponse getAvatar(@PathVariable("accountID") Integer accountID) {
         try {
             return AjaxResponse.success(accountService.getAvatar(HEAD_PATH, accountID));
         } catch (ModelException e) {
@@ -96,6 +114,13 @@ public class AccountController2 {
         }
     }
 
+    /**
+     * 更新用户信息
+     *
+     * @param account
+     * @param session
+     * @return
+     */
     @RequestMapping(method = RequestMethod.PUT)
     public AjaxResponse updateAccount(@RequestBody Account account,
                                       HttpSession session) {
@@ -108,6 +133,13 @@ public class AccountController2 {
         }
     }
 
+    /**
+     * 更新头像
+     *
+     * @param avatar
+     * @param session
+     * @return
+     */
     @RequestMapping(value = "/avatar", method = RequestMethod.PUT)
     public AjaxResponse updateAvatar(@RequestParam("avatar") MultipartFile avatar,
                                      HttpSession session) {
@@ -120,9 +152,8 @@ public class AccountController2 {
             avatar.transferTo(file);
             return AjaxResponse.success(accountService.updateAvatar(file, account.getAccountID()));
         } catch (ModelException | IOException e) {
-            if (file != null) {
+            if (file != null)
                 file.delete();//删除有问题的图片
-            }
             return new AjaxResponse(true, 400, e.getMessage(), null);
         }
     }
