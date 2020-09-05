@@ -27,9 +27,11 @@ public class CommentAll implements Serializable {
 
     private String name;
 
+    private String receivedName;
+
     private static final long serialVersionUID = 1L;
 
-    public CommentAll(Comment comment, String name) {
+    public CommentAll(Comment comment, String name, String receivedName) {
         this.name = name;
         this.commentID = comment.getCommentID();
         this.accountID = comment.getAccountID();
@@ -38,5 +40,6 @@ public class CommentAll implements Serializable {
         this.receivedID = comment.getReceivedID();
         this.commentTime = comment.getCommentTime();
         this.content = comment.getContent();
+        this.receivedName = receivedName;
     }
 }
